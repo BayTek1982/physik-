@@ -19,14 +19,14 @@
 <style>
 :root{
   --bg:#05080d; --panel:#0b1118; --card:#0f1620; --card2:#0a0f15; --line:#1b2532; --line2:#2a3647; --line3:#36465b; --text:#dfe6ef; --soft:#b9c4d2; --soft2:#c9d2de; --mute:#7f8b9c;
-  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee;
+  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee; --teal:#2dd4bf; --pink:#ff6fae; --indigo:#8b8cff;
   --chart:#020407; --hdr:rgba(5,8,13,.92); --veil:rgba(5,8,13,.75); --on-gold:#1b1505; --on-up:#03140d;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 [data-theme="light"]{
   --bg:#f3f5f9; --panel:#eef2f7; --card:#ffffff; --card2:#f7f9fc; --line:#dde3ec; --line2:#c9d2de; --line3:#b7c2d1; --text:#131a26; --soft:#3d4757; --soft2:#2c3646; --mute:#5d6879;
-  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#00838f;
+  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#00838f; --teal:#0f766e; --pink:#c2185b; --indigo:#4f46e5;
   --chart:#ffffff; --hdr:rgba(243,245,249,.92); --veil:rgba(255,255,255,.85); --on-gold:#ffffff; --on-up:#ffffff;
 }
 *{box-sizing:border-box}
@@ -264,6 +264,8 @@ Object.assign(THEMES.light,{body:'#ffffff',bodyLine:'#5f6b7b',ground:'#e4e9ef',p
 Object.assign(C,THEMES.dark);
 function rng(seed){let s=seed%2147483647||1;for(let k=0;k<6;k++)s=s*16807%2147483647;return()=>{s=s*16807%2147483647;return(s-1)/2147483646;};}
 function glow(g,x,y,r,col,a=1){if(a<=0||r<=0)return;const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,hexA(col,.55*Math.min(1,a)));gr.addColorStop(1,hexA(col,0));g.fillStyle=gr;g.beginPath();g.arc(x,y,r,0,TAU);g.fill();}
+function clock(g,x,y,r,ang,col,lab){circ(g,x,y,r,C.head,col,2);for(let k=0;k<12;k++){const a=k*TAU/12;line(g,x+Math.cos(a)*r*.78,y+Math.sin(a)*r*.78,x+Math.cos(a)*r*.92,y+Math.sin(a)*r*.92,C.mute,1.2);}line(g,x,y,x+Math.cos(ang/12-Math.PI/2)*r*.5,y+Math.sin(ang/12-Math.PI/2)*r*.5,C.text,3);line(g,x,y,x+Math.cos(ang-Math.PI/2)*r*.78,y+Math.sin(ang-Math.PI/2)*r*.78,col,2.2);circ(g,x,y,2.6,col);if(lab)pill(g,x,y+r+14,lab,col,1);}
+function dial(g,cx,cy,r,v,col,lab){circ(g,cx,cy,r,C.head,C.line2,1.6);g.save();g.strokeStyle=hexA(col,.35);g.lineWidth=4;g.beginPath();g.arc(cx,cy,r-5,rad(135),rad(405));g.stroke();g.strokeStyle=col;g.beginPath();g.arc(cx,cy,r-5,rad(135),rad(135+270*clamp(v)));g.stroke();g.restore();const a=rad(135+270*clamp(v));line(g,cx,cy,cx+Math.cos(a)*(r-9),cy+Math.sin(a)*(r-9),C.text,2);circ(g,cx,cy,3,C.text);if(lab)pill(g,cx,cy+r+11,lab,col,1,'center',10);}
 function ground(g,y,col){g.fillStyle=col||C.ground;g.fillRect(-10,y,420,260-y);}
 function lines(g,L,x,y0,dy){if(G.nolabel)return;L.forEach((l,i)=>{const a=l[3]==null?1:l[3];if(a<=0)return;g.save();g.globalAlpha=a;txt(g,x,y0+i*dy,l[0],l[1],l[2],'left',l[4]||600);g.restore();});}
 function car(g,x,y,s,col,o={}){g.save();g.translate(x,y);if(o.flip)g.scale(-1,1);g.scale(s,s);const lw=1.4/s;
@@ -280,7 +282,7 @@ function thermo(g,x,y,h,f,col){box(g,x-5,y-h,10,h,C.head,C.line2,5);const hh=(h-
 function dipole(g,cx,cy,col,a=1,o={}){g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=1.1;const ks=o.ks||[30,48,72,105,150,220];ks.forEach(k=>{[-1,1].forEach(sg=>{g.beginPath();let first=true;for(let i=4;i<=176;i+=3){const th=i*Math.PI/180,r=k*Math.sin(th)*Math.sin(th);if(r<(o.rmin||14))continue;const x=o.vert?cx+sg*r*Math.sin(th):cx+r*Math.cos(th),y=o.vert?cy-r*Math.cos(th):cy+sg*r*Math.sin(th);first?g.moveTo(x,y):g.lineTo(x,y);first=false;}g.stroke();});});g.restore();}
 
 /* ============ LEKTIONEN ============ */
-const CATS={bewegung:'Bewegung & Kräfte',energie:'Energie & Leistung',waerme:'Wärme',strom:'Elektrizität',magnet:'Magnetismus',wellen:'Schall, Licht & Atome'};
+const CATS={bewegung:'Bewegung & Kräfte',druck:'Druck, Wasser & Luft',energie:'Energie & Leistung',kraftwerk:'Kraftwerke & Energie',waerme:'Wärme',strom:'Elektrizität',technik:'Strom-Technik',magnet:'Magnetismus',wellen:'Schall, Licht & Atome',modern:'Moderne Physik'};
 const LESSONS=[];
 const les=o=>LESSONS.push(o);
 const S=(arr)=>arr.map(a=>({d:a[0],text:a[1]}));
@@ -746,6 +748,294 @@ les({id:'atom',cat:'wellen',title:'Das Atom',sub:'Woraus alles besteht',
  bedeutung:'Die Elektronen der äußeren Hülle bestimmen, wie ein Atom mit anderen reagiert – also die ganze Chemie. Im Kern stecken riesige Energien, die bei Kernspaltung und Kernfusion frei werden.',
  tipp:'Bei der Röntgenprüfung schwächen Atome mit vielen Elektronen die Strahlung stärker: Eisen (26) schirmt viel besser ab als Aluminium (13) – deshalb brauchen Stahlteile im CT mehr Spannung.'}});
 
+
+/* ---------- DRUCK, WASSER & LUFT ---------- */
+function tank(g,x,y,w,h,lvl){box(g,x,y,w,h,null,C.line2,4,2);g.fillStyle=hexA(C.water,.25);g.fillRect(x+2,y+h-lvl,w-4,lvl-2);line(g,x+2,y+h-lvl,x+w-2,y+h-lvl,C.water,1.6);}
+les({id:'fall',thumb:1,cat:'druck',title:'Der freie Fall',sub:'Rechnen: Wie tief fällt ein Stein?',
+ steps:S([[5400,'Alles fällt nach unten, weil die Erde es anzieht. Ohne Luft fallen alle Körper gleich schnell – eine Feder genauso wie ein Hammer.'],
+ [5200,'Die Fallbeschleunigung beträgt g ≈ 9,81 m/s². Jede Sekunde wird ein fallender Körper rund 35 km/h schneller.'],
+ [5600,'Rechnen: Fallstrecke s = ½ × g × t². Nach 2 Sekunden: 0,5 × 9,81 × 2² ≈ 19,6 m.'],
+ [5600,'Mit Luft sieht es anders aus: Der Luftwiderstand bremst immer stärker. Ein Fallschirmspringer erreicht im Bauchflug höchstens rund 200 km/h.'],
+ [5600,'Der Beweis: 1971 ließ Astronaut David Scott auf dem Mond einen Hammer und eine Feder fallen – beide kamen gleichzeitig am Boden an.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0||s===4){if(s===4){g.fillStyle=hexA(C.metal,.45);g.fillRect(0,214,400,40);}else{box(g,120,10,160,214,hexA(C.blue,.05),C.line2,10);pill(g,200,236,'OHNE LUFT (VAKUUM)',C.blue,1);}
+   const f=(t*.0005)%1.3,y=30+Math.min(1,f)*Math.min(1,f)*170;g.save();g.translate(165,y);box(g,-4,0,8,22,'#a0703c',null,2);box(g,-12,-6,24,10,C.metal,null,2);g.restore();g.save();g.translate(235,y+10);g.rotate(.5);g.beginPath();g.ellipse(0,0,4,16,0,0,TAU);g.fillStyle=C.text;g.fill();g.restore();pill(g,165,y-20,'HAMMER',C.metal,1);pill(g,250,y-14,'FEDER',C.text,1,'left');
+   if(s===4)pill(g,70,30,'MOND · 1971',C.gold,1);}
+  if(s===1||s===2){const n=s===1?Math.min(6,Math.floor(((t*.0008)%1)*7)):5;for(let k=0;k<=n;k++){const y=20+.5*9.81*k*k*.4*2.1;circ(g,120,Math.min(y,230),9,hexA(C.down,k===n?1:.35),C.bg,1);if(s===1&&k>0)pill(g,170,Math.min(y,230),`${deN(k*.4*9.81*3.6,0)} km/h`,C.gold,k===n?1:.4,'left');}
+   if(s===2){lines(g,[['s = ½ × g × t²',C.text,14,1,800],['= 0,5 × 9,81 × 2²',C.mute,12.5,clamp(p*3-.3)],['≈ 19,6 m',C.up,17,clamp(p*3-1),800]],210,70,40);}}
+  if(s===3){const x0=50,y0=210,w=300,h=160;axes(g,x0,y0,w,h,'ZEIT','TEMPO',[[0,'0'],[.5,'6 s'],[1,'12 s']],[[200/220,'200 km/h']]);plot(g,u=>u*1.1*12*9.81*3.6/220*.08>0?Math.min(u*12*35.3,200*(1-Math.exp(-u*12*35.3/200)))/220:0,x0,y0,w,h,C.orange,2.6,ease(p),1);plot(g,u=>{const v=u*12*35.3/220;return v>1?null:v;},x0,y0,w,h,C.mute,1.4,1,.5);pill(g,x0+w*.45,y0-h*.98,'OHNE LUFT',C.mute,1);pill(g,x0+w*.8,y0-h*.78,'MIT LUFT',C.orange,1);}}
+ ,box:{was:'Beim freien Fall wird ein Körper nur durch die Schwerkraft beschleunigt. In Erdnähe beträgt die Fallbeschleunigung g ≈ 9,81 m/s².',h2:'So rechnest du',
+ erkennen:['Tempo nach t Sekunden: v = g × t','Fallstrecke: s = ½ × g × t²','Pro Sekunde ca. 35 km/h schneller','Luftwiderstand begrenzt das Tempo'],
+ bedeutung:'Ohne Luftwiderstand wäre Regen gefährlich: Ein Tropfen aus 1.000 m Höhe würde mit über 500 km/h aufschlagen. Tatsächlich fällt er nur mit rund 20–30 km/h.',
+ tipp:'Fallhöhe schätzen: Stein in einen Brunnen fallen lassen und die Sekunden bis zum Platschen zählen. 2 Sekunden ≈ 20 m tief (den Schall vernachlässigt).'}});
+
+les({id:'auftrieb',cat:'druck',title:'Auftrieb im Wasser',sub:'Warum ein Stahlschiff schwimmt',
+ steps:S([[5000,'Im Wasser fühlen sich Dinge leichter an. Das Wasser drückt von unten nach oben – das ist der Auftrieb.'],
+ [5400,'Archimedes entdeckte: Der Auftrieb ist genau so groß wie das Gewicht des Wassers, das der Gegenstand verdrängt.'],
+ [5200,'Ist ein Gegenstand leichter als das verdrängte Wasser, schwimmt er. Ist er schwerer, geht er unter.'],
+ [5400,'Ein Stahlschiff schwimmt, weil sein Rumpf hohl ist: Es verdrängt sehr viel Wasser – mehr, als das ganze Schiff wiegt.'],
+ [6000,'Rechnen: Ein Boot wiegt 600 kg. Es sinkt so tief ein, bis es 600 Liter Wasser verdrängt (1 l Wasser ≈ 1 kg). Salzwasser ist schwerer – im Meer schwimmt es etwas höher.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){tank(g,90,60,220,160,110);const y=lerp(30,140,ease(clamp(p*1.5)));box(g,170,y,60,50,hexA(C.orange,.6),C.orange,4);line(g,200,y-20,200,y,C.mute,1.4);if(y+50>110){arrow(g,200,y+80,200,y+52,C.blue,3,1);pill(g,250,y+70,'AUFTRIEB',C.blue,1,'left');}
+   if(s===1){const ov=clamp((y-80)/60);box(g,320,180,40,40,null,C.line2,3);g.fillStyle=hexA(C.water,.4);g.fillRect(322,218-36*ov,36,36*ov);pill(g,340,236,'VERDRÄNGT',C.water,1);}}
+  if(s===2){tank(g,60,50,280,170,120);const bob=Math.sin(t*.003)*3;g.save();g.beginPath();g.ellipse(140,102+bob,22,14,0,0,TAU);g.fillStyle='#a0703c';g.fill();g.restore();pill(g,140,70,'HOLZ: SCHWIMMT',C.up,1);
+   const y=lerp(80,196,ease(clamp(p*1.4)));circ(g,260,y,16,C.metal2,C.metalHi,1.4);pill(g,260,y-30,'STEIN: SINKT',C.down,1);}
+  if(s===3||s===4){tank(g,20,60,360,160,110);const sink=s===4?ease(clamp(p*1.4))*22:22;const y=170-110+0;const top=110-28+sink;g.save();g.beginPath();g.moveTo(90,top);g.lineTo(310,top);g.lineTo(290,top+50);g.lineTo(110,top+50);g.closePath();g.fillStyle=C.body;g.fill();g.strokeStyle=C.bodyLine;g.lineWidth=2;g.stroke();g.restore();
+   box(g,170,top-30,60,30,C.body,C.bodyLine,3);if(s===3){pill(g,200,30,'HOHLER RUMPF',C.text,1);pill(g,200,236,'VERDRÄNGT VIEL WASSER',C.water,1);}else{pill(g,200,30,'600 kg → 600 LITER',C.up,1);pill(g,200,236,'1 LITER WASSER ≈ 1 kg',C.water,1);}
+   for(let k=0;k<5;k++)arrow(g,130+k*35,top+90,130+k*35,top+58,C.blue,2,1);}}
+ ,box:{was:'Auftrieb ist die nach oben gerichtete Kraft, die Wasser (oder Luft) auf einen eingetauchten Körper ausübt. Sie ist so groß wie das Gewicht der verdrängten Flüssigkeit.',h2:'So erkennst du es',
+ erkennen:['Auftrieb = Gewicht des verdrängten Wassers','Leichter als verdrängtes Wasser → schwimmt','Schwerer → sinkt','Salzwasser trägt besser als Süßwasser'],
+ bedeutung:'U-Boote nutzen das Prinzip: Sie fluten Tanks mit Wasser, um zu tauchen, und blasen es mit Druckluft wieder heraus, um aufzutauchen.',
+ tipp:'Im Toten Meer ist das Wasser so salzig, dass man ohne Anstrengung wie ein Korken obenauf liegt.'}});
+
+les({id:'hydraulik',cat:'druck',title:'Druck & Hydraulik',sub:'Rechnen: Mit 100 N ein halbes Auto heben',
+ steps:S([[5000,'Druck ist Kraft pro Fläche: p = F ÷ A. Dieselbe Kraft auf eine kleine Fläche ergibt einen großen Druck.'],
+ [5000,'Deshalb sinkt man mit Schneeschuhen nicht ein, und ein scharfes Messer schneidet besser als ein stumpfes.'],
+ [5000,'In einer Flüssigkeit breitet sich Druck in alle Richtungen gleich aus. Genau das nutzt die Hydraulik.'],
+ [6200,'Rechnen: Kleiner Kolben 2 cm², großer Kolben 100 cm². Du drückst mit 100 N: 100 ÷ 2 × 100 = 5.000 N – damit hebst du rund 500 kg!'],
+ [5400,'So funktionieren Wagenheber, Bagger und die Bremse im Auto: Ein leichter Tritt aufs Pedal erzeugt große Kräfte an den Bremsbelägen.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){ground(g,200);[[110,90,'SCHUH',C.down,'TIEF'],[290,26,'SCHNEESCHUH',C.up,'FLACH']].forEach(([x,w,n,col,d],i)=>{const sink=(i===0?18:3)*ease(clamp(p*1.5));box(g,x-w/2,180+sink-4,w,10,hexA(col,.6),col,3);person(g,x,180+sink-4,1.6);for(let k=0;k<5;k++)arrow(g,x-w/2+k*w/4,215,x-w/2+k*w/4,200+sink,col,1.4,i===0?1:.5);pill(g,x,236,n,col,1);});pill(g,200,26,'p = F ÷ A',C.gold,1);
+   if(s===1){g.save();g.translate(200,90);box(g,-60,-4,80,8,C.metalHi,null,2);poly(g,[[20,-4],[50,0],[20,4]],C.metalHi);g.restore();}}
+  else{const f=s===2?(Math.sin(t*.002)+1)/2:ease(clamp(p*1.3));const d1=f*60,d2=f*60*2/100*3;
+   g.fillStyle=hexA(C.water,.35);g.fillRect(70,110+d1,30,100-d1);g.fillRect(70,200,280,30);g.fillRect(230,110-d2,120,120+d2);box(g,70,200,280,30,null,C.line2,2);box(g,70,60,30,170,null,C.line2,2);box(g,230,60,120,170,null,C.line2,2);
+   box(g,72,100+d1,26,10,C.metal2,C.metalHi,2);box(g,232,100-d2,116,10,C.metal2,C.metalHi,2);arrow(g,85,50+d1,85,96+d1,C.orange,3,1);car(g,290,100-d2,1.4,C.orange);
+   if(s===2)for(let k=0;k<6;k++){const a=k*TAU/6;arrow(g,160+Math.cos(a)*8,215+Math.sin(a)*8,160+Math.cos(a)*22,215+Math.sin(a)*14,C.water,1.6,1);}
+   pill(g,85,30,s===3?'100 N · 2 cm²':'KLEINE KRAFT',C.orange,1);pill(g,290,30,s===3?'5.000 N · 100 cm²':'GROSSE KRAFT',C.up,1);if(s===4)pill(g,200,244,'BREMSE · WAGENHEBER · BAGGER',C.text,1);}}
+ ,box:{was:'Druck gibt an, wie stark eine Kraft auf eine Fläche wirkt. In Flüssigkeiten verteilt er sich gleichmäßig – damit lassen sich Kräfte vervielfachen (Hydraulik).',h2:'So rechnest du',
+ erkennen:['p = F ÷ A (1 bar = 10 N pro cm²)','Hydraulik: F2 = F1 × A2 ÷ A1','Große Kraft, dafür kurzer Weg','Flüssigkeiten lassen sich kaum zusammendrücken'],
+ bedeutung:'Ohne Hydraulik gäbe es keine Bagger, Kräne, Hebebühnen oder Flugzeugsteuerung. Auch die Bremse in jedem Auto arbeitet hydraulisch.',
+ tipp:'Luft in der Bremsleitung ist gefährlich: Luft lässt sich zusammendrücken, das Pedal wird weich. Deshalb wird Bremsflüssigkeit regelmäßig gewechselt und entlüftet.'}});
+
+les({id:'luftdruck',cat:'druck',title:'Luftdruck & Reifendruck',sub:'Warum wir 10 Tonnen nicht spüren',
+ steps:S([[5000,'Die Luft über uns hat Gewicht. Sie drückt auf alles mit rund 1 bar – das ist der Luftdruck.'],
+ [5800,'1 bar entspricht etwa 10 Tonnen auf einem Quadratmeter! Wir spüren das nicht, weil der Druck von allen Seiten gleich ist – auch von innen.'],
+ [5400,'Je höher man steigt, desto weniger Luft liegt über einem: Auf der Zugspitze (2.962 m) beträgt der Luftdruck nur noch rund 0,7 bar.'],
+ [5600,'Der Reifendruck (z. B. 2,5 bar) ist der Überdruck gegenüber der Außenluft. Im Reifen herrschen also eigentlich rund 3,5 bar.'],
+ [6000,'Zu wenig Druck erhöht Verbrauch, Verschleiß und Bremsweg. Bei Kälte sinkt der Druck – pro 10 °C um etwa 0,1 bar. Im Winter also öfter prüfen!']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){for(let i=0;i<60;i++){const r=rng(i+7);const x=r()*400,y=(r()*190+t*.02*(1+r()))%190;circ(g,x,y,2,hexA(C.blue,.5));}ground(g,200);
+   if(s===0){for(let k=0;k<7;k++)arrow(g,40+k*54,150,40+k*54,196,C.blue,2,1);pill(g,200,226,'LUFTDRUCK ≈ 1 bar',C.blue,1);}
+   else{box(g,150,140,100,60,hexA(C.down,.5),C.down,4);txt(g,200,170,'10 t',C.text,18,'center',800);arrow(g,140,212,260,212,C.mute,1.2,1,true);pill(g,200,232,'1 m² · 1 bar ≈ 10 t',C.gold,1);}}
+  if(s===2){poly(g,[[60,220],[220,40],[380,220]],hexA(C.mute,.3),C.mute,1.6);poly(g,[[190,74],[220,40],[250,74]],hexA('#ffffff',.6),null);dial(g,90,90,30,.98,C.blue,'TAL ≈ 1,0 bar');dial(g,320,90,30,.7,C.orange,'ZUGSPITZE ≈ 0,7');pill(g,220,26,'2.962 m',C.text,1);}
+  if(s===3||s===4){const cold=s===4?(Math.sin(t*.0015)+1)/2:0;const P=2.5-cold*.2;circ(g,150,130,80,C.metal3,C.carLine,3);circ(g,150,130,46,C.metal,C.metalHi,2);for(let k=0;k<5;k++){const a=k*TAU/5+t*.001;circ(g,150+Math.cos(a)*30,130+Math.sin(a)*30,6,C.metal3);}
+   dial(g,310,110,40,P/3.5,P<2.4?C.down:C.up);pill(g,310,170,`${deN(P,1)} bar`,P<2.4?C.down:C.up,1);if(s===3){pill(g,310,206,'ABSOLUT ≈ 3,5 bar',C.mute,1);}else{thermo(g,380,200,80,1-cold,cold>.5?C.blue:C.down);pill(g,310,206,cold>.5?'KALT: DRUCK SINKT':'WARM',cold>.5?C.blue:C.down,1);}}}
+ ,box:{was:'Luftdruck entsteht durch das Gewicht der Luftsäule über uns. Auf Meereshöhe beträgt er im Mittel 1.013 Hektopascal (hPa) – etwa 1 bar.',h2:'So erkennst du es',
+ erkennen:['1 bar ≈ 1.000 hPa ≈ 10 t pro m²','Höher = weniger Luftdruck','Reifendruck = Überdruck zur Außenluft','Kälte senkt den Reifendruck (ca. 0,1 bar pro 10 °C)'],
+ bedeutung:'Der Luftdruck bestimmt auch das Wetter: Hochdruck bringt meist schönes, Tiefdruck eher wechselhaftes Wetter. Im Flugzeug spürst du Druckänderungen in den Ohren.',
+ tipp:'Reifendruck immer bei kalten Reifen prüfen (vor der Fahrt). Den richtigen Wert findest du meist im Tankdeckel oder am Türrahmen der Fahrertür.'}});
+
+/* ---------- STROM 2: TECHNIK ---------- */
+les({id:'akku',thumb:0,cat:'technik',title:'Batterie & Akku',sub:'Rechnen: Wie viele Handy-Akkus hat ein E-Auto?',
+ steps:S([[5400,'Eine Batterie speichert Energie chemisch. Zwischen Minus- und Pluspol laufen Reaktionen ab, die Elektronen durch den Stromkreis treiben.'],
+ [5600,'Beim Lithium-Ionen-Akku wandern beim Entladen Lithium-Ionen innen vom Minuspol zum Pluspol, die Elektronen außen durch das Gerät. Beim Laden geht es zurück.'],
+ [5200,'Die Kapazität gibt an, wie viel Ladung drin ist – in Amperestunden (Ah). Energie = Spannung × Kapazität (in Wattstunden, Wh).'],
+ [6000,'Rechnen: Handy-Akku 3,85 V × 5 Ah ≈ 19,25 Wh. Ein E-Auto-Akku mit 77 kWh speichert so viel wie rund 4.000 Handy-Akkus!'],
+ [5600,'Akkus mögen keine Extreme: Am längsten halten sie, wenn man sie meist zwischen etwa 20 und 80 % lädt und sie nicht zu heiß werden.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){const charge=s===1&&Math.floor(t*.0004)%2===1;box(g,60,60,280,120,C.head,C.line2,10);box(g,70,70,80,100,hexA(C.mute,.4),C.mute,4);box(g,250,70,80,100,hexA(C.down,.3),C.down,4);for(let k=0;k<6;k++)line(g,200,72+k*18,200,82+k*18,C.line2,2);
+   txt(g,110,120,'−',C.text,26,'center',800);txt(g,290,120,'+',C.text,26,'center',800);for(let i=0;i<8;i++){const f=((t*.0006+i/8)%1);const x=charge?lerp(250,150,f):lerp(150,250,f);circ(g,x+(charge?0:0),84+i*11,4,C.gold);}
+   wire(g,[[110,60],[110,30],[290,30],[290,60]]);bulb(g,200,30,charge?0:1,12);flow(g,charge?[[290,30],[110,30]]:[[110,30],[290,30]],t,C.aqua,{gap:18,speed:.05,r:2.4});pill(g,200,208,s===1?(charge?'LADEN: IONEN → MINUSPOL':'ENTLADEN: IONEN → PLUSPOL'):'CHEMISCHE ENERGIE → STROM',C.gold,1);}
+  if(s===2){lines(g,[['Energie (Wh) = Spannung (V) × Kapazität (Ah)',C.text,12,1,800]],20,40,20);box(g,140,80,120,140,C.head,C.line2,8);box(g,180,70,40,10,C.line2,null,2);const f=(Math.sin(t*.0015)+1)/2;box(g,150,90+120*(1-f),100,120*f,hexA(C.up,.7),C.up,4);pill(g,200,236,`${Math.round(f*100)} %`,C.up,1);}
+  if(s===3){lines(g,[['3,85 V × 5 Ah ≈ 19,25 Wh',C.text,13,1],['77.000 Wh ÷ 19,25 Wh',C.mute,13,clamp(p*3-.3)],['≈ 4.000 HANDY-AKKUS',C.up,16,clamp(p*3-1),800]],20,40,36);const n=Math.floor(ease(clamp(p*1.4))*200);for(let i=0;i<n;i++){box(g,20+(i%25)*15,150+Math.floor(i/25)*11,10,8,hexA(C.aqua,.7),null,1);}}
+  if(s===4){box(g,60,100,280,50,C.head,C.line2,10);box(g,60+280*.2,100,280*.6,50,hexA(C.up,.25),null,0);const f=.2+.6*(Math.sin(t*.0012)+1)/2;box(g,64,104,272*f,42,hexA(C.up,.75),null,6);pill(g,60+280*.2,170,'20 %',C.gold,1);pill(g,60+280*.8,170,'80 %',C.gold,1);pill(g,200,60,'IDEALBEREICH',C.up,1);pill(g,200,220,'NICHT ZU HEISS · NICHT ZU KALT',C.text,1);}}
+ ,box:{was:'Batterien und Akkus wandeln gespeicherte chemische Energie in elektrische Energie um. Akkus lassen sich wieder aufladen, normale Batterien nicht.',h2:'So rechnest du',
+ erkennen:['Energie (Wh) = Spannung (V) × Kapazität (Ah)','1 kWh = 1.000 Wh','mAh ÷ 1.000 = Ah','Ladezeit ≈ Kapazität ÷ Ladestrom (plus Verluste)'],
+ bedeutung:'Lithium-Ionen-Akkus stecken in Handys, Laptops, E-Bikes und E-Autos. Sie sind leicht und speichern viel Energie – müssen aber vor Hitze und Beschädigung geschützt werden.',
+ tipp:'Ein aufgeblähter oder beschädigter Akku ist gefährlich und kann brennen. Nicht mehr laden, nicht in den Hausmüll – sondern beim Wertstoffhof oder im Handel abgeben.'}});
+
+les({id:'trafo',thumb:1,cat:'technik',title:'Der Transformator',sub:'Spannung rauf, Spannung runter',
+ steps:S([[5000,'Ein Transformator (Trafo) wandelt Wechselspannung um – zum Beispiel von 230 V auf eine kleine Spannung für Klingel oder Halogenlampe.'],
+ [5400,'Er besteht aus zwei Spulen auf einem gemeinsamen Eisenkern. Der Wechselstrom in der ersten Spule erzeugt ein ständig wechselndes Magnetfeld.'],
+ [5400,'Dieses Magnetfeld erzeugt in der zweiten Spule eine Spannung (Induktion). Das Verhältnis der Windungszahlen bestimmt die neue Spannung.'],
+ [5600,'Rechnen: 1.000 Windungen auf 100 Windungen: 230 V × 100 ÷ 1.000 = 23 V.'],
+ [6000,'Für lange Strecken wird Strom auf bis zu 380.000 V hochtransformiert. So fließt viel weniger Strom, und in den Leitungen geht weniger Energie als Wärme verloren.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=3){box(g,100,50,200,140,null,C.metal,6,14);for(let k=0;k<(s===3?12:10);k++){g.save();g.strokeStyle=C.copper;g.lineWidth=3;g.beginPath();g.ellipse(100,75+k*9,14,4,0,0,TAU);g.stroke();g.restore();}for(let k=0;k<(s===3?4:6);k++){g.save();g.strokeStyle=C.orange;g.lineWidth=3;g.beginPath();g.ellipse(300,85+k*16,14,4,0,0,TAU);g.stroke();g.restore();}
+   if(s>=1){const P=[[100,50],[300,50],[300,190],[100,190],[100,50]];flow(g,P,t,C.purple,{gap:24,speed:.06*Math.sign(Math.sin(t*.004))||.06,r:3});}
+   pill(g,40,120,s===3?'230 V':'230 V ~',C.gold,1);pill(g,360,120,s===3?'23 V':'KLEIN',C.up,s>=2?1:.4);if(s===3){pill(g,100,214,'1.000 WINDUNGEN',C.copper,1);pill(g,300,214,'100 WINDUNGEN',C.orange,1);}if(s===1)pill(g,200,26,'EISENKERN · MAGNETFELD',C.purple,1);if(s===2)pill(g,200,26,'INDUKTION',C.purple,1);}
+  else{ground(g,220);[[90,1],[240,.85],[370,.7]].forEach(([x,sc])=>{poly(g,[[x-14*sc,220],[x,40+(1-sc)*80],[x+14*sc,220]],null,C.metal,2);line(g,x-30*sc,70+(1-sc)*80,x+30*sc,70+(1-sc)*80,C.metal,2);});g.save();g.strokeStyle=C.gold;g.lineWidth=1.4;[[90,240],[240,370]].forEach(([a,b])=>{g.beginPath();g.moveTo(a-30,70);g.quadraticCurveTo((a+b)/2,100,b-25,70+(b>300?24:12));g.stroke();});g.restore();pill(g,200,26,'BIS 380.000 V',C.gold,1);pill(g,200,236,'HOHE SPANNUNG = WENIG VERLUST',C.up,1);}}
+ ,box:{was:'Ein Transformator überträgt elektrische Energie von einer Spule auf eine andere – über ein Magnetfeld im Eisenkern. Dabei ändert sich die Spannung im Verhältnis der Windungszahlen.',h2:'So rechnest du',
+ erkennen:['U2 = U1 × N2 ÷ N1','Mehr Windungen → höhere Spannung','Funktioniert nur mit Wechselstrom','Leistung bleibt (fast) gleich: weniger Spannung = mehr Strom'],
+ bedeutung:'Ohne Transformatoren gäbe es kein Stromnetz: Kraftwerke speisen mit hoher Spannung ein, Umspannwerke und Trafohäuschen setzen sie stufenweise bis auf 230/400 V herunter.',
+ tipp:'Das Brummen eines Trafos hat 100 Hz: Der Eisenkern zieht sich bei jeder Halbwelle des 50-Hz-Stroms minimal zusammen – also 100-mal pro Sekunde.'}});
+
+les({id:'led',cat:'technik',title:'LED & Halbleiter',sub:'Das Herz jeder Elektronik',
+ steps:S([[5600,'Halbleiter wie Silizium leiten mal gut, mal schlecht – je nachdem, wie man sie behandelt. Daraus bestehen Dioden, Transistoren und Computerchips.'],
+ [5000,'Eine Diode lässt Strom nur in eine Richtung durch – wie ein Rückschlagventil. Andersherum sperrt sie.'],
+ [5400,'Eine LED (Leuchtdiode) leuchtet, wenn Strom in Durchlassrichtung fließt: Die Elektronen geben dabei Energie als Licht ab.'],
+ [6200,'Rechnen: Eine 8-W-LED ersetzt eine 60-W-Glühbirne. Bei 3 Stunden täglich spart sie 52 W × 3 h × 365 ≈ 57 kWh – rund 20 € im Jahr.'],
+ [5000,'Transistoren sind winzige elektronische Schalter. Ein moderner Handy-Chip enthält viele Milliarden davon.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){for(let i=0;i<6;i++)for(let j=0;j<10;j++){const on=Math.sin(t*.004+i*1.3+j*.7)>.2;box(g,40+j*32,40+i*30,26,24,on?hexA(C.aqua,.5):C.head,C.line2,3);}pill(g,200,236,'SILIZIUM-CHIP',C.aqua,1);}
+  if(s===1||s===2){const rev=s===1&&Math.floor(t*.0004)%2===1;const P=[[80,190],[80,60],[320,60],[320,190],[80,190]];wire(g,P);g.fillStyle=C.bg;g.fillRect(66,105,28,30);battery(g,80,120);g.fillStyle=C.bg;g.fillRect(180,48,40,24);
+   poly(g,rev?[[220,48],[220,72],[184,60]]:[[180,48],[180,72],[216,60]],s===2&&!rev?C.gold:C.text);line(g,rev?182:218,48,rev?182:218,72,C.text,3);if(s===2){glow(g,200,60,40,C.gold,1);}
+   if(!rev)flow(g,P,t,C.aqua,{gap:20,speed:.05,r:2.4});pill(g,200,226,rev?'FALSCHE RICHTUNG: SPERRT':s===2?'LED LEUCHTET':'DURCHLASSRICHTUNG',rev?C.down:C.up,1);txt(g,80,90,rev?'−':'+',C.text,14,'center',800);}
+  if(s===3){lines(g,[['60 W − 8 W = 52 W',C.text,13,1],['52 W × 3 h × 365 ≈ 57 kWh',C.mute,12.5,clamp(p*3-.3)],['≈ 20 € PRO JAHR',C.up,17,clamp(p*3-1),800]],20,60,40);bulb(g,300,90,.5,20);pill(g,300,130,'60 W',C.down,1);glow(g,350,190,30,C.gold,1);circ(g,350,190,10,C.gold);pill(g,350,226,'8 W',C.up,1);}
+  if(s===4){box(g,120,40,160,160,C.head,C.line2,10);for(let k=0;k<14;k++){line(g,120,52+k*11,108,52+k*11,C.metalHi,2);line(g,280,52+k*11,292,52+k*11,C.metalHi,2);}for(let i=0;i<20;i++)for(let j=0;j<20;j++){if((i*j+Math.floor(t*.01))%7===0)box(g,130+i*7,50+j*7,5,5,hexA(C.aqua,.7),null,1);}pill(g,200,226,'MILLIARDEN TRANSISTOREN',C.aqua,1);}}
+ ,box:{was:'Halbleiter sind Stoffe, deren Leitfähigkeit man gezielt steuern kann. Aus ihnen bestehen Dioden, LEDs, Solarzellen, Transistoren und alle Computerchips.',h2:'So erkennst du es',
+ erkennen:['<b>Diode:</b> Strom nur in eine Richtung','<b>LED:</b> Diode, die Licht aussendet','<b>Transistor:</b> elektronischer Schalter/Verstärker','<b>Chip:</b> Milliarden Transistoren auf Silizium'],
+ bedeutung:'LEDs brauchen rund 85 % weniger Strom als Glühbirnen und halten viel länger. Transistoren sind die Grundlage jedes Computers und Handys.',
+ tipp:'Die Farbe einer LED hängt vom Halbleiter-Material ab. Weiße LEDs sind meist blaue LEDs mit einer gelben Leuchtschicht darüber.'}});
+
+les({id:'kondensator',cat:'technik',title:'Der Kondensator',sub:'Ein blitzschneller Ladungsspeicher',
+ steps:S([[5000,'Ein Kondensator speichert elektrische Ladung – auf zwei Metallplatten, die sich nicht berühren.'],
+ [5200,'Legt man eine Spannung an, sammeln sich auf einer Platte Plus-, auf der anderen Minusladungen. Der Kondensator lädt sich auf.'],
+ [5000,'Er kann seine Energie blitzschnell wieder abgeben – zum Beispiel für den Kamerablitz.'],
+ [5600,'Die Kapazität misst man in Farad (F). Rechnen: Ladung Q = C × U. Ein Kondensator mit 0,001 F an 10 V speichert 0,01 Coulomb.'],
+ [5200,'Kondensatoren stecken in fast jedem Gerät: Sie glätten Spannungen im Netzteil, puffern Strom und filtern Störungen heraus.']]),
+ draw(g,st){const{s,p,t}=st;const f=s===0?0:s===1?ease(clamp(p*1.3)):s===2?(Math.floor(t*.0005)%2?Math.exp(-((t*.0005)%1)*8):1-Math.exp(-((t*.0005)%1)*4)):1;
+  if(s<=2){box(g,150,60,12,130,C.metalHi,null,2);box(g,238,60,12,130,C.metalHi,null,2);wire(g,[[156,60],[156,30],[60,30],[60,220],[244,220],[244,190]]);g.fillStyle=C.bg;g.fillRect(46,110,28,30);battery(g,60,125);
+   const n=Math.round(f*7);for(let k=0;k<n;k++){txt(g,140,72+k*17,'+',C.down,14,'center',800);txt(g,262,72+k*17,'−',C.blue,14,'center',800);}pill(g,200,26,s===0?'ZWEI PLATTEN':s===1?'LÄDT AUF':'BLITZ!',s===2?C.gold:C.text,1);
+   if(s===2&&f<.5)glow(g,330,110,60*(1-f),'#ffffff',1-f);if(s===2){box(g,310,90,40,40,C.head,C.line2,6);}}
+  if(s===3){const x0=60,y0=200,w=280,h=140;axes(g,x0,y0,w,h,'ZEIT','SPANNUNG',[],[[.9,'10 V']]);plot(g,u=>.9*(1-Math.exp(-u*5)),x0,y0,w,h,C.aqua,2.6,ease(p),1);lines(g,[['Q = C × U',C.text,14,1,800],['= 0,001 F × 10 V = 0,01 C',C.up,12.5,clamp(p*2)]],150,140,24);}
+  if(s===4){const x0=30,y0=180,w=340;g.save();g.strokeStyle=hexA(C.mute,.6);g.lineWidth=1.4;g.beginPath();for(let i=0;i<=w;i++){const y=y0-Math.abs(Math.sin(i*.05-t*.004))*80;i?g.lineTo(x0+i,y):g.moveTo(x0+i,y);}g.stroke();g.restore();g.save();g.strokeStyle=C.up;g.lineWidth=2.6;g.beginPath();for(let i=0;i<=w;i++){const y=y0-74-Math.sin(i*.1-t*.008)*3;i?g.lineTo(x0+i,y):g.moveTo(x0+i,y);}g.stroke();g.restore();pill(g,330,110,'GEGLÄTTET',C.up,1);pill(g,200,220,'NETZTEIL: WELLIGE SPANNUNG → GLATT',C.text,1);}}
+ ,box:{was:'Ein Kondensator besteht aus zwei leitenden Platten mit einem Isolator dazwischen. Er speichert Ladung und Energie im elektrischen Feld und gibt sie schnell wieder ab.',h2:'So erkennst du es',
+ erkennen:['Kapazität in Farad (F), meist µF oder nF','Q = C × U (Ladung = Kapazität × Spannung)','Lädt und entlädt sehr schnell','Schaltzeichen: zwei parallele Striche'],
+ bedeutung:'Kondensatoren glätten Spannungen, speichern kurzzeitig Energie und filtern Störungen. Riesige „Superkondensatoren“ speichern sogar Bremsenergie in Bussen und Bahnen.',
+ tipp:'Achtung: Große Kondensatoren in Geräten können auch nach dem Ausstecken noch gefährlich geladen sein – deshalb Netzteile und Mikrowellen nie selbst öffnen!'}});
+
+/* ---------- KRAFTWERKE & ENERGIE ---------- */
+les({id:'waermekraftwerk',thumb:2,cat:'kraftwerk',title:'Kohle- & Gaskraftwerk',sub:'Ein riesiger Wasserkocher mit Generator',
+ steps:S([[4800,'Die meisten Wärmekraftwerke funktionieren wie ein riesiger Wasserkocher mit angeschlossenem Generator.'],
+ [5200,'Brennstoff – Kohle, Gas oder Biomasse – verbrennt und erhitzt Wasser zu heißem Dampf mit hohem Druck.'],
+ [5200,'Der Dampf treibt eine Turbine an. Sie ist mit dem Generator verbunden, der den Strom erzeugt.'],
+ [5600,'Im Kühlturm wird der Dampf abgekühlt und wieder zu Wasser. Die weißen Wolken über dem Kühlturm sind Wasserdampf, kein Rauch.'],
+ [5600,'Wirkungsgrad: Ein Kohlekraftwerk macht nur rund 40 % der Energie zu Strom. Moderne Gas-und-Dampf-Kraftwerke schaffen etwa 60 %.']]),
+ draw(g,st){const{s,p,t}=st;ground(g,214);const hl=k=>s===0||s===k||s===4?1:.35;
+  g.save();g.globalAlpha=hl(1);box(g,20,110,80,104,C.head,C.down,6);for(let i=0;i<5;i++){const fx=36+i*12;glow(g,fx,190,14,C.fire,1);}pill(g,60,96,'KESSEL',C.down,1);g.restore();
+  pipe(g,[[60,110],[60,70],[170,70],[170,110]],hexA(C.mute,.5),8);if(s>=1)flow(g,[[60,110],[60,70],[170,70],[170,110]],t,'#ffffff',{gap:12,speed:.07,r:2.4,a:.8});
+  g.save();g.globalAlpha=hl(2);box(g,140,110,60,60,C.head,C.purple,6);g.translate(170,140);g.rotate(t*.01*(s>=2?1:.2));for(let k=0;k<6;k++){g.rotate(TAU/6);box(g,-2,-24,4,22,C.purple,null,2);}g.restore();pill(g,170,96,'TURBINE',C.purple,hl(2));
+  line(g,200,140,240,140,C.metal,5);g.save();g.globalAlpha=hl(2);box(g,240,115,60,50,C.head,C.gold,6);txt(g,270,140,'G',C.gold,18,'center',800);g.restore();pill(g,270,180,'GENERATOR',C.gold,hl(2));
+  g.save();g.globalAlpha=hl(3);poly(g,[[320,214],[330,120],[372,120],[382,214]],C.body,C.bodyLine,1.4);for(let i=0;i<6;i++){const f=(t*.0006+i/6)%1;glow(g,351+Math.sin(i+t*.001)*10,110-f*90,14+f*18,'#ffffff',.6*(1-f));}g.restore();pill(g,351,230,'KÜHLTURM',C.blue,hl(3));
+  if(s===4){pill(g,200,26,'KOHLE ≈ 40 % · GuD ≈ 60 %',C.up,1);}}
+ ,box:{was:'In Wärmekraftwerken wird Brennstoff verbrannt. Die Wärme erzeugt Dampf, der eine Turbine mit Generator antreibt. Ein großer Teil der Energie geht als Abwärme verloren.',h2:'So läuft es ab',
+ erkennen:['<b>Kessel:</b> Brennstoff erhitzt Wasser','<b>Turbine:</b> Dampf dreht die Schaufeln','<b>Generator:</b> Drehung → Strom','<b>Kühlturm:</b> Dampf wird wieder zu Wasser'],
+ bedeutung:'Bei der Verbrennung von Kohle, Öl und Gas entsteht CO₂, das den Klimawandel antreibt. Deshalb werden Kohlekraftwerke in Deutschland schrittweise abgeschaltet.',
+ tipp:'Kraft-Wärme-Kopplung (KWK) nutzt die Abwärme fürs Fernwärmenetz. So kommen bis zu rund 90 % der Brennstoffenergie zum Einsatz.'}});
+
+les({id:'wasserwind',cat:'kraftwerk',title:'Wasser- & Windkraft',sub:'Strom aus Bewegung',
+ steps:S([[5000,'Wasserkraft: Wasser strömt von oben nach unten und treibt eine Turbine an. Aus Lageenergie wird Strom.'],
+ [6200,'Rechnen: Leistung ≈ Wassermenge × Fallhöhe × 9,81. Fallen 10 m³ pro Sekunde 20 m tief: 10.000 kg × 9,81 × 20 ≈ 2 Millionen Watt (2 MW).'],
+ [5200,'Windkraft: Der Wind dreht die riesigen Rotorblätter. Ein Generator in der Gondel oben macht daraus Strom.'],
+ [5600,'Die Leistung steigt mit der dritten Potenz der Windgeschwindigkeit: Doppelter Wind ergibt die achtfache Leistung!'],
+ [5600,'Eine moderne Windkraftanlage an Land hat rund 5 bis 7 MW Leistung und erzeugt im Jahr Strom für mehrere Tausend Haushalte.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){ground(g,214);poly(g,[[140,40],[180,40],[200,214],[120,214]],C.metal2,C.metalHi,1.4);g.fillStyle=hexA(C.water,.4);g.fillRect(0,50,140,164);pipe(g,[[130,180],[230,200],[320,200]],hexA(C.water,.6),12);flow(g,[[130,180],[230,200],[320,200]],t,C.water,{gap:12,speed:.08,r:3});
+   g.save();g.translate(230,200);g.rotate(t*.012);for(let k=0;k<5;k++){g.rotate(TAU/5);box(g,-2,-16,4,14,C.purple,null,2);}g.restore();circ(g,230,200,18,null,C.purple,2);pill(g,60,30,'STAUSEE',C.water,1);pill(g,230,236,'TURBINE',C.purple,1);
+   if(s===1){lines(g,[['10.000 kg/s × 9,81 × 20 m',C.text,12,1],['≈ 2.000.000 W = 2 MW',C.up,15,clamp(p*2),800]],196,60,30);arrow(g,40,60,40,190,C.text,1.4,1,true);pill(g,50,125,'FALLHÖHE 20 m',C.text,1,'left');}}
+  if(s===2){ground(g,220);const x=200,y=70;line(g,x,y,x,220,C.metal,7);box(g,x-14,y-8,32,16,C.body,C.bodyLine,4);g.save();g.translate(x-14,y);g.rotate(t*.003);for(let k=0;k<3;k++){g.rotate(TAU/3);poly(g,[[0,-3],[110,-1],[110,2],[0,4]],C.body,C.bodyLine,1.2);}g.restore();circ(g,x-14,y,6,C.metalHi);for(let i=0;i<6;i++){const f=(t*.001+i/6)%1;arrow(g,10+f*90,40+i*30,40+f*90,40+i*30,C.aqua,1.6,1-f);}pill(g,x+60,y,'GONDEL MIT GENERATOR',C.gold,1,'left');}
+  if(s===3){const x0=60,y0=210,w=280,h=160;axes(g,x0,y0,w,h,'WIND (m/s)','LEISTUNG',[[.5,'6'],[1,'12']],[[1/8,'1×'],[1,'8×']]);plot(g,u=>u*u*u,x0,y0,w,h,C.aqua,2.6,ease(p),1);[[.5,1/8],[1,1]].forEach(([u,v])=>{circ(g,x0+u*w,y0-v*h,5,C.gold,C.bg,2);});pill(g,x0+w*.5+10,y0-h/8-18,'1×',C.gold,1,'left');pill(g,x0+w-10,y0-h-4,'2 × WIND = 8 ×',C.gold,clamp(p*2-.6),'right');}
+  if(s===4){ground(g,220);[[80,1],[200,.8],[320,.65]].forEach(([x,sc],i)=>{const y=60+(1-sc)*70;line(g,x,y,x,220,C.metal,6*sc);g.save();g.translate(x,y);g.rotate(t*.003+i);for(let k=0;k<3;k++){g.rotate(TAU/3);poly(g,[[0,-3*sc],[70*sc,-1],[70*sc,1],[0,3*sc]],C.body,C.bodyLine,1);}g.restore();});pill(g,200,26,'5–7 MW PRO ANLAGE',C.up,1);}}
+ ,box:{was:'Wasser- und Windkraftwerke wandeln die Bewegungsenergie von Wasser oder Luft über Turbinen und Generatoren in Strom um – ganz ohne Verbrennung.',h2:'So rechnest du',
+ erkennen:['Wasserkraft: P ≈ Menge (kg/s) × Fallhöhe (m) × 9,81','Wind: Leistung ~ Windgeschwindigkeit³','Doppelter Rotordurchmesser = vierfache Fläche','1 MW = 1.000 kW = 1.000.000 W'],
+ bedeutung:'Wind ist in Deutschland die wichtigste Stromquelle. In Bayern spielen Wasserkraft (z. B. an Isar, Inn und Donau) und Solarstrom eine große Rolle.',
+ tipp:'Eine Windkraftanlage läuft erst ab etwa 3 m/s an und schaltet sich bei Sturm (rund 25 m/s) zur Sicherheit ab.'}});
+
+les({id:'kernspaltung',cat:'kraftwerk',title:'Kernspaltung',sub:'Energie aus dem Atomkern',
+ steps:S([[5000,'In einem Kernkraftwerk wird die Wärme nicht durch Verbrennen erzeugt, sondern durch Kernspaltung.'],
+ [5600,'Ein Neutron trifft einen Uran-235-Kern. Der Kern spaltet sich in zwei Teile und setzt dabei viel Energie und zwei bis drei neue Neutronen frei.'],
+ [5600,'Diese Neutronen spalten weitere Kerne – eine Kettenreaktion. Steuerstäbe fangen überzählige Neutronen ein und halten die Reaktion unter Kontrolle.'],
+ [5600,'Die Energie ist gewaltig: 1 kg Uran-235 liefert bei vollständiger Spaltung so viel Wärme wie fast 3.000 Tonnen Steinkohle.'],
+ [5400,'Deutschland hat im April 2023 seine letzten drei Kernkraftwerke abgeschaltet. Weltweit sind aber noch rund 400 Reaktoren in Betrieb.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){const f=s===0?(t*.0004)%1:ease(clamp(p*1.3));const hit=f>.4;circ(g,lerp(20,170,Math.min(f/.4,1)),125,5,C.aqua);if(!hit){circ(g,200,125,28,hexA(C.orange,.6),C.orange,1.6);txt(g,200,125,'U-235',C.text,10,'center',800);}else{const d=(f-.4)/.6*90;glow(g,200,125,60*(1-(f-.4)/.6),C.gold,1);circ(g,200-d*.8,125-d*.5,18,hexA(C.purple,.6),C.purple,1.4);circ(g,200+d*.8,125+d*.4,18,hexA(C.blue,.6),C.blue,1.4);[[-.2,-1],[1,.1],[.3,1]].forEach(([a,b])=>circ(g,200+a*d*1.6,125+b*d*1.1,4,C.aqua));if(s===1)pill(g,200,226,'2 TEILE + ENERGIE + NEUTRONEN',C.gold,1);}pill(g,30,100,'NEUTRON',C.aqua,1,'left');}
+  if(s===2){const lv=Math.min(4,Math.floor(((t*.0005)%1)*5));let row=[[30,125]];for(let L=0;L<=lv;L++){const nr=[];row.forEach(([x,y],i)=>{circ(g,x,y,8,L<lv?hexA(C.gold,.4):C.orange,C.bg,1);if(L<lv&&nr.length<9)[-1,0,1].forEach(k=>{if(nr.length<9)nr.push([x+80,y+k*(70/(L+1))]);});});row.forEach(([x,y])=>nr.forEach(([a,b])=>{if(Math.abs(b-y)<80&&a===x+80)line(g,x,y,a,b,hexA(C.aqua,.4),1);}));if(L<lv)row=nr;}
+   for(let k=0;k<3;k++)box(g,120+k*90,20,8,lerp(30,90,(Math.sin(t*.001)+1)/2),C.metal2,C.metalHi,2);pill(g,330,236,'STEUERSTÄBE',C.metal,1);}
+  if(s===3){circ(g,90,125,10,C.orange,C.bg,1);pill(g,90,160,'1 kg U-235',C.orange,1);txt(g,160,125,'=',C.text,22,'center',800);const n=Math.floor(ease(clamp(p*1.3))*120);for(let i=0;i<n;i++)box(g,190+(i%12)*16,40+Math.floor(i/12)*17,13,13,C.metal3,null,2);pill(g,290,226,'≈ 3.000 t KOHLE',C.mute,1);}
+  if(s===4){ground(g,214);poly(g,[[90,214],[110,90],[170,90],[190,214]],C.body,C.bodyLine,1.4);poly(g,[[230,214],[250,90],[310,90],[330,214]],C.body,C.bodyLine,1.4);line(g,60,60,350,200,C.down,4);pill(g,200,26,'DEUTSCHLAND: AUS SEIT 2023',C.down,1);pill(g,200,236,'WELTWEIT ≈ 400 REAKTOREN',C.text,1);}}
+ ,box:{was:'Bei der Kernspaltung zerfällt ein schwerer Atomkern wie Uran-235 nach dem Treffer eines Neutrons in zwei leichtere Kerne. Dabei wird eine riesige Energiemenge frei.',h2:'So erkennst du es',
+ erkennen:['Neutron trifft Uran-235 → Spaltung','Es entstehen 2–3 neue Neutronen','Kettenreaktion, gebremst durch Steuerstäbe','Wärme → Dampf → Turbine → Strom'],
+ bedeutung:'Kernkraftwerke stoßen im Betrieb kaum CO₂ aus. Dafür entsteht radioaktiver Abfall, der Hunderttausende Jahre sicher gelagert werden muss – über die Nutzung wird weltweit gestritten.',
+ tipp:'Die Masse der Spaltprodukte ist minimal kleiner als die des Urankerns. Genau diese „fehlende“ Masse wird nach E = m × c² zu Energie.'}});
+
+les({id:'stromnetz',thumb:2,cat:'kraftwerk',title:'Stromnetz & Speicher',sub:'Rechnen: Wie lange reicht der Heimspeicher?',
+ steps:S([[5000,'Im Stromnetz muss in jedem Moment genau so viel Strom erzeugt werden, wie gerade verbraucht wird.'],
+ [5800,'Das zeigt die Netzfrequenz von 50 Hz: Wird mehr verbraucht als erzeugt, sinkt sie leicht ab – Kraftwerke und Speicher müssen sofort nachregeln.'],
+ [5000,'Sonne und Wind liefern nicht immer dann, wenn Strom gebraucht wird. Mittags gibt es oft zu viel Solarstrom, abends zu wenig.'],
+ [5200,'Deshalb braucht man Speicher: Pumpspeicherkraftwerke, große Batteriespeicher, Heimspeicher und künftig auch Wasserstoff.'],
+ [5600,'Rechnen: Ein Heimspeicher mit 10 kWh versorgt eine Grundlast von 400 W: 10.000 Wh ÷ 400 W = 25 Stunden.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){const tilt=s===1?Math.sin(t*.0015)*.12:0;g.save();g.translate(200,120);g.rotate(tilt);line(g,-130,0,130,0,C.metal,5);box(g,-160,-40,70,40,hexA(C.up,.5),C.up,6);box(g,90,-40,70,40,hexA(C.down,.5),C.down,6);g.restore();poly(g,[[200,120],[185,200],[215,200]],C.metal2);
+   pill(g,70,40,'ERZEUGUNG',C.up,1);pill(g,330,40,'VERBRAUCH',C.down,1);if(s===1){const fq=50-tilt*1.5;pill(g,200,226,`${deN(fq,2)} Hz`,Math.abs(fq-50)>.1?C.down:C.up,1);}else pill(g,200,226,'IMMER IM GLEICHGEWICHT',C.text,1);}
+  if(s===2){const x0=40,y0=210,w=320,h=150;axes(g,x0,y0,w,h,'UHRZEIT','LEISTUNG',[[0,'0'],[.5,'12'],[1,'24']],[]);plot(g,u=>Math.max(0,Math.sin((u-.25)/.5*Math.PI))*.95,x0,y0,w,h,C.gold,2.6,1,1);plot(g,u=>.35+.15*Math.sin((u-.3)*TAU)+.2*Math.exp(-Math.pow((u-.8)/.06,2)),x0,y0,w,h,C.down,2.4,1,1);pill(g,x0+w*.5,y0-h*.95-12,'SOLAR',C.gold,1);pill(g,x0+w*.82,y0-h*.6-14,'VERBRAUCH',C.down,1);}
+  if(s===3){[['PUMPSPEICHER',80,70,C.water],['GROSSBATTERIE',320,70,C.up],['HEIMSPEICHER',80,170,C.aqua],['WASSERSTOFF',320,170,C.blue]].forEach(([n,x,y,col],i)=>{const a=clamp(p*5-i);box(g,x-60,y-34,120,68,hexA(col,.12*a),hexA(col,a),8);pill(g,x,y,n,col,a);});glow(g,200,120,30,C.gold,1);txt(g,200,120,'⚡',C.gold,22,'center',400,SANS);}
+  if(s===4){lines(g,[['10.000 Wh ÷ 400 W',C.text,14,1],['= 25 STUNDEN',C.up,18,clamp(p*2),800]],20,80,44);box(g,250,60,100,150,C.head,C.line2,10);const f=1-((t*.0002)%1);box(g,260,70+130*(1-f),80,130*f,hexA(C.up,.7),null,4);pill(g,300,226,`${deN(f*10,1)} kWh`,C.up,1);}}
+ ,box:{was:'Das Stromnetz verbindet Kraftwerke und Verbraucher. Erzeugung und Verbrauch müssen sekundengenau übereinstimmen – sonst weicht die Netzfrequenz von 50 Hz ab.',h2:'So rechnest du',
+ erkennen:['Laufzeit (h) = Speicher (Wh) ÷ Leistung (W)','Netzfrequenz in Europa: 50 Hz','Überschuss → speichern, Mangel → einspeisen','Grundlast: Verbrauch, der immer da ist'],
+ bedeutung:'Je mehr Sonnen- und Windstrom ins Netz kommt, desto wichtiger werden Speicher, flexible Verbraucher (Wärmepumpe, E-Auto) und ein gut ausgebautes Netz.',
+ tipp:'Dynamische Stromtarife nutzen das: Strom ist mittags bei viel Sonne oft billiger. Wer dann wäscht oder das Auto lädt, spart Geld.'}});
+
+/* ---------- MODERNE PHYSIK ---------- */
+les({id:'radioaktiv',thumb:2,cat:'modern',title:'Radioaktivität',sub:'Rechnen mit der Halbwertszeit',
+ steps:S([[5200,'Manche Atomkerne sind instabil. Sie zerfallen von selbst und senden dabei Strahlung aus – das ist Radioaktivität.'],
+ [5800,'Es gibt drei Hauptarten: Alpha-Strahlung stoppt schon ein Blatt Papier, Beta-Strahlung dünnes Aluminium, Gamma-Strahlung erst dickes Blei oder Beton.'],
+ [5400,'Die Halbwertszeit ist die Zeit, nach der die Hälfte der Kerne zerfallen ist. Danach zerfällt wieder die Hälfte vom Rest – und so weiter.'],
+ [5800,'Rechnen: Jod-131 hat eine Halbwertszeit von 8 Tagen. Nach 24 Tagen: ½ × ½ × ½ = ⅛ – es sind nur noch 12,5 % übrig.'],
+ [5800,'Mit der Radiokarbonmethode (Kohlenstoff-14, Halbwertszeit 5.730 Jahre) bestimmt man das Alter von Knochen und Holz – bis etwa 50.000 Jahre zurück.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){const r=rng(3);for(let i=0;i<40;i++){const x=40+(i%10)*36,y=50+Math.floor(i/10)*40;const fl=Math.sin(t*.003+r()*20)>.96;circ(g,x,y,10,fl?C.gold:hexA(C.orange,.5),C.bg,1);if(fl){glow(g,x,y,26,C.gold,1);}}pill(g,200,226,'KERNE ZERFALLEN ZUFÄLLIG',C.text,1);}
+  if(s===1){[[150,'PAPIER',C.text,'#ffffff'],[240,'ALU',C.metalHi,C.metalHi],[330,'BLEI',C.metal2,C.metal2]].forEach(([x,n,col,f])=>{box(g,x-4,30,x===330?24:8,180,hexA(f,.5),col,1);pill(g,x,226,n,col,1);});
+   [['α',C.down,150,60],['β',C.blue,240,120],['γ',C.purple,330,180]].forEach(([n,col,stop,y],i)=>{const f=(t*.0012+i*.3)%1,x=lerp(20,stop-6,clamp(f*1.3));line(g,20,y,x,y,hexA(col,.5),2,[4,3]);circ(g,x,y,5,col);pill(g,24,y-16,n,col,1,'left');});}
+  if(s>=2&&s<=3){const x0=50,y0=200,w=300,h=160;axes(g,x0,y0,w,h,s===3?'TAGE':'HALBWERTSZEITEN','ÜBRIG',s===3?[[0,'0'],[1/4,'8'],[2/4,'16'],[3/4,'24'],[1,'32']]:[[0,'0'],[1/4,'1'],[2/4,'2'],[3/4,'3'],[1,'4']],[[1,'100 %'],[.5,'50 %'],[.25,'25 %'],[.125,'12,5 %']]);plot(g,u=>Math.pow(.5,u*4),x0,y0,w,h,C.orange,2.6,ease(p),1);
+   [1,2,3].forEach(k=>{const u=k/4;if(ease(p)>=u){circ(g,x0+u*w,y0-Math.pow(.5,k)*h,5,C.gold,C.bg,2);}});if(s===3)pill(g,x0+.75*w+10,y0-h*.125-20,'24 TAGE → 12,5 %',C.up,clamp(p*2-1),'left');}
+  if(s===4){g.save();g.translate(130,130);g.rotate(-.3);box(g,-80,-10,160,20,hexA(C.metalHi,.8),C.mute,8);circ(g,-80,0,16,hexA(C.metalHi,.8),C.mute,1);circ(g,80,0,16,hexA(C.metalHi,.8),C.mute,1);g.restore();pill(g,130,200,'KNOCHEN / HOLZ',C.text,1);lines(g,[['C-14: 5.730 Jahre',C.gold,13,1,800],['bis ≈ 50.000 Jahre',C.text,12,clamp(p*2)]],240,90,30);}}
+ ,box:{was:'Radioaktivität ist der spontane Zerfall instabiler Atomkerne unter Aussendung von Strahlung. Wie schnell eine Substanz zerfällt, beschreibt die Halbwertszeit.',h2:'So rechnest du',
+ erkennen:['Nach 1 Halbwertszeit: ½ übrig (50 %)','Nach 2: ¼ (25 %) · nach 3: ⅛ (12,5 %)','Nach 10 Halbwertszeiten: weniger als 0,1 %','α: Papier · β: Aluminium · γ: Blei/Beton'],
+ bedeutung:'Radioaktivität ist überall – in Gestein, Luft (Radon) und sogar in Lebensmitteln. In der Medizin hilft sie bei Diagnosen und Krebstherapie, in hohen Dosen ist sie gefährlich.',
+ tipp:'Röntgenstrahlung im CT ist keine Radioaktivität: Sie entsteht in der Röntgenröhre nur, solange Spannung anliegt. Schaltet man ab, ist sie sofort weg.'}});
+
+les({id:'laser',thumb:2,cat:'modern',title:'Der Laser',sub:'Licht im Gleichschritt',
+ steps:S([[5400,'Ein Laser erzeugt ein ganz besonderes Licht: eine einzige Farbe, alle Wellen im Gleichtakt, gebündelt in einem sehr schmalen Strahl.'],
+ [5800,'Im Laser werden Atome mit Energie „aufgepumpt“. Trifft ein Lichtteilchen auf ein angeregtes Atom, sendet es ein genau gleiches Lichtteilchen aus.'],
+ [5600,'Zwischen zwei Spiegeln läuft das Licht hin und her und wird immer stärker. Ein Spiegel lässt einen kleinen Teil durch – das ist der Laserstrahl.'],
+ [5200,'Normales Licht ist ein Durcheinander vieler Farben und Richtungen. Laserlicht ist geordnet – deshalb lässt es sich so stark bündeln.'],
+ [5600,'Laser sind überall: Barcode-Scanner, Glasfaser-Internet, Augen-OPs, Schweißen und Schneiden von Metall, Entfernungsmesser.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0||s===3){const mix=s===3;[[70,C.gold,'GLÜHBIRNE',true],[170,C.down,'LASER',false]].forEach(([y,col,n,chaos],i)=>{for(let k=0;k<(chaos?5:4);k++){g.save();g.strokeStyle=chaos?[C.down,C.gold,C.up,C.blue,C.purple][k]:col;g.lineWidth=1.8;g.beginPath();for(let x=0;x<=320;x+=2){const ph=chaos?k*1.7:0,fr=chaos?.05+k*.012:.06;const yy=y+(chaos?(k-2)*6:(k-1.5)*5)+Math.sin(x*fr-t*.006+ph)*8;x?g.lineTo(60+x,yy):g.moveTo(60+x,yy);}g.stroke();g.restore();}pill(g,40,y,n,chaos?C.gold:C.down,1);});if(!mix)pill(g,200,236,'EINE FARBE · IM GLEICHTAKT',C.down,1);else pill(g,200,236,'DURCHEINANDER ↔ GEORDNET',C.text,1);}
+  if(s===1||s===2){box(g,50,80,300,90,hexA(C.down,.08),C.line2,6);box(g,40,70,10,110,C.metalHi,null,2);box(g,350,70,10,110,hexA(C.metalHi,.6),null,2);const r=rng(5);for(let i=0;i<18;i++){const x=70+r()*260,y=95+r()*60,ex=Math.sin(t*.004+i)>0;circ(g,x,y,5,ex?C.orange:hexA(C.mute,.6));}
+   const n=s===1?3:9;for(let i=0;i<n;i++){const f=((t*.0012+i/n)%1);const x=f<.5?lerp(55,345,f*2):lerp(345,55,(f-.5)*2);circ(g,x,100+i*(60/n),3,C.down);}if(s===2){line(g,360,125,400,125,C.down,4);glow(g,385,125,20,C.down,1);pill(g,360,200,'TEILDURCHLÄSSIG',C.metalHi,1,'right');pill(g,40,200,'SPIEGEL',C.metalHi,1,'left');}else pill(g,200,30,'ATOME WERDEN ANGEREGT',C.orange,1);}
+  if(s===4){const D=[['SCANNER',80,70],['GLASFASER',200,70],['AUGEN-OP',320,70],['SCHWEISSEN',80,170],['MESSEN',200,170],['SCHNEIDEN',320,170]];D.forEach(([n,x,y],i)=>{const a=clamp(p*6-i);box(g,x-55,y-32,110,64,hexA(C.down,.1*a),hexA(C.down,a),8);pill(g,x,y,n,C.down,a);});}}
+ ,box:{was:'Ein Laser (Lichtverstärkung durch angeregte Aussendung von Strahlung) erzeugt Licht einer einzigen Farbe, dessen Wellen im Gleichtakt schwingen und das sich extrem bündeln lässt.',h2:'So erkennst du es',
+ erkennen:['Eine Farbe (eine Wellenlänge)','Wellen im Gleichtakt (kohärent)','Sehr schmaler, gerader Strahl','Zwei Spiegel verstärken das Licht'],
+ bedeutung:'Laser übertragen Daten im Internet, schneiden Bleche, messen Entfernungen auf den Millimeter genau und operieren Augen. Auch 3D-Scanner in der Messtechnik nutzen oft Laserlicht.',
+ tipp:'Nie in einen Laserstrahl schauen – auch nicht bei kleinen Laserpointern! Die Augenlinse bündelt das Licht zusätzlich auf einen winzigen Punkt der Netzhaut.'}});
+
+les({id:'relativ',thumb:3,cat:'modern',title:'E = m × c²',sub:'Einsteins Relativitätstheorie',
+ steps:S([[5600,'1905 veröffentlichte Albert Einstein die Spezielle Relativitätstheorie. Eine Grundidee: Licht ist für jeden Beobachter gleich schnell – egal, wie schnell er sich selbst bewegt.'],
+ [5400,'Daraus folgt Erstaunliches: Bei sehr hohen Geschwindigkeiten vergeht die Zeit langsamer und Strecken werden in Bewegungsrichtung kürzer.'],
+ [5400,'Nichts mit Masse kann die Lichtgeschwindigkeit erreichen: Je näher man ihr kommt, desto mehr Energie kostet jedes weitere Stück.'],
+ [4800,'Die berühmteste Formel der Welt: E = m × c². Masse ist eine Form von Energie.'],
+ [6400,'Rechnen: 1 Gramm Masse = 0,001 kg × (300.000.000 m/s)² = 9 × 10¹³ J ≈ 25 Mio. kWh – so viel Strom, wie rund 7.000 Haushalte im Jahr brauchen.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){const f=(t*.0006)%1;g.save();g.translate(lerp(40,200,f),180);car(g,0,0,1.3,C.orange);g.restore();ground(g,200);person(g,320,200,1.4);const lx=lerp(60,390,(t*.0012)%1);glow(g,lx,90,14,C.gold,1);circ(g,lx,90,4,C.gold);pill(g,200,30,'LICHT: IMMER 300.000 km/s',C.gold,1);}
+  if(s===1){const v=(Math.sin(t*.0012)+1)/2*.98,gam=1/Math.sqrt(1-v*v);clock(g,110,110,46,t*.004,C.blue,'RUHE');clock(g,290,110,46,t*.004/gam,C.gold,'');g.save();g.translate(290,110);g.scale(1/gam,1);g.restore();pill(g,290,170,`${deN(v*100,0)} % LICHT-TEMPO`,C.gold,1);pill(g,290,200,`ZEIT × ${deN(1/gam,2)}`,C.down,1);}
+  if(s===2){const x0=60,y0=210,w=280,h=160;axes(g,x0,y0,w,h,'TEMPO (Anteil von c)','ENERGIE',[[0,'0'],[.5,'50 %'],[1,'100 %']],[]);plot(g,u=>u<.995?Math.min(1,(1/Math.sqrt(1-u*u)-1)/6):null,x0,y0,w,h,C.purple,2.6,ease(p),1);line(g,x0+w,y0,x0+w,y0-h,C.down,1.4,[4,4]);pill(g,x0+w-6,40,'GRENZE c',C.down,1,'right');}
+  if(s===3){const pu=1+.04*Math.sin(t*.004);g.save();g.translate(200,120);g.scale(pu,pu);txt(g,0,0,'E = m × c²',C.gold,40,'center',800);g.restore();pill(g,200,200,'MASSE = ENERGIE',C.text,1);}
+  if(s===4){lines(g,[['0,001 kg × (3 × 10⁸ m/s)²',C.text,13,1],['= 9 × 10¹³ J',C.purple,15,clamp(p*3-.3),800],['≈ 25.000.000 kWh',C.up,15,clamp(p*3-1),800],['≈ 7.000 HAUSHALTE / JAHR',C.gold,13,clamp(p*3-1.6),800]],20,50,40);}}
+ ,box:{was:'Die Relativitätstheorie beschreibt, wie Raum, Zeit, Masse und Energie zusammenhängen. Ihre bekannteste Folge: Masse und Energie sind gleichwertig (E = m × c²).',h2:'So erkennst du es',
+ erkennen:['Lichtgeschwindigkeit c ist immer gleich','Schnelle Uhren gehen langsamer (Zeitdilatation)','c kann von Masse nie erreicht werden','E = m × c²: winzige Masse = riesige Energie'],
+ bedeutung:'E = m × c² erklärt, warum Sonne und Kernkraftwerke so viel Energie liefern: Ein winziger Teil der Masse wird in Energie umgewandelt. Ohne Relativität würde auch GPS nicht funktionieren.',
+ tipp:'Die Sonne verliert durch Kernfusion jede Sekunde rund 4 Millionen Tonnen Masse – und ist trotzdem so riesig, dass das Milliarden Jahre lang reicht.'}});
+
+les({id:'quanten',thumb:3,cat:'modern',title:'Quantenphysik',sub:'Die seltsame Welt der kleinsten Teilchen',
+ steps:S([[4600,'In der Welt der Atome gelten eigene, seltsame Regeln: die Quantenphysik.'],
+ [5400,'Licht besteht aus kleinen Energiepaketen, den Photonen. Ein Photon blauen Lichts hat mehr Energie als eines roten Lichts.'],
+ [5800,'Elektronen im Atom dürfen nur ganz bestimmte Energiestufen haben – wie die Stufen einer Treppe. Springen sie eine Stufe herunter, senden sie Licht einer bestimmten Farbe aus.'],
+ [5800,'Teilchen verhalten sich manchmal wie Wellen: Beim Doppelspalt-Experiment entsteht ein Streifenmuster – sogar, wenn man Elektronen einzeln hindurchschickt.'],
+ [5200,'Ohne Quantenphysik gäbe es keine Laser, LEDs, Solarzellen, Computerchips und kein MRT.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){const r=rng(9);for(let i=0;i<30;i++){const x=r()*400,y=r()*250,fl=Math.sin(t*.004+i)>.5;circ(g,x,y,3,fl?C.purple:hexA(C.mute,.4));}pill(g,200,125,'QUANTENWELT',C.purple,1);}
+  if(s===1){[[80,C.down,'ROT',.04,1],[170,C.blue,'BLAU',.08,2]].forEach(([y,col,n,fr,e])=>{for(let k=0;k<3;k++){const x0=((t*.08+k*130)%440)-60;g.save();g.strokeStyle=col;g.lineWidth=2.4;g.beginPath();for(let i=0;i<50;i++){const yy=y+Math.sin(i*fr*6)*10*Math.exp(-Math.pow((i-25)/12,2));i?g.lineTo(x0+i*1.6,yy):g.moveTo(x0+i*1.6,yy);}g.stroke();g.restore();}pill(g,40,y-26,n,col,1,'left');pill(g,360,y-26,e===1?'WENIGER ENERGIE':'MEHR ENERGIE',col,1,'right');});}
+  if(s===2){const L=[200,150,110,80];L.forEach((y,i)=>{line(g,80,y,240,y,C.mute,2);pill(g,60,y,`E${i+1}`,C.mute,1);});const f=(t*.0008)%1;const yy=f<.5?L[3]:lerp(L[3],L[1],clamp((f-.5)*6));circ(g,160,yy,7,C.aqua);if(f>.67){const d=(f-.67)*400;g.save();g.strokeStyle=C.up;g.lineWidth=2.4;g.beginPath();for(let i=0;i<40;i++){const x=250+d*.4+i*2;const y=130+Math.sin(i*.6)*6;i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();g.restore();pill(g,330,90,'PHOTON (FARBE)',C.up,1);}}
+  if(s===3){line(g,120,20,120,105,C.text,4);line(g,120,125,120,145,C.text,4);line(g,120,165,120,230,C.text,4);const n=Math.floor(ease(clamp(p*1.2))*400);const r=rng(2);for(let i=0;i<n;i++){let y;do{y=r()*220+15;}while(r()>Math.pow(Math.cos((y-125)*.09),2)*Math.exp(-Math.pow((y-125)/90,2)));circ(g,330+r()*14,y,1.4,C.aqua);}const f=(t*.002)%1;circ(g,lerp(30,320,f),125+(f>.3?Math.sin(f*40)*20*(f-.3):0),3,C.aqua);pill(g,120,240,'DOPPELSPALT',C.text,1);pill(g,330,10+4,'STREIFENMUSTER',C.aqua,1);}
+  if(s===4){const D=['LASER','LED','SOLARZELLE','CHIP','MRT','ATOMUHR'];D.forEach((n,i)=>{const x=80+(i%3)*120,y=80+Math.floor(i/3)*90,a=clamp(p*6-i);box(g,x-50,y-30,100,60,hexA(C.purple,.1*a),hexA(C.purple,a),8);pill(g,x,y,n,C.purple,a);});}}
+ ,box:{was:'Die Quantenphysik beschreibt das Verhalten der kleinsten Teilchen. Energie kommt dort in kleinen Portionen (Quanten), und Teilchen können sich wie Wellen verhalten.',h2:'So erkennst du es',
+ erkennen:['Licht kommt in Paketen: Photonen','Blaues Licht: mehr Energie pro Photon','Elektronen haben feste Energiestufen','Teilchen zeigen Wellen-Muster (Doppelspalt)'],
+ bedeutung:'Auch wenn sie seltsam klingt: Die Quantenphysik ist die am genauesten bestätigte Theorie der Physik und steckt in fast jeder modernen Technik.',
+ tipp:'Die Leuchtfarben von Feuerwerk entstehen durch Quantensprünge: Natrium leuchtet gelb, Strontium rot, Kupfer blau-grün.'}});
+
+{const CK=Object.keys(CATS);LESSONS.sort((a,b)=>CK.indexOf(a.cat)-CK.indexOf(b.cat));}
 /* ============ Bereiche ============ */
 const CATINFO_F={
  bewegung:{d:'Geschwindigkeit, Newton, Hebel und Bremsweg.',acc:'var(--blue)',hex:'#4c9aff'},
@@ -753,13 +1043,21 @@ const CATINFO_F={
  waerme:{d:'Teilchenmodell, Ausdehnung, Wärmetransport und Wärmepumpe.',acc:'var(--down)',hex:'#f0605d'},
  strom:{d:'Stromkreis, Ohmsches Gesetz, Schaltungen und Haushaltsstrom.',acc:'var(--aqua)',hex:'#22d3ee'},
  magnet:{d:'Magnetfeld, Elektromagnet, Motor und Generator.',acc:'var(--purple)',hex:'#b388ff'},
- wellen:{d:'Schall, Licht, elektromagnetisches Spektrum und Atome.',acc:'var(--up)',hex:'#1fcf8f'}};
+ wellen:{d:'Schall, Licht, elektromagnetisches Spektrum und Atome.',acc:'var(--up)',hex:'#1fcf8f'},
+ druck:{d:'Freier Fall, Auftrieb, Hydraulik und Luftdruck.',acc:'var(--orange)',hex:'#ff9f43'},
+ technik:{d:'Akku, Transformator, LED & Halbleiter und Kondensator.',acc:'var(--teal)',hex:'#2dd4bf'},
+ kraftwerk:{d:'Wärmekraftwerk, Wasser & Wind, Kernspaltung und Stromnetz.',acc:'var(--pink)',hex:'#ff6fae'},
+ modern:{d:'Radioaktivität, Laser, Relativität und Quantenphysik.',acc:'var(--indigo)',hex:'#8b8cff'}};
 const SVGI_F={
  bewegung:'<path d="M6 40 V30 L14 28 L22 18 H42 L50 28 L58 30 V40 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="18" cy="42" r="6" fill="currentColor"/><circle cx="46" cy="42" r="6" fill="currentColor"/><path d="M2 54 H24 M30 54 H44" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".6"/>',
  energie:'<path d="M36 4 L14 36 H30 L26 60 L50 26 H34 Z" fill="currentColor" opacity=".9"/>',
  waerme:'<path d="M32 6 C40 18 48 24 48 38 A16 16 0 0 1 16 38 C16 28 22 24 24 16 C28 24 30 26 32 6 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M32 30 C36 36 38 38 38 44 A6 6 0 0 1 26 44 C26 40 30 36 32 30 Z" fill="currentColor"/>',
  strom:'<rect x="10" y="16" width="44" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><path d="M24 10 V16 M40 10 V16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M34 22 L26 34 H34 L30 44" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>',
  magnet:'<path d="M14 8 V34 A18 18 0 0 0 50 34 V8 H38 V34 A6 6 0 0 1 26 34 V8 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><rect x="14" y="8" width="12" height="9" fill="currentColor"/><rect x="38" y="8" width="12" height="9" fill="currentColor"/>',
+druck:'<path d="M32 6 C40 20 48 28 48 38 A16 16 0 0 1 16 38 C16 28 24 20 32 6 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M24 40 A8 8 0 0 0 32 46" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M6 58 H58" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".6"/>',
+ technik:'<rect x="16" y="16" width="32" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><rect x="25" y="25" width="14" height="14" rx="2" fill="currentColor"/><path d="M22 16 V8 M32 16 V8 M42 16 V8 M22 48 V56 M32 48 V56 M42 48 V56 M16 22 H8 M16 32 H8 M16 42 H8 M48 22 H56 M48 32 H56 M48 42 H56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>',
+ kraftwerk:'<path d="M8 56 V30 L20 36 V30 L32 36 V30 L44 36 V18 H54 V56 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M49 14 C46 10 52 8 49 4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="16" y="44" width="6" height="6" fill="currentColor"/><rect x="30" y="44" width="6" height="6" fill="currentColor"/>',
+ modern:'<circle cx="32" cy="32" r="6" fill="currentColor"/><path d="M32 6 V16 M32 48 V58 M6 32 H16 M48 32 H58" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M14 14 L21 21 M43 43 L50 50 M14 50 L21 43 M43 21 L50 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".6"/><circle cx="32" cy="32" r="16" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 4"/>',
  wellen:'<path d="M4 32 Q12 14 20 32 T36 32 T52 32 T60 32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="52" r="5" fill="currentColor"/><ellipse cx="32" cy="52" rx="12" ry="5" fill="none" stroke="currentColor" stroke-width="2"/>'};
 
 /* ============ Quiz-Daten ============ */
@@ -825,7 +1123,45 @@ const TQ_F=[
  {q:'Welche Strahlung hat mehr Energie?',a:['Röntgenstrahlung','Radiowellen','Mikrowellen','Infrarot'],e:'Je kürzer die Welle, desto mehr Energie.',l:'spektrum'},
  {q:'Welche Strahlung spüren wir als Wärme?',a:['Infrarot','Ultraviolett','Gamma','Radiowellen'],e:'Infrarot ist Wärmestrahlung.',l:'spektrum'},
  {q:'Wie viele Protonen hat ein Aluminium-Atom?',a:['13','26','8','1'],e:'Die Ordnungszahl von Aluminium ist 13.',l:'atom'},
- {q:'Welche Ladung haben Elektronen?',a:['Negativ','Positiv','Keine','Mal so, mal so'],e:'Protonen sind positiv, Neutronen neutral.',l:'atom'}
+ {q:'Welche Ladung haben Elektronen?',a:['Negativ','Positiv','Keine','Mal so, mal so'],e:'Protonen sind positiv, Neutronen neutral.',l:'atom'},
+ {q:'Wie schnell ist ein Stein nach 3 Sekunden freiem Fall (ohne Luft)?',a:['Etwa 29,4 m/s (106 km/h)','Etwa 9,81 m/s','Etwa 3 m/s','Etwa 300 m/s'],e:'v = g × t = 9,81 × 3 ≈ 29,4 m/s.',l:'fall'},
+ {q:'Wie tief fällt ein Stein in 3 Sekunden (ohne Luftwiderstand)?',a:['Etwa 44 m','Etwa 29 m','Etwa 15 m','Etwa 90 m'],e:'s = ½ × 9,81 × 3² ≈ 44 m.',l:'fall'},
+ {q:'Was fällt auf dem Mond schneller: Hammer oder Feder?',a:['Beide gleich schnell','Der Hammer','Die Feder','Keines – auf dem Mond fällt nichts'],e:'Ohne Luft fallen alle Körper gleich schnell.',l:'fall'},
+ {q:'Wovon hängt der Auftrieb im Wasser ab?',a:['Vom Gewicht des verdrängten Wassers','Von der Farbe des Körpers','Von der Wassertemperatur allein','Vom Luftdruck'],e:'Das ist das Prinzip des Archimedes.',l:'auftrieb'},
+ {q:'Warum schwimmt ein Schiff aus Stahl?',a:['Der hohle Rumpf verdrängt viel Wasser','Stahl ist leichter als Wasser','Das Schiff wird von Luft getragen','Die Motoren halten es oben'],e:'Es verdrängt mehr Wasser, als es selbst wiegt.',l:'auftrieb'},
+ {q:'Ein Boot wiegt 450 kg. Wie viel Süßwasser verdrängt es?',a:['Etwa 450 Liter','Etwa 45 Liter','Etwa 4.500 Liter','Gar keins'],e:'1 Liter Wasser wiegt etwa 1 kg.',l:'auftrieb'},
+ {q:'100 N auf 2 cm², großer Kolben 50 cm². Welche Kraft ergibt sich?',a:['2.500 N','5.000 N','250 N','100 N'],e:'100 ÷ 2 × 50 = 2.500 N.',l:'hydraulik'},
+ {q:'Warum sinkt man mit Schneeschuhen weniger ein?',a:['Die Kraft verteilt sich auf eine größere Fläche','Man wird leichter','Der Schnee wird härter','Schneeschuhe sind magnetisch'],e:'Größere Fläche = kleinerer Druck (p = F ÷ A).',l:'hydraulik'},
+ {q:'Welches Bauteil im Auto arbeitet hydraulisch?',a:['Die Bremse','Das Radio','Der Scheibenwischer-Motor','Die Lichtmaschine'],e:'Der Pedaldruck wird über Bremsflüssigkeit verstärkt übertragen.',l:'hydraulik'},
+ {q:'Wie groß ist der Luftdruck auf Meereshöhe ungefähr?',a:['1 bar','10 bar','0,1 bar','100 bar'],e:'Rund 1.013 hPa ≈ 1 bar.',l:'luftdruck'},
+ {q:'Was passiert mit dem Reifendruck bei Kälte?',a:['Er sinkt','Er steigt','Er bleibt gleich','Er springt auf 0'],e:'Etwa 0,1 bar pro 10 °C weniger.',l:'luftdruck'},
+ {q:'Wo ist der Luftdruck niedriger?',a:['Auf der Zugspitze','Am Meer','Im Keller','Überall gleich'],e:'Je höher, desto weniger Luft liegt darüber.',l:'luftdruck'},
+ {q:'Ein Akku hat 3,7 V und 4 Ah. Wie viel Energie speichert er?',a:['14,8 Wh','7,7 Wh','0,9 Wh','148 Wh'],e:'3,7 V × 4 Ah = 14,8 Wh.',l:'akku'},
+ {q:'In welchem Ladebereich hält ein Lithium-Akku am längsten?',a:['Meist zwischen 20 und 80 %','Immer bei 100 %','Immer fast leer','Spielt keine Rolle'],e:'Volle Ladung und Tiefentladung belasten den Akku.',l:'akku'},
+ {q:'Was macht ein Transformator?',a:['Er wandelt Wechselspannung um','Er speichert Strom','Er macht aus Strom Licht','Er misst den Verbrauch'],e:'Über zwei Spulen auf einem Eisenkern.',l:'trafo'},
+ {q:'Trafo: 230 V, 1.150 Windungen auf 50 Windungen. Ausgangsspannung?',a:['10 V','50 V','23 V','115 V'],e:'230 × 50 ÷ 1.150 = 10 V.',l:'trafo'},
+ {q:'Warum transportiert man Strom mit sehr hoher Spannung?',a:['Weniger Strom, weniger Verluste in den Leitungen','Damit er schneller ankommt','Weil Kraftwerke nichts anderes können','Damit er heller leuchtet'],e:'Die Verluste wachsen mit dem Quadrat der Stromstärke.',l:'trafo'},
+ {q:'Was macht eine Diode?',a:['Sie lässt Strom nur in eine Richtung durch','Sie speichert Strom','Sie erhöht die Spannung','Sie misst die Temperatur'],e:'Wie ein Rückschlagventil.',l:'led'},
+ {q:'Wie viel spart eine 8-W-LED statt einer 60-W-Birne bei 1.000 Stunden?',a:['52 kWh','60 kWh','8 kWh','520 kWh'],e:'(60 − 8) W × 1.000 h = 52.000 Wh = 52 kWh.',l:'led'},
+ {q:'Woraus bestehen Computerchips hauptsächlich?',a:['Silizium','Kupfer','Gold','Glas'],e:'Silizium ist ein Halbleiter.',l:'led'},
+ {q:'Wofür wird ein Kondensator z. B. genutzt?',a:['Spannung glätten und kurz Energie speichern','Wasser erhitzen','Licht erzeugen','Magnete herstellen'],e:'Etwa im Netzteil oder für den Kamerablitz.',l:'kondensator'},
+ {q:'In welcher Einheit misst man die Kapazität eines Kondensators?',a:['Farad','Volt','Ohm','Ampere'],e:'Meist in µF (Mikrofarad) oder nF.',l:'kondensator'},
+ {q:'Was treibt im Kohlekraftwerk die Turbine an?',a:['Heißer Wasserdampf','Wind','Rauch','Kohlestaub'],e:'Die Wärme verdampft Wasser.',l:'waermekraftwerk'},
+ {q:'Was steigt aus einem Kühlturm auf?',a:['Wasserdampf','Rauch','CO₂ in Wolkenform','Kohlestaub'],e:'Die weißen Wolken sind kondensierter Wasserdampf.',l:'waermekraftwerk'},
+ {q:'Der Wind weht doppelt so schnell. Wie viel mehr Leistung bringt das Windrad?',a:['8-mal so viel','2-mal so viel','4-mal so viel','Gleich viel'],e:'Leistung ~ Windgeschwindigkeit³: 2³ = 8.',l:'wasserwind'},
+ {q:'5 m³ Wasser pro Sekunde fallen 10 m. Leistung ungefähr?',a:['Etwa 0,5 MW','Etwa 5 MW','Etwa 50 kW','Etwa 50 MW'],e:'5.000 kg × 9,81 × 10 ≈ 490.000 W.',l:'wasserwind'},
+ {q:'Was bremst die Kettenreaktion im Kernreaktor?',a:['Steuerstäbe','Kühlturm','Turbine','Generator'],e:'Sie fangen überzählige Neutronen ein.',l:'kernspaltung'},
+ {q:'Wann hat Deutschland seine letzten Kernkraftwerke abgeschaltet?',a:['April 2023','2011','2000','2030'],e:'Isar 2, Emsland und Neckarwestheim 2.',l:'kernspaltung'},
+ {q:'Welche Frequenz hat das europäische Stromnetz?',a:['50 Hz','60 Hz','230 Hz','100 Hz'],e:'Sinkt sie, wird mehr verbraucht als erzeugt.',l:'stromnetz'},
+ {q:'Heimspeicher 8 kWh, Verbrauch 500 W. Wie lange reicht er?',a:['16 Stunden','4 Stunden','40 Stunden','8 Stunden'],e:'8.000 Wh ÷ 500 W = 16 h.',l:'stromnetz'},
+ {q:'Welche Strahlung wird schon von einem Blatt Papier gestoppt?',a:['Alpha-Strahlung','Gamma-Strahlung','Röntgenstrahlung','Radiowellen'],e:'Beta braucht Aluminium, Gamma dickes Blei.',l:'radioaktiv'},
+ {q:'Halbwertszeit 10 Jahre. Wie viel ist nach 30 Jahren noch übrig?',a:['12,5 %','33 %','25 %','0 %'],e:'½ × ½ × ½ = ⅛ = 12,5 %.',l:'radioaktiv'},
+ {q:'Womit bestimmt man das Alter alter Knochen?',a:['Mit der Radiokarbonmethode (C-14)','Mit einem Thermometer','Mit einem Kompass','Mit einem Laser'],e:'C-14 hat eine Halbwertszeit von 5.730 Jahren.',l:'radioaktiv'},
+ {q:'Was ist besonders an Laserlicht?',a:['Eine Farbe, Wellen im Gleichtakt, stark gebündelt','Es ist besonders warm','Es ist immer grün','Es ist unsichtbar'],e:'Normales Licht ist ein Durcheinander vieler Farben.',l:'laser'},
+ {q:'Was steht in Einsteins berühmter Formel?',a:['E = m × c²','F = m × a','U = R × I','p = F ÷ A'],e:'Masse ist eine Form von Energie.',l:'relativ'},
+ {q:'Kann ein Raumschiff schneller als das Licht fliegen?',a:['Nein, Masse kann c nie erreichen','Ja, mit genug Treibstoff','Ja, im Vakuum','Nur rückwärts'],e:'Die nötige Energie wächst ins Unendliche.',l:'relativ'},
+ {q:'Welches Licht hat mehr Energie pro Photon?',a:['Blaues Licht','Rotes Licht','Beide gleich','Infrarot'],e:'Je kürzer die Wellenlänge, desto mehr Energie.',l:'quanten'},
+ {q:'Was zeigt das Doppelspalt-Experiment?',a:['Teilchen verhalten sich auch wie Wellen','Licht ist immer gerade','Elektronen sind sichtbar','Atome sind leer'],e:'Es entsteht ein Streifenmuster wie bei Wellen.',l:'quanten'}
 ];
 const PQ_F=[
  {l:'bremsweg',s:4,p:.9,q:'Was zeigt dieser Vergleich?',a:['Doppeltes Tempo = vierfacher Bremsweg','Doppeltes Tempo = halber Bremsweg','Reaktionsweg ist immer gleich','Bremsweg hängt nicht vom Tempo ab'],e:'50 km/h: 25 m · 100 km/h: 100 m.'},
@@ -839,7 +1175,13 @@ const PQ_F=[
  {l:'motor',s:2,p:.5,q:'Was ist hier zu sehen?',a:['Ein Elektromotor','Ein Kompass','Ein Thermometer','Eine Solarzelle'],e:'Eine Spule dreht sich zwischen zwei Magneten.'},
  {l:'licht',s:3,p:.5,q:'Was passiert hier mit dem Licht?',a:['Eine Sammellinse bündelt es im Brennpunkt','Es wird an einem Spiegel reflektiert','Es wird in Farben zerlegt','Es wird verschluckt'],e:'So funktionieren Lupe, Brille und Kamera.'},
  {l:'haushalt',s:1,p:.5,q:'Wofür steht die grün-gelbe Ader?',a:['Schutzleiter','Außenleiter (Phase)','Neutralleiter','Telefonleitung'],e:'Er leitet Fehlerströme sicher ab.'},
- {l:'atom',s:2,p:.5,q:'Was ist hier dargestellt?',a:['Ein Atom mit Kern und Elektronen','Ein Sonnensystem','Ein Magnet','Eine Zelle'],e:'Im Kern Protonen und Neutronen, außen Elektronen.'}
+ {l:'atom',s:2,p:.5,q:'Was ist hier dargestellt?',a:['Ein Atom mit Kern und Elektronen','Ein Sonnensystem','Ein Magnet','Eine Zelle'],e:'Im Kern Protonen und Neutronen, außen Elektronen.'},
+ {l:'auftrieb',s:2,p:.9,q:'Warum schwimmt das Holz, aber der Stein sinkt?',a:['Holz ist leichter als das verdrängte Wasser','Holz ist größer','Der Stein ist nass','Holz ist magnetisch'],e:'Schwerer als verdrängtes Wasser → sinkt.'},
+ {l:'hydraulik',s:3,p:.9,q:'Welches Prinzip wird hier gezeigt?',a:['Hydraulik','Hebelgesetz','Induktion','Auftrieb'],e:'Kleine Kraft auf kleiner Fläche → große Kraft auf großer Fläche.'},
+ {l:'trafo',s:3,p:.5,q:'Was ist hier zu sehen?',a:['Ein Transformator','Ein Elektromotor','Ein Kondensator','Eine Batterie'],e:'Zwei Spulen auf einem Eisenkern.'},
+ {l:'waermekraftwerk',s:0,p:.5,q:'Was zeigt diese Anlage?',a:['Ein Wärmekraftwerk','Eine Wärmepumpe','Ein Windrad','Eine Solaranlage'],e:'Kessel, Turbine, Generator und Kühlturm.'},
+ {l:'radioaktiv',s:1,p:.6,q:'Welche Strahlung kommt durch Papier und Aluminium?',a:['Gamma-Strahlung (γ)','Alpha-Strahlung (α)','Beta-Strahlung (β)','Keine'],e:'Gamma braucht dickes Blei oder Beton.'},
+ {l:'quanten',s:3,p:.95,q:'Welches berühmte Experiment ist das?',a:['Der Doppelspalt','Der freie Fall','Die Halbwertszeit','Der Faraday-Käfig'],e:'Teilchen erzeugen ein Wellen-Streifenmuster.'}
 ];
 
 /* ============ Player ============ */
@@ -925,7 +1267,7 @@ function showHome(){
   return `<button class="big" data-h="kat-${ck}" style="--acc:${ci.acc};--glow:${hexA(ci.hex,.16)}"><div class="bi">${catIcon(ck)}</div><h2>${CATS[ck]}</h2><p>${ci.d}</p><div class="ft"><span>${n} LEKTIONEN</span><div class="pb"><i style="width:${sn/n*100}%"></i></div><span>${sn}/${n}</span><span class="go">›</span></div></button>`;}).join('');
  const quiz=`<button class="big" data-h="quiz" style="--acc:var(--gold);--glow:rgba(245,197,66,.14)"><div class="bi" style="font-size:46px;line-height:1">🎯</div><h2>Quiz</h2><p>Teste dein Wissen: 10 zufällige Fragen mit Bildern und Rechenaufgaben.</p><div class="ft"><span>${best?`BESTWERT ${best}/10`:'NOCH NICHT GESPIELT'}</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
  view.innerHTML=`<div class="home"><div class="kicker">Willkommen</div><h1>Physik im Alltag</h1>
- <p class="lead">Jede Lektion ist ein kleines Video: Bewegung, Energie, Wärme, Strom, Magnetismus, Schall und Licht bauen sich Schritt für Schritt auf und werden erklärt – mit Rechenbeispielen aus dem Alltag.</p>
+ <p class="lead">Jede Lektion ist ein kleines Video: Bewegung, Druck, Energie, Kraftwerke, Wärme, Strom, Magnetismus, Licht und moderne Physik bauen sich Schritt für Schritt auf und werden erklärt – mit Rechenbeispielen aus dem Alltag.</p>
  <div class="bigtiles">${tiles}${quiz}</div></div>`;
  view.querySelectorAll('.big').forEach(t=>t.onclick=()=>location.hash=t.dataset.h);
  renderList();window.scrollTo(0,0);
