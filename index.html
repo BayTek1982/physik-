@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bayazit Physik-Schule</title>
+<meta name="theme-color" content="#05080d">
+<meta name="description" content="Lern-App Physik im Alltag: Bewegung, Energie, Wärme, Strom, Magnetismus, Schall und Licht als kleine Videos.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Physik">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script>(function(){var m='dark';try{m=localStorage.getItem('kompass-theme')||'dark'}catch(e){}var t=m==='auto'?(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',t);})();</script>
+<style>
+:root{
+  --bg:#05080d; --panel:#0b1118; --card:#0f1620; --card2:#0a0f15; --line:#1b2532; --line2:#2a3647; --line3:#36465b; --text:#dfe6ef; --soft:#b9c4d2; --soft2:#c9d2de; --mute:#7f8b9c;
+  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee;
+  --chart:#020407; --hdr:rgba(5,8,13,.92); --veil:rgba(5,8,13,.75); --on-gold:#1b1505; --on-up:#03140d;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f3f5f9; --panel:#eef2f7; --card:#ffffff; --card2:#f7f9fc; --line:#dde3ec; --line2:#c9d2de; --line3:#b7c2d1; --text:#131a26; --soft:#3d4757; --soft2:#2c3646; --mute:#5d6879;
+  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#00838f;
+  --chart:#ffffff; --hdr:rgba(243,245,249,.92); --veil:rgba(255,255,255,.85); --on-gold:#ffffff; --on-up:#ffffff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:var(--hdr);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:34px;flex:none}
+.brand{white-space:nowrap;font-family:var(--mono);font-weight:800;letter-spacing:.06em;font-size:15px;line-height:1.15}
+.brand small{display:block;color:var(--mute);font-weight:500;font-size:11px;letter-spacing:.12em}
+.theme{margin-left:auto;display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;flex:none}
+.theme button{border:0;background:none;color:var(--mute);font-family:var(--mono);font-size:12px;font-weight:700;border-radius:999px;padding:6px 10px;min-height:32px}
+.theme button[aria-pressed="true"]{background:var(--gold);color:var(--on-gold)}
+.theme button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.prog{margin-left:12px;font-family:var(--mono);font-size:11px;color:var(--mute);text-align:right}
+.bar{width:110px;height:5px;background:var(--line);border-radius:9px;margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--up),var(--gold));width:0;transition:width .4s}
+main{display:grid;grid-template-columns:330px 1fr;max-width:1280px;margin:0 auto;min-height:calc(100vh - 60px)}
+#nav{border-right:1px solid var(--line);padding:14px 12px 40px;height:calc(100vh - 60px);overflow:auto;position:sticky;top:60px}
+#search{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:15px;outline:none}
+#search:focus{border-color:var(--gold)}
+.cat{margin:18px 4px 8px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.cat::after{content:"";flex:1;height:1px;background:var(--line)}
+.item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:9px 8px;margin:2px 0}
+.item:hover{background:var(--card)}
+.item.on{background:var(--card);border-color:var(--line2)}
+.item .ic{width:36px;height:36px;flex:none;border-radius:8px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center}
+.box b{color:var(--text)}
+.item b{display:block;font-size:14.5px;font-weight:600}
+.item span{display:block;font-size:12px;color:var(--mute);margin-top:1px}
+.item .ok{margin-left:auto;color:var(--up);font-size:14px;opacity:0}
+.item.seen .ok{opacity:1}
+#view{padding:18px 22px 60px;min-width:0}
+.back{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:14px;margin-bottom:12px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
+h1{font-family:var(--mono);font-weight:800;letter-spacing:.03em;font-size:clamp(24px,4.4vw,36px);margin:4px 0 4px;text-transform:uppercase}
+.lead{color:var(--soft);margin:0 0 14px;font-size:15.5px;line-height:1.5;max-width:760px}
+.player{background:var(--chart);border:1px solid var(--line);border-radius:16px;overflow:hidden;max-width:900px}
+.cwrap{position:relative;cursor:pointer}
+canvas{display:block;width:100%}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .25s}
+.overlay.show{opacity:1}
+.overlay div{background:var(--veil);border:1px solid var(--line2);border-radius:999px;padding:12px 18px;font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.06em}
+.caption{padding:12px 16px 4px;min-height:74px;border-top:1px solid var(--line)}
+.caption .no{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.14em}
+.caption p{margin:5px 0 0;font-size:15.5px;line-height:1.45;transition:opacity .25s}
+.ctrl{display:flex;align-items:center;gap:8px;padding:8px 12px 12px}
+.cb{background:var(--card);border:1px solid var(--line);border-radius:9px;min-width:40px;height:38px;padding:0 10px;font-family:var(--mono);font-size:14px;font-weight:700}
+.cb:hover{border-color:var(--line3)}
+#seek{flex:1;accent-color:var(--down);height:28px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 14px}
+.chip{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.chip.on{border-color:var(--gold);color:var(--gold)}
+.chip.done{color:var(--text)}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:16px;max-width:900px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.box h3{margin:0 0 8px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.box p,.box li{font-size:14.5px;line-height:1.5;color:var(--soft2);margin:0}
+.box ul{margin:0;padding-left:18px}.box li{margin:3px 0}
+.box.g h3{color:var(--up)}.box.y h3{color:var(--gold)}.box.b h3{color:var(--blue)}.box.r h3{color:var(--down)}
+.pn{display:flex;justify-content:space-between;gap:10px;margin-top:18px;max-width:900px}
+.pn button{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;font-size:14px}
+.pn button:last-child{text-align:right}
+.pn small{display:block;color:var(--mute);font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;margin-bottom:3px}
+.pn button:disabled{opacity:.35;cursor:default}
+.disc{color:var(--mute);font-size:12px;margin-top:22px;max-width:900px}
+.home{max-width:900px}
+.home .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:16px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left}
+.tile:hover{border-color:var(--line3)}
+.tile b{display:block;font-family:var(--mono);font-size:14px;letter-spacing:.05em;text-transform:uppercase;margin:10px 0 4px}
+.tile span{color:var(--mute);font-size:13px}
+.quizbtn{background:var(--card);border-color:var(--line2) !important;margin-top:12px}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;max-width:760px}
+.qbar{height:5px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:14px}.qbar i{display:block;height:100%;background:var(--gold)}
+.qq{font-size:18px;font-weight:700;line-height:1.4;margin:0 0 12px}
+.qcv{border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-bottom:12px;background:#020407}
+.opts{display:grid;gap:8px}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px;text-align:left;font-size:15.5px}
+.opt:hover:not(:disabled){border-color:var(--line3)}
+.opt.ok{border-color:var(--up);background:rgba(31,207,143,.12)}
+.opt.bad{border-color:var(--down);background:rgba(240,96,93,.12)}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-size:14.5px;line-height:1.5}
+.fb b{font-family:var(--mono)}
+.qnav{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.qnav button{flex:1;min-width:140px;border-radius:12px;padding:12px;font-weight:700;border:1px solid var(--line);background:var(--panel)}
+.qnav .main{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.score{font-family:var(--mono);font-size:54px;font-weight:800;margin:6px 0}
+.calc{margin-top:12px;max-width:900px}
+.calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:8px 0 12px}
+.calc label{font-size:12px;color:var(--mute);font-family:var(--mono);letter-spacing:.06em}
+.calc input{width:100%;margin-top:4px;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:16px}
+.calc .res{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.calc .res div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px}
+.calc .res span{display:block;font-size:11.5px;color:var(--mute);font-family:var(--mono)}
+.calc .res b{font-family:var(--mono);font-size:18px}
+.bigtiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-top:18px}
+.big{position:relative;overflow:hidden;text-align:left;background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;min-height:168px;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
+.big:hover{transform:translateY(-2px);border-color:var(--acc)}
+.big::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--acc)}
+.big::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%)}
+.big .bi{position:absolute;right:14px;top:16px;opacity:.95}
+.big h2{font-family:var(--mono);font-weight:800;font-size:clamp(17px,1.6vw + 6px,21px);letter-spacing:.03em;text-transform:uppercase;margin:0 70px 8px 0;line-height:1.2;color:var(--acc)}
+.big p{margin:0 0 14px;color:var(--soft);font-size:14.5px;line-height:1.45;max-width:85%}
+.big .ft{margin-top:auto;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.big .pb{flex:1;height:5px;background:var(--line);border-radius:9px;overflow:hidden}.big .pb i{display:block;height:100%;background:var(--acc)}
+.big .go{color:var(--acc);font-size:16px;font-weight:800}
+.lcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:16px}
+.lc{display:flex;align-items:center;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.lc:hover{border-color:var(--acc)}
+.lc canvas.th{width:88px;height:55px;flex:none;border-radius:8px;border:1px solid var(--line);background:var(--chart)}
+.lc .ic{width:48px;height:48px;flex:none;border-radius:10px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center}
+.lc small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--mute)}
+.lc b{display:block;font-size:16px;margin:2px 0}
+.lc span{display:block;font-size:13px;color:var(--mute)}
+.lc .ok{margin-left:auto;color:var(--up);font-size:18px}
+.start{margin-top:16px;background:var(--up);color:var(--on-up);border:0;border-radius:12px;padding:13px 20px;font-weight:800;font-size:15px}
+@media (max-width:860px){
+  main{grid-template-columns:1fr}
+  #nav{position:static;height:auto;border-right:0;padding:12px 14px 40px}
+  #view{padding:14px 12px 50px}
+  #nav{display:none}
+  .bar{width:70px}
+  .theme button .tl{display:none}
+  .theme button{padding:6px 9px}
+  .brand small{display:none}
+  .brand{font-size:13.5px}
+  header{gap:9px;padding:12px 12px}
+  .prog{margin-left:4px}
+  .bar{width:56px}
+}
+</style>
+</head>
+<body>
+<header>
+  <svg class="logo" viewBox="0 0 34 34"><rect width="34" height="34" rx="8" fill="#0f1620"/><g fill="none" stroke="#22d3ee" stroke-width="1.4"><ellipse cx="17" cy="17" rx="12" ry="4.6"/><ellipse cx="17" cy="17" rx="12" ry="4.6" transform="rotate(60 17 17)"/><ellipse cx="17" cy="17" rx="12" ry="4.6" transform="rotate(-60 17 17)"/></g><circle cx="17" cy="17" r="2.8" fill="#f5c542"/></svg>
+  <div class="brand" style="cursor:pointer" onclick="location.hash=''">PHYSIK-SCHULE<small>BAYAZIT · PHYSIK IM ALLTAG</small></div>
+  <div class="theme" role="group" aria-label="Darstellung"><button data-m="dark" title="Dunkel">☾<span class="tl"> Dunkel</span></button><button data-m="light" title="Hell">☀<span class="tl"> Hell</span></button><button data-m="auto" title="Automatisch">◐<span class="tl"> Auto</span></button></div>
+  <div class="prog"><span id="progtxt">0 / 0</span><div class="bar"><i id="progbar"></i></div></div>
+</header>
+<main>
+  <nav id="nav">
+    <input id="search" placeholder="Lektion suchen … z. B. Strom" autocomplete="off" aria-label="Lektion suchen">
+    <div id="list"></div>
+  </nav>
+  <section id="view"></section>
+</main>
+<script>
+"use strict";
+/* ============ Farben & Helfer ============ */
+const VW=400,VH=250;
+const THEMES={
+ dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',text:'#e6ecf3',mute:'#7f8b9c',line:'#1b2532',line2:'#2a3647',
+  up:'#1fcf8f',down:'#f0605d',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',aqua:'#22d3ee',pink:'#ff6fae',
+  pillBg:'rgba(2,4,7,.9)',metal:'#9aa7b8',metal2:'#6b7889',metal3:'#4a5565',metalHi:'#d5dde8',block:'#121a24',blockLine:'#3a4859',head:'#18222e',
+  air:'#4c9aff',fuel:'#22d3ee',fire:'#ff7a1a',fire2:'#ffd23f',exhaust:'#8b95a3',oil:'#f5a623',water:'#38bdf8',hot:'#f0605d',cold:'#4c9aff',
+  carBody:'#141d28',carLine:'#5b6b80',road:'#0d141c',roadLine:'#3a4859',batt:'#1fcf8f',outline:'#020407',glass:'rgba(76,154,255,.15)'},
+ light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',text:'#131a26',mute:'#5d6879',line:'#dde3ec',line2:'#c9d2de',
+  up:'#087f5b',down:'#c62f2c',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',aqua:'#00838f',pink:'#c2185b',
+  pillBg:'rgba(255,255,255,.95)',metal:'#8793a3',metal2:'#5f6b7b',metal3:'#465160',metalHi:'#c4ccd7',block:'#eef2f7',blockLine:'#8a96a8',head:'#e2e8f0',
+  air:'#1a66c9',fuel:'#00838f',fire:'#e8590c',fire2:'#f59f00',exhaust:'#6b7280',oil:'#b45000',water:'#0284c7',hot:'#c62f2c',cold:'#1a66c9',
+  carBody:'#f1f4f8',carLine:'#7d8899',road:'#e9edf2',roadLine:'#b7c2d1',batt:'#087f5b',outline:'#ffffff',glass:'rgba(26,102,201,.1)'}};
+const C=Object.assign({},THEMES.dark);
+function setCanvasTheme(t){Object.assign(C,THEMES[t]||THEMES.dark);}
+const MONO="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
+const SANS="'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const ease=x=>{x=clamp(x);return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;};
+const lerp=(a,b,f)=>a+(b-a)*f;
+const TAU=Math.PI*2,rad=d=>d*Math.PI/180;
+const deN=(x,d=0)=>x.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+function hexA(hex,a){if(hex[0]!=='#')return hex;const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+const G={nolabel:false};
+/* Sichtbarkeit: Element erscheint ab Schritt k */
+function ap(st,k,f=3){if(st.s>k)return 1;if(st.s<k)return 0;return clamp(st.p*f);}
+function only(st,k,f=4){if(st.s!==k)return 0;return clamp(Math.min(st.p*f,(1-st.p)*f+.6));}
+
+function rr(g,x,y,w,h,r){r=Math.min(r,w/2,h/2);g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function box(g,x,y,w,h,fill,stroke,r=6,lw=1.4){rr(g,x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke();}}
+function circ(g,x,y,r,fill,stroke,lw=1.4){g.beginPath();g.arc(x,y,r,0,TAU);if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke();}}
+function line(g,x1,y1,x2,y2,col,lw=1.5,dash){g.save();g.strokeStyle=col;g.lineWidth=lw;if(dash)g.setLineDash(dash);g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.restore();}
+function poly(g,pts,fill,stroke,lw=1.4,close=true){g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));if(close)g.closePath();if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke();}}
+function txt(g,x,y,s,col,size=11,align='center',weight=700,font=MONO){g.font=`${weight} ${size}px ${font}`;g.fillStyle=col;g.textAlign=align;g.textBaseline='middle';g.fillText(s,x,y);}
+function arrowHead(g,x1,y1,x2,y2,col,s=7){const a=Math.atan2(y2-y1,x2-x1);g.fillStyle=col;g.beginPath();g.moveTo(x2,y2);g.lineTo(x2-s*Math.cos(a-.45),y2-s*Math.sin(a-.45));g.lineTo(x2-s*Math.cos(a+.45),y2-s*Math.sin(a+.45));g.closePath();g.fill();}
+function arrow(g,x1,y1,x2,y2,col,lw=2,a=1,both=false){if(a<=0)return;g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=lw;g.beginPath();const ang=Math.atan2(y2-y1,x2-x1),k=lw*2;g.moveTo(x1+(both?Math.cos(ang)*k:0),y1+(both?Math.sin(ang)*k:0));g.lineTo(x2-Math.cos(ang)*k,y2-Math.sin(ang)*k);g.stroke();arrowHead(g,x1,y1,x2,y2,col,5+lw*1.5);if(both)arrowHead(g,x2,y2,x1,y1,col,5+lw*1.5);g.restore();}
+/* Beschriftungs-Pille */
+function pill(g,x,y,text,col,a=1,align='center',size=11){
+ if(a<=0||G.nolabel)return;g.save();g.globalAlpha*=a;g.font=`700 ${size}px ${MONO}`;
+ const w=g.measureText(text).width+12,h=size+8;let x0=align==='center'?x-w/2:align==='left'?x:x-w;
+ x0=Math.max(2,Math.min(VW-w-2,x0));const y0=y-h/2;
+ g.fillStyle=C.pillBg;rr(g,x0,y0,w,h,5);g.fill();g.strokeStyle=col;g.lineWidth=1.2;g.stroke();
+ g.fillStyle=col;g.textBaseline='middle';g.textAlign='left';g.fillText(text,x0+6,y+.5);g.restore();
+}
+/* Pille mit Hinweislinie zu einem Punkt */
+function tag(g,px,py,x,y,text,col,a=1,align='center'){if(a<=0||G.nolabel)return;g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=1;g.setLineDash([3,3]);g.beginPath();g.moveTo(px,py);g.lineTo(x,y);g.stroke();g.setLineDash([]);circ(g,px,py,2.6,col);g.restore();pill(g,x,y,text,col,a,align);}
+/* Titel-Pille oben links (Phase) */
+function head(g,text,col,a=1){pill(g,8,15,text,col,a,'left',11.5);}
+/* Punkte entlang eines Pfades bewegen */
+function pathLen(pts){let L=[0];for(let i=1;i<pts.length;i++)L.push(L[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));return L;}
+function pathAt(pts,L,d){const tot=L[L.length-1];d=((d%tot)+tot)%tot;let i=1;while(i<L.length-1&&L[i]<d)i++;const f=(d-L[i-1])/((L[i]-L[i-1])||1);return[lerp(pts[i-1][0],pts[i][0],f),lerp(pts[i-1][1],pts[i][1],f)];}
+function flow(g,pts,t,col,o={}){const L=pathLen(pts),tot=L[L.length-1],gap=o.gap||16,sp=o.speed||.05,r=o.r||2.4;g.save();g.globalAlpha*=(o.a==null?1:o.a);g.fillStyle=col;
+ for(let d=0;d<tot;d+=gap){const dd=d+t*sp;if(o.limit!=null&&((dd%tot)+tot)%tot>o.limit*tot)continue;const p=pathAt(pts,L,dd);g.beginPath();g.arc(p[0],p[1],r,0,TAU);g.fill();}g.restore();}
+function pipe(g,pts,col,w=8,a=1){g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=w;g.lineJoin='round';g.lineCap='round';g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.stroke();g.restore();}
+/* Zahnrad (außen) */
+function gear(g,x,y,r,z,ang,fill,stroke,o={}){const d=o.depth||Math.max(3,r*.12);g.beginPath();
+ for(let k=0;k<z;k++){const a0=ang+k*TAU/z,w=TAU/z;const pts=[[a0-w*.5,r-d],[a0-w*.28,r+d*.9],[a0+w*.0,r+d],[a0+w*.28,r+d*.9]];
+  // Zahnmitte bei a0
+  const seq=[[a0-w*.5,r-d],[a0-w*.3,r-d],[a0-w*.18,r+d],[a0+w*.18,r+d],[a0+w*.3,r-d],[a0+w*.5,r-d]];
+  seq.forEach((p,i)=>{const X=x+Math.cos(p[0])*p[1],Y=y+Math.sin(p[0])*p[1];(k===0&&i===0)?g.moveTo(X,Y):g.lineTo(X,Y);});}
+ g.closePath();g.fillStyle=fill;g.fill();g.strokeStyle=stroke;g.lineWidth=o.lw||1.4;g.stroke();
+ if(o.hub!==false){circ(g,x,y,Math.max(3,r*.22),C.bg,stroke,1.2);}
+ if(o.mark){const mr=r*.62;circ(g,x+Math.cos(ang)*mr,y+Math.sin(ang)*mr,Math.max(2.5,r*.09),o.mark);}
+}
+/* Hohlrad (Innenverzahnung) */
+function ringGear(g,x,y,r,R,z,ang,fill,stroke,o={}){const d=o.depth||Math.max(3,r*.06);g.beginPath();g.arc(x,y,R,0,TAU);
+ for(let k=z-1;k>=0;k--){const a0=ang+k*TAU/z,w=TAU/z;const seq=[[a0+w*.5,r+d],[a0+w*.3,r+d],[a0+w*.18,r-d],[a0-w*.18,r-d],[a0-w*.3,r+d],[a0-w*.5,r+d]];
+  seq.forEach((p,i)=>{const X=x+Math.cos(p[0])*p[1],Y=y+Math.sin(p[0])*p[1];(k===z-1&&i===0)?g.moveTo(X,Y):g.lineTo(X,Y);});}
+ g.closePath();g.fillStyle=fill;g.fill('evenodd');g.strokeStyle=stroke;g.lineWidth=1.4;g.stroke();
+ if(o.mark){const mr=(r+R)/2;circ(g,x+Math.cos(ang)*mr,y+Math.sin(ang)*mr,3,o.mark);}
+}
+/* Diagramm-Achsen */
+function axes(g,x0,y0,w,h,xl,yl,xt,yt,a=1){g.save();g.globalAlpha*=a;
+ g.strokeStyle=C.grid;g.lineWidth=1;(yt||[]).forEach(v=>{const y=y0-v[0]*h;g.beginPath();g.moveTo(x0,y);g.lineTo(x0+w,y);g.stroke();txt(g,x0-4,y,v[1],C.axis,9,'right',500);});
+ (xt||[]).forEach(v=>{const x=x0+v[0]*w;txt(g,x,y0+9,v[1],C.axis,9,'center',500);});
+ g.strokeStyle=C.axis;g.lineWidth=1.3;g.beginPath();g.moveTo(x0,y0-h);g.lineTo(x0,y0);g.lineTo(x0+w,y0);g.stroke();
+ txt(g,x0+w,y0+21,xl,C.mute,9.5,'right',700);txt(g,x0+2,y0-h-9,yl,C.mute,9.5,'left',700);g.restore();}
+function plot(g,fn,x0,y0,w,h,col,lw=2.5,upto=1,a=1){g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=lw;g.lineJoin='round';g.beginPath();const n=120;let first=true;
+ for(let i=0;i<=n*upto;i++){const u=i/n,v=fn(u);if(v==null){first=true;continue;}const X=x0+u*w,Y=y0-v*h;first?g.moveTo(X,Y):g.lineTo(X,Y);first=false;}g.stroke();g.restore();}
+/* Integral (für Drehwinkel bei variabler Geschwindigkeit) */
+function integ(f,T,n=60){let s=0;for(let i=0;i<n;i++)s+=f((i+.5)/n*T)*T/n;return s;}
+
+/* ============ Physik-Helfer ============ */
+Object.assign(THEMES.dark,{body:'#17212d',bodyLine:'#8394ab',ground:'#0b1219',person:'#c9d2de',water:'#38bdf8',copper:'#e0915a',wire:'#8394ab'});
+Object.assign(THEMES.light,{body:'#ffffff',bodyLine:'#5f6b7b',ground:'#e4e9ef',person:'#3d4757',water:'#0284c7',copper:'#b4581f',wire:'#5f6b7b'});
+Object.assign(C,THEMES.dark);
+function rng(seed){let s=seed%2147483647||1;for(let k=0;k<6;k++)s=s*16807%2147483647;return()=>{s=s*16807%2147483647;return(s-1)/2147483646;};}
+function glow(g,x,y,r,col,a=1){if(a<=0||r<=0)return;const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,hexA(col,.55*Math.min(1,a)));gr.addColorStop(1,hexA(col,0));g.fillStyle=gr;g.beginPath();g.arc(x,y,r,0,TAU);g.fill();}
+function ground(g,y,col){g.fillStyle=col||C.ground;g.fillRect(-10,y,420,260-y);}
+function lines(g,L,x,y0,dy){if(G.nolabel)return;L.forEach((l,i)=>{const a=l[3]==null?1:l[3];if(a<=0)return;g.save();g.globalAlpha=a;txt(g,x,y0+i*dy,l[0],l[1],l[2],'left',l[4]||600);g.restore();});}
+function car(g,x,y,s,col,o={}){g.save();g.translate(x,y);if(o.flip)g.scale(-1,1);g.scale(s,s);const lw=1.4/s;
+ poly(g,[[-30,-6],[-30,-16],[-18,-18],[-10,-28],[12,-28],[22,-18],[32,-15],[32,-6]],col||C.carBody,C.carLine,lw);poly(g,[[-8,-26],[10,-26],[17,-18.5],[-14,-18.5]],hexA(C.blue,.35),null);
+ const rot=o.rot||0;[[-18,-5],[20,-5]].forEach(([wx,wy])=>{circ(g,wx,wy,6,C.metal3,C.carLine,lw);line(g,wx,wy,wx+Math.cos(rot)*5,wy+Math.sin(rot)*5,C.metalHi,lw*1.4);});
+ if(o.brake)circ(g,-31,-11,2.2,C.down);g.restore();}
+function person(g,x,y,s,col,o={}){g.save();g.translate(x,y);g.rotate(o.lean||0);g.scale(s,s);const c=col||C.person,lw=2.2/s;circ(g,0,-34,6,c);g.strokeStyle=c;g.lineWidth=lw*2;g.lineCap='round';g.beginPath();g.moveTo(0,-27);g.lineTo(0,-10);g.moveTo(0,-10);g.lineTo(-6,0);g.moveTo(0,-10);g.lineTo(6,0);g.moveTo(0,-22);g.lineTo(o.arm==null?8:o.arm,-16);g.moveTo(0,-22);g.lineTo(-8,-16);g.stroke();g.restore();}
+function battery(g,x,y,o={}){const v=o.v!==false;g.save();g.translate(x,y);if(!v)g.rotate(Math.PI/2);line(g,-12,-4,12,-4,C.text,3);line(g,-6,4,6,4,C.text,3);g.restore();if(o.lab)pill(g,x+(v?0:26),y+(v?18:0),o.lab,C.gold,1,v?'center':'left');}
+function bulb(g,x,y,on,r=12){if(on>0){glow(g,x,y,r*3.2,C.gold,on);}circ(g,x,y,r,on>0?hexA(C.gold,.25+.6*on):C.head,on>0?C.gold:C.line2,1.6);g.save();g.strokeStyle=on>0?C.gold:C.mute;g.lineWidth=1.2;g.beginPath();g.moveTo(x-r*.5,y+r*.2);g.lineTo(x-r*.25,y-r*.35);g.lineTo(x,y+r*.15);g.lineTo(x+r*.25,y-r*.35);g.lineTo(x+r*.5,y+r*.2);g.stroke();g.restore();}
+function wire(g,pts,col,w=2.4){pipe(g,pts,col||C.wire,w,1);}
+function magnet(g,x,y,w,h,ang=0,o={}){g.save();g.translate(x,y);g.rotate(ang);box(g,-w/2,-h/2,w/2,h,hexA(C.down,.85),C.down,2,1.2);box(g,0,-h/2,w/2,h,hexA(C.up,.85),C.up,2,1.2);if(!G.nolabel){g.rotate(-ang);const c=Math.cos(ang),s=Math.sin(ang);txt(g,-w/4*c,-w/4*s,o.flip?'S':'N','#ffffff',Math.min(14,h*.6),'center',800);txt(g,w/4*c,w/4*s,o.flip?'N':'S','#ffffff',Math.min(14,h*.6),'center',800);}g.restore();}
+function needle(g,x,y,r,ang){g.save();g.translate(x,y);g.rotate(ang);poly(g,[[r,0],[0,-r*.22],[0,r*.22]],C.down);poly(g,[[-r,0],[0,-r*.22],[0,r*.22]],C.mute);circ(g,0,0,r*.12,C.text);g.restore();}
+function thermo(g,x,y,h,f,col){box(g,x-5,y-h,10,h,C.head,C.line2,5);const hh=(h-6)*clamp(f);box(g,x-2.5,y-3-hh,5,hh,col||C.down,null,2);circ(g,x,y+4,8,col||C.down,C.line2,1.2);}
+function dipole(g,cx,cy,col,a=1,o={}){g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=1.1;const ks=o.ks||[30,48,72,105,150,220];ks.forEach(k=>{[-1,1].forEach(sg=>{g.beginPath();let first=true;for(let i=4;i<=176;i+=3){const th=i*Math.PI/180,r=k*Math.sin(th)*Math.sin(th);if(r<(o.rmin||14))continue;const x=o.vert?cx+sg*r*Math.sin(th):cx+r*Math.cos(th),y=o.vert?cy-r*Math.cos(th):cy+sg*r*Math.sin(th);first?g.moveTo(x,y):g.lineTo(x,y);first=false;}g.stroke();});});g.restore();}
+
+/* ============ LEKTIONEN ============ */
+const CATS={bewegung:'Bewegung & Kräfte',energie:'Energie & Leistung',waerme:'Wärme',strom:'Elektrizität',magnet:'Magnetismus',wellen:'Schall, Licht & Atome'};
+const LESSONS=[];
+const les=o=>LESSONS.push(o);
+const S=(arr)=>arr.map(a=>({d:a[0],text:a[1]}));
+function road(g,y,t,v){ground(g,y,C.road);line(g,0,y,400,y,C.roadLine,1.4);for(let i=0;i<12;i++){const X=((i*50-t*v)%600+600)%600-60;box(g,X,y+16,26,3,C.roadLine,null,1);}}
+
+/* ---------- BEWEGUNG & KRÄFTE ---------- */
+les({id:'tempo',thumb:3,cat:'bewegung',title:'Geschwindigkeit',sub:'Rechnen: Wie weit fährst du blind?',
+ steps:S([[4800,'Geschwindigkeit sagt, wie viel Strecke in einer bestimmten Zeit zurückgelegt wird: v = Strecke ÷ Zeit.'],
+ [4400,'Ein Auto, das in 1 Stunde 100 km weit fährt, hat eine Geschwindigkeit von 100 km/h.'],
+ [5200,'Umrechnen: 1 m/s = 3,6 km/h. Also: 100 km/h ÷ 3,6 ≈ 27,8 Meter – in jeder einzelnen Sekunde!'],
+ [5800,'Das heißt: Schaust du bei Tempo 100 nur 2 Sekunden aufs Handy, fährst du über 55 m blind – mehr als ein halbes Fußballfeld.'],
+ [5800,'Beschleunigung sagt, wie schnell sich das Tempo ändert. Ein Auto, das in 10 s von 0 auf 100 km/h kommt: 27,8 ÷ 10 ≈ 2,8 m/s².']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=3){road(g,170,t,s===0?.05:.12);const X=s===3?lerp(40,330,ease(clamp(p*1.2))):s===2?200:200;car(g,X,170,1.5,null,{rot:t*.02});
+   if(s===0){lines(g,[['v = Strecke ÷ Zeit',C.gold,17,1,800]],80,60,30);}
+   if(s===1){pill(g,200,40,'100 km IN 1 STUNDE',C.text,1);pill(g,200,72,'= 100 km/h',C.up,1);}
+   if(s===2){pill(g,200,36,'100 km/h ÷ 3,6',C.text,1);pill(g,200,66,'≈ 27,8 m PRO SEKUNDE',C.gold,1);const f=(t*.0012)%1;arrow(g,40,212,40+f*300,212,C.gold,2,1);pill(g,200,236,`${deN(f*27.8,1)} m`,C.gold,1);}
+   if(s===3){const f=clamp(p*1.2),d=f*55.6;arrow(g,40,130,X,130,C.down,2,f>0?1:0);pill(g,(40+X)/2,110,`${deN(d,1)} m BLIND`,C.down,1);pill(g,200,30,`${deN(f*2,1)} s AUFS HANDY`,C.text,1);if(f<1){box(g,X-30,140,60,22,hexA(C.down,.25),C.down,4);txt(g,X,151,'📱',C.text,12,'center',400,SANS);}}}
+  else{const x0=50,y0=200,w=170,h=150;axes(g,x0,y0,w,h,'ZEIT (s)','TEMPO',[[0,'0'],[.5,'5'],[1,'10']],[[.5,'50'],[1,'100']]);plot(g,u=>u,x0,y0,w,h,C.up,2.6,ease(p),1);const u=ease(p);circ(g,x0+u*w,y0-u*h,5,C.up,C.bg,2);
+   lines(g,[['a = Δv ÷ Δt',C.text,13,1,800],['= 27,8 m/s ÷ 10 s',C.mute,12,clamp(p*3-.5)],['≈ 2,8 m/s²',C.gold,15,clamp(p*3-1.2),800]],238,70,34);pill(g,x0+u*w,y0-u*h-18,`${Math.round(u*100)} km/h`,C.up,1);}}
+ ,box:{was:'Die Geschwindigkeit gibt an, welche Strecke ein Körper in einer bestimmten Zeit zurücklegt. Die Beschleunigung sagt, wie schnell sich die Geschwindigkeit ändert.',h2:'So rechnest du',
+ erkennen:['v = Strecke ÷ Zeit','km/h ÷ 3,6 = m/s · m/s × 3,6 = km/h','Strecke = Tempo × Zeit','a = Tempoänderung ÷ Zeit (in m/s²)'],
+ bedeutung:'Im Straßenverkehr zählt jede Sekunde: Bei 50 km/h legst du knapp 14 m pro Sekunde zurück, bei 130 km/h schon über 36 m.',
+ tipp:'Kopfrechentrick: km/h durch 10 teilen und mal 3 nehmen ergibt grob die Meter in einer Sekunde (100 km/h → ca. 30 m/s, genau 27,8).'}});
+
+les({id:'newton',cat:'bewegung',title:'Trägheit & Newton',sub:'Warum der Sicherheitsgurt so wichtig ist',
+ steps:S([[5200,'Newtons 1. Gesetz: Ein Körper bleibt in Ruhe oder bewegt sich geradeaus weiter – solange keine Kraft auf ihn wirkt. Das nennt man Trägheit.'],
+ [4800,'Bremst ein Auto plötzlich, will dein Körper mit dem alten Tempo weiterfahren – nach vorne.'],
+ [5200,'Der Sicherheitsgurt bringt die Kraft auf, die dich zusammen mit dem Auto abbremst. Ohne Gurt fliegst du weiter, bis dich etwas stoppt.'],
+ [5400,'Newtons 2. Gesetz: Kraft = Masse × Beschleunigung (F = m × a). Die doppelte Masse braucht die doppelte Kraft.'],
+ [5600,'Newtons 3. Gesetz: Zu jeder Kraft gibt es eine gleich große Gegenkraft („actio = reactio“). Stößt du dich von jemandem ab, rollt ihr beide auseinander.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=2){road(g,190,t,s===0?.15:(s===1||s===2)?.15*(1-ease(clamp(p*2))):0);const cx=180;car(g,cx,190,3,hexA(C.carBody,.6),{brake:s>=1&&p<.6});
+   const stop=ease(clamp(p*2)),fly=s===1?stop*70:s===2?stop*8:0;person(g,cx-4+fly,150,1.1,null,{lean:s>=1?stop*.4:0});
+   if(s===2){line(g,cx-16,112,cx+14+fly,150,C.gold,4);pill(g,cx+70,90,'GURT HÄLT',C.up,1);}
+   if(s===0)pill(g,200,30,'TRÄGHEIT',C.text,1);if(s===1){arrow(g,cx+20,110,cx+80,110,C.down,3,stop);pill(g,cx+60,86,'KÖRPER WILL WEITER',C.down,stop);pill(g,90,30,'VOLLBREMSUNG',C.orange,1);}}
+  if(s===3){ground(g,200);const a=(t*.0008)%1;[[1,110,C.blue,'m'],[2,190,C.orange,'2m']].forEach(([m,y,col,n],i)=>{box(g,60,y-30*Math.sqrt(m)*.8,40*m*.8,30*Math.sqrt(m)*.8,hexA(col,.4),col,4);txt(g,60+20*m*.8,y-15*Math.sqrt(m)*.8,n,col,13,'center',800);arrow(g,20,y-14,56,y-14,col,2+m*1.5,1);pill(g,28,y-36,m===1?'F':'2 × F',col,1);});
+   lines(g,[['F = m × a',C.gold,17,1,800],['gleiche Beschleunigung',C.mute,11],['→ doppelte Masse',C.mute,11],['→ doppelte Kraft',C.text,12]],230,70,30);}
+  if(s===4){ground(g,200);const f=ease(p),d=f*110;person(g,190-d,200,1.6,C.blue,{arm:10});person(g,210+d,200,1.6,C.orange,{arm:10});box(g,190-d-14,200,28,6,C.metal2,null,3);box(g,210+d-14,200,28,6,C.metal2,null,3);
+   if(p<.25){arrow(g,200,150,240,150,C.orange,3,1);arrow(g,200,165,160,165,C.blue,3,1);}else{arrow(g,170-d,150,120-d,150,C.blue,3,1);arrow(g,230+d,150,280+d,150,C.orange,3,1);}pill(g,200,30,'ACTIO = REACTIO',C.gold,1);}}
+ ,box:{was:'Die drei Newtonschen Gesetze beschreiben, wie Kräfte Bewegungen verändern: Trägheit, Kraft = Masse × Beschleunigung und actio = reactio.',h2:'So erkennst du es',
+ erkennen:['<b>1. Gesetz:</b> Trägheit – ohne Kraft keine Änderung','<b>2. Gesetz:</b> F = m × a (Kraft in Newton)','<b>3. Gesetz:</b> jede Kraft hat eine Gegenkraft','1 Newton beschleunigt 1 kg mit 1 m/s²'],
+ bedeutung:'Bei einem Aufprall mit 50 km/h wirken auf einen Menschen Kräfte wie beim Sturz aus rund 10 m Höhe. Gurt und Airbag verteilen die Bremskraft auf eine längere Strecke und eine größere Fläche.',
+ tipp:'Auch Gegenstände im Auto sind träge: Eine 1-kg-Flasche kann bei einem Unfall mit der Wucht von Dutzenden Kilogramm nach vorne fliegen. Lose Dinge also immer sichern!'}});
+
+les({id:'hebel',cat:'bewegung',title:'Der Hebel',sub:'Mit wenig Kraft viel bewegen',
+ steps:S([[5000,'Ein Hebel ist eine starre Stange, die sich um einen Drehpunkt dreht. Mit ihm kann man mit wenig Kraft viel bewegen.'],
+ [5000,'Das Hebelgesetz: Kraft × Kraftarm = Last × Lastarm. Je länger dein Arm, desto weniger Kraft brauchst du.'],
+ [6000,'Rechnen: Last 100 kg im Abstand 0,5 m. Du drückst 2 m vom Drehpunkt entfernt: 100 × 0,5 ÷ 2 = 25 kg Kraft reichen!'],
+ [5400,'Hebel sind überall: Wippe, Brechstange, Flaschenöffner, Schubkarre, Zange – und der Schraubenschlüssel. Ein längerer Schlüssel löst festsitzende Schrauben leichter.'],
+ [5000,'Archimedes soll gesagt haben: „Gebt mir einen festen Punkt, und ich hebe die Welt aus den Angeln.“']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=2){ground(g,200);const px=150,py=170,tilt=s===0?Math.sin(t*.002)*.12:s===2?-.12*ease(p):0;poly(g,[[px,py],[px-16,200],[px+16,200]],C.metal2,C.metalHi,1.4);
+   g.save();g.translate(px,py);g.rotate(tilt);box(g,-80,-6,330,8,C.copper,null,3);box(g,-80,-46,40,40,hexA(C.orange,.5),C.orange,4);txt(g,-60,-26,'100 kg',C.text,11,'center',800);arrow(g,200,-60,200,-10,C.blue,3,1);g.restore();
+   if(s>=1){pill(g,110,214,'LASTARM 0,5 m',C.orange,1);pill(g,250,214,'KRAFTARM 2 m',C.blue,1);}
+   pill(g,px+200*Math.cos(tilt),60,s===2?'25 kg':'KRAFT',C.blue,1);pill(g,px,236,'DREHPUNKT',C.gold,s===0?1:.4);
+   if(s===1)lines(g,[['Kraft × Kraftarm = Last × Lastarm',C.gold,12.5,1,800]],20,26,20);
+   if(s===2)lines(g,[['100 × 0,5 ÷ 2 = 25 kg',C.up,15,clamp(p*2),800]],20,26,20);}
+  if(s===3){const ang=t*.002;[[110,50,C.down,'KURZ: VIEL KRAFT'],[290,100,C.up,'LANG: WENIG KRAFT']].forEach(([x,L,col,n])=>{g.save();g.translate(x,120);poly(g,[[-8,-8],[8,-8],[12,0],[8,8],[-8,8],[-12,0]],C.metal2,C.metalHi,1.2);g.rotate(ang%.6-.3);box(g,-4,-6,L,12,C.metal,C.metalHi,4,1.2);arrow(g,L,40,L,10,col,L>60?2:4,1);g.restore();pill(g,x+L/2,200,n,col,1);});pill(g,200,26,'SCHRAUBENSCHLÜSSEL',C.text,1);}
+  if(s===4){ground(g,220);poly(g,[[90,200],[76,220],[104,220]],C.metal2,C.metalHi,1.2);g.save();g.translate(90,200);g.rotate(-.18);box(g,-60,-4,330,6,C.copper,null,3);g.restore();circ(g,40,160,24,C.blue,C.line2,1.4);person(g,350,160,1.3);pill(g,90,236,'FESTER PUNKT',C.gold,1);pill(g,280,30,'ARCHIMEDES',C.text,1);}}
+ ,box:{was:'Ein Hebel ist eine einfache Maschine aus einer starren Stange und einem Drehpunkt. Er tauscht Kraft gegen Weg: Weniger Kraft, dafür musst du einen längeren Weg drücken.',h2:'So rechnest du',
+ erkennen:['Kraft × Kraftarm = Last × Lastarm','Kraft = Last × Lastarm ÷ Kraftarm','Längerer Kraftarm = weniger Kraft','Dafür wird der Weg länger'],
+ bedeutung:'Hebel vervielfachen die Kraft deiner Muskeln. Auch dein Körper ist voller Hebel: Arme, Beine und Kiefer arbeiten mit Gelenken als Drehpunkten.',
+ tipp:'Ein Drehmomentschlüssel nutzt das Hebelgesetz: Drehmoment (Nm) = Kraft (N) × Hebellänge (m). 100 N an 0,5 m ergeben 50 Nm.'}});
+
+les({id:'bremsweg',cat:'bewegung',title:'Reibung & Bremsweg',sub:'Rechnen: Wie lang ist der Anhalteweg?',
+ steps:S([[5000,'Reibung bremst Bewegungen. Ohne Reibung könntest du nicht laufen, und kein Auto könnte bremsen oder lenken.'],
+ [5000,'Die Haftreibung hält die Reifen auf der Straße. Auf nasser oder vereister Fahrbahn ist sie viel kleiner.'],
+ [5600,'Anhalteweg = Reaktionsweg + Bremsweg. Faustformel Reaktionsweg: (Tempo ÷ 10) × 3. Bei 100 km/h: 30 m.'],
+ [5600,'Faustformel Bremsweg: (Tempo ÷ 10)². Bei 100 km/h: 10 × 10 = 100 m. Zusammen: 130 m Anhalteweg!'],
+ [6000,'Doppeltes Tempo = vierfacher Bremsweg! Bei 50 km/h sind es 25 m, bei 100 km/h schon 100 m. Bei Glatteis kann er bis zu zehnmal länger sein.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){ground(g,180);const R=(t*.003);g.save();g.translate(200,140);g.rotate(R);circ(g,0,0,40,C.metal3,C.carLine,3);for(let k=0;k<8;k++){const a=k*TAU/8;line(g,Math.cos(a)*28,Math.sin(a)*28,Math.cos(a)*40,Math.sin(a)*40,C.metal2,4);}circ(g,0,0,10,C.metalHi);g.restore();
+   if(s===1){box(g,0,180,140,12,hexA(C.water,.35),null,0);box(g,260,180,140,12,hexA('#cfe8ff',.7),null,0);pill(g,70,214,'NASS',C.water,1);pill(g,330,214,'EIS',C.blue,1);pill(g,200,214,'TROCKEN',C.up,1);}
+   arrow(g,240,182,300,182,C.orange,2.4,1);arrow(g,160,182,100,182,C.blue,2.4,1);pill(g,200,30,s===0?'REIBUNG = HALT':'HAFTREIBUNG',C.text,1);}
+  else{const S2=(v,y,a,anim)=>{const re=v/10*3,br=Math.pow(v/10,2),k=2.4,x0=20;const f=anim?ease(clamp(p*1.4)):1;box(g,x0,y,re*k*Math.min(1,f*2),18,hexA(C.gold,.6),C.gold,2);if(s>=3||anim){box(g,x0+re*k,y,br*k*clamp(f*2-1),18,hexA(C.down,.6),C.down,2);}
+    pill(g,x0+re*k/2,y-14,`${re} m`,C.gold,a);if(s>=3)pill(g,x0+re*k+br*k/2,y-14,`${br} m`,C.down,a);pill(g,x0,y+30,`${v} km/h`,C.text,1,'left');if(s>=3)pill(g,x0+(re+br)*k+4,y+9,`= ${re+br} m`,C.up,clamp(f*2-1),'left');};
+   if(s===2||s===3){S2(100,110,1,true);pill(g,200,30,s===2?'REAKTIONSWEG: (100 ÷ 10) × 3 = 30 m':'BREMSWEG: (100 ÷ 10)² = 100 m',s===2?C.gold:C.down,1);pill(g,100,200,'REAKTION',C.gold,1);if(s===3)pill(g,240,200,'BREMSEN',C.down,1);}
+   if(s===4){S2(50,70,1,false);S2(100,160,1,false);pill(g,330,30,'2 × TEMPO = 4 × BREMSWEG',C.down,1);}}}
+ ,box:{was:'Der Anhalteweg ist die Strecke vom Erkennen einer Gefahr bis zum Stillstand. Er besteht aus Reaktionsweg (noch keine Bremse) und Bremsweg.',h2:'So rechnest du (Faustformeln)',
+ erkennen:['Reaktionsweg = (Tempo ÷ 10) × 3','Bremsweg = (Tempo ÷ 10)²','Gefahrenbremsung: Bremsweg ÷ 2','Anhalteweg = Reaktionsweg + Bremsweg'],
+ bedeutung:'Weil das Tempo beim Bremsweg im Quadrat steht, machen schon ein paar km/h viel aus: Bei 60 statt 50 km/h wächst der Bremsweg von 25 auf 36 m.',
+ tipp:'Merke für die Fahrschule: Die Faustformeln gelten für normales Bremsen auf trockener Straße. Bei einer Gefahrenbremsung halbiert sich der Bremsweg ungefähr.'}});
+
+/* ---------- ENERGIE & LEISTUNG ---------- */
+const TRACK=(()=>{const pts=[];for(let i=0;i<=120;i++){const x=20+i*3;const y=x<80?50+(x-20)*.02:x<200?51+ (1-Math.cos((x-80)/120*Math.PI))*80:x<300?211-(1-Math.cos((x-200)/100*Math.PI))*45:121+(x-300)*.0;pts.push([x,y]);}return pts;})();
+les({id:'achterbahn',thumb:2,cat:'energie',title:'Lage- & Bewegungsenergie',sub:'Die Physik der Achterbahn',
+ steps:S([[4800,'Energie ist die Fähigkeit, Arbeit zu verrichten. Sie geht nie verloren – sie wandelt sich nur von einer Form in eine andere um.'],
+ [4800,'Oben auf der Achterbahn hat der Wagen viel Lageenergie: E = m × g × h. Je höher, desto mehr.'],
+ [5400,'Er rollt hinab: Die Lageenergie wird zu Bewegungsenergie E = ½ × m × v². Ganz unten ist der Wagen am schnellsten.'],
+ [6000,'Rechnen: Aus 20 m Höhe (ohne Reibung): v = √(2 × g × h) = √(2 × 9,81 × 20) ≈ 19,8 m/s ≈ 71 km/h.'],
+ [5400,'Durch Reibung wird ein Teil zu Wärme. Deshalb kann der Wagen nie wieder ganz so hoch kommen wie am Start.']]),
+ draw(g,st){const{s,p,t}=st;g.save();g.strokeStyle=C.metal;g.lineWidth=4;g.lineJoin='round';g.beginPath();TRACK.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.stroke();g.restore();for(let i=0;i<TRACK.length;i+=8)line(g,TRACK[i][0],TRACK[i][1],TRACK[i][0],240,hexA(C.mute,.3),1);
+  const L=pathLen(TRACK),u=s<=1?0:s===4?Math.min(.98,(t*.00009)%1):clamp(ease(p)*.62);const q=pathAt(TRACK,L,u*L[L.length-1]);const h=(211-q[1])/160,v=Math.sqrt(Math.max(0,1-h-(s===4?u*.25:0)));
+  box(g,q[0]-10,q[1]-14,20,12,C.down,C.bodyLine,3);circ(g,q[0]-6,q[1]-2,2.5,C.text);circ(g,q[0]+6,q[1]-2,2.5,C.text);
+  const B=(x,f,col,n,ly)=>{box(g,x,120,18,90,C.head,C.line2,3);box(g,x,210-90*clamp(f),18,90*clamp(f),col,null,3);pill(g,x+9,ly||224,n,col,1);};
+  if(s>=1){const loss=s===4?u*.25:0;B(316,h,C.blue,'LAGE',224);B(346,1-h-loss,C.orange,'BEWEGUNG',240);if(s===4)B(376,loss,C.down,'WÄRME',224);}
+  if(s===0)pill(g,200,236,'ENERGIE WANDELT SICH UM',C.text,1);if(s===1)pill(g,60,26,'E = m × g × h',C.blue,1);if(s===2)pill(g,200,26,'E = ½ × m × v²',C.orange,1);
+  if(s===3){lines(g,[['v = √(2 × 9,81 × 20)',C.text,12.5,1],['≈ 19,8 m/s ≈ 71 km/h',C.up,14,clamp(p*2),800]],150,24,26);arrow(g,40,50,40,210,C.mute,1.2,1,true);pill(g,58,130,'20 m',C.text,1,'left');}}
+ ,box:{was:'Lageenergie (potenzielle Energie) steckt in allem, was hoch liegt. Bewegungsenergie (kinetische Energie) steckt in allem, was sich bewegt. Beide wandeln sich ineinander um.',h2:'So rechnest du',
+ erkennen:['Lageenergie: E = m × g × h (g ≈ 9,81 m/s²)','Bewegungsenergie: E = ½ × m × v²','Tempo aus Fallhöhe: v = √(2 × g × h)','Einheit: Joule (J)'],
+ bedeutung:'Energieerhaltung ist eines der wichtigsten Gesetze der Physik: In einem geschlossenen System bleibt die Gesamtenergie immer gleich – sie wird nur umgewandelt.',
+ tipp:'Pumpspeicherkraftwerke nutzen das: Mit überschüssigem Strom wird Wasser nach oben gepumpt. Bei Bedarf fließt es durch Turbinen zurück und erzeugt wieder Strom.'}});
+
+les({id:'leistung',thumb:1,cat:'energie',title:'Leistung & Stromkosten',sub:'Rechnen: Was kostet mein Fernseher?',
+ steps:S([[5000,'Leistung sagt, wie schnell Energie umgesetzt wird. Die Einheit ist Watt (W). 1.000 W = 1 Kilowatt (kW).'],
+ [5000,'Ein Wasserkocher hat etwa 2.000 W, ein Fernseher rund 100 W, eine LED-Lampe nur etwa 8 W.'],
+ [5600,'Energie = Leistung × Zeit. 1 kW eine Stunde lang ergibt 1 Kilowattstunde (kWh). Danach rechnet der Stromzähler ab.'],
+ [6400,'Rechnen: Fernseher 100 W, 4 Stunden pro Tag, 365 Tage: 0,1 kW × 4 h × 365 = 146 kWh. Bei 0,35 € pro kWh ≈ 51 € im Jahr.'],
+ [6000,'Stand-by: 5 W rund um die Uhr = 0,005 kW × 24 h × 365 ≈ 44 kWh ≈ 15 € pro Jahr – für nichts!']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){const D=[['WASSERKOCHER',2000,C.down],['FERNSEHER',100,C.blue],['LED-LAMPE',8,C.gold]];const f=s===0?.3:ease(clamp(p*1.4));D.forEach(([n,w,col],i)=>{const y=60+i*60,L=Math.max(3,Math.log10(w)/Math.log10(2000)*240*f);box(g,140,y,L,26,hexA(col,.55),col,4);pill(g,130,y+13,n,col,1,'right');pill(g,146+L,y+13,`${deN(w)} W`,C.text,f,'left');});pill(g,200,22,'1.000 W = 1 kW',C.text,1);}
+  if(s===2){box(g,120,50,160,120,C.head,C.line2,10);const k=(t*.0004)%10000;box(g,140,80,120,34,C.card2,C.line2,4);txt(g,200,97,String(Math.floor(k)).padStart(5,'0')+' kWh',C.up,15,'center',800);
+   const a=t*.01;g.save();g.beginPath();g.ellipse(200,140,40,8,0,0,TAU);g.strokeStyle=C.metal;g.stroke();g.restore();circ(g,200+Math.cos(a)*40,140+Math.sin(a)*8,3,C.down);pill(g,200,206,'1 kW × 1 h = 1 kWh',C.gold,1);}
+  if(s===3)lines(g,[['0,1 kW × 4 h × 365 Tage',C.text,13,1],['= 146 kWh',C.blue,15,clamp(p*4-.5),800],['146 kWh × 0,35 €',C.text,13,clamp(p*4-1.3)],['≈ 51 € PRO JAHR',C.up,17,clamp(p*4-2),800]],40,60,40);
+  if(s===4){lines(g,[['0,005 kW × 24 h × 365',C.text,13,1],['≈ 44 kWh',C.blue,15,clamp(p*3-.4),800],['≈ 15 € FÜR NICHTS',C.down,17,clamp(p*3-1.2),800]],30,70,42);box(g,290,100,70,48,C.carBody,C.carLine,6);circ(g,350,140,3,(t*.004)%2<1?C.down:hexA(C.down,.3));pill(g,325,170,'STAND-BY',C.down,1);}}
+ ,box:{was:'Leistung ist Energie pro Zeit. Wie viel Energie ein Gerät insgesamt verbraucht, hängt von seiner Leistung und davon ab, wie lange es läuft.',h2:'So rechnest du',
+ erkennen:['Energie (kWh) = Leistung (kW) × Zeit (h)','Watt ÷ 1.000 = Kilowatt','Kosten = kWh × Preis pro kWh','Stand-by-Geräte laufen 8.760 Stunden im Jahr'],
+ bedeutung:'Große Verbraucher im Haushalt sind alles, was heizt oder kühlt: Wärmepumpe, Warmwasser, Trockner, Herd, Kühlschrank. Kurze, starke Geräte wie der Wasserkocher fallen oft weniger ins Gewicht als gedacht.',
+ tipp:'Ein günstiges Strommessgerät für die Steckdose zeigt dir, was ein Gerät wirklich verbraucht – auch im Stand-by.'}});
+
+les({id:'wirkungsgrad',thumb:2,cat:'energie',title:'Wirkungsgrad',sub:'Wie viel Energie wirklich ankommt',
+ steps:S([[5200,'Bei jeder Umwandlung geht ein Teil der Energie als Wärme „verloren“. Der Wirkungsgrad sagt, wie viel davon als Nutzen ankommt.'],
+ [5400,'Alte Glühbirne: Nur etwa 5 % werden zu Licht, rund 95 % zu Wärme. Eine LED wandelt ein Vielfaches davon in Licht um.'],
+ [5400,'Benzinmotor: Nur rund 25 bis 35 % der Energie im Sprit gehen in die Bewegung. Der Rest wird Wärme in Auspuff und Kühler.'],
+ [5000,'Elektromotor: über 90 % Wirkungsgrad! Deshalb braucht ein E-Auto viel weniger Energie pro Kilometer.'],
+ [5600,'Rechnen: Wirkungsgrad = Nutzen ÷ Aufwand. 100 J rein, 35 J Bewegung heraus: 35 ÷ 100 = 0,35 = 35 %.']]),
+ draw(g,st){const{s,p,t}=st;
+  const sankey=(eff,nm,lab)=>{const x0=40,y0=70,H=100,f=ease(clamp(p*1.4));box(g,x0,y0,100,H,hexA(C.gold,.5),C.gold,0);const uh=H*eff,wh=H-uh;
+   g.save();g.fillStyle=hexA(C.up,.55);g.beginPath();g.moveTo(x0+100,y0);g.lineTo(x0+100+200*f,y0);g.lineTo(x0+100+200*f,y0+uh);g.lineTo(x0+100,y0+uh);g.fill();
+   g.fillStyle=hexA(C.down,.45);g.beginPath();g.moveTo(x0+100,y0+uh);g.bezierCurveTo(x0+170,y0+uh,x0+170,y0+uh+60*f,x0+100+130*f,y0+uh+60*f);g.lineTo(x0+100+130*f,y0+uh+60*f+wh);g.bezierCurveTo(x0+150,y0+H+60*f,x0+150,y0+H,x0+100,y0+H);g.fill();g.restore();
+   pill(g,x0+50,y0+H/2,'100 %',C.text,1);pill(g,x0+100+200*f-4,y0+Math.max(uh/2,0)-(uh<14?12:0),`${lab} ${Math.round(eff*100)} %`,C.up,f,'right');pill(g,x0+100+130*f-4,y0+uh+60*f+wh/2,`WÄRME ${100-Math.round(eff*100)} %`,C.down,f,'right');pill(g,200,26,nm,C.text,1);};
+  if(s===0){sankey(.5,'ENERGIE REIN → NUTZEN + WÄRME','NUTZEN');}
+  if(s===1)sankey(.05,'GLÜHBIRNE','LICHT');if(s===2)sankey(.3,'BENZINMOTOR','BEWEGUNG');if(s===3)sankey(.9,'ELEKTROMOTOR','BEWEGUNG');
+  if(s===4)lines(g,[['Wirkungsgrad = Nutzen ÷ Aufwand',C.text,13,1,800],['= 35 J ÷ 100 J',C.mute,13,clamp(p*3-.3)],['= 0,35 = 35 %',C.up,17,clamp(p*3-1),800]],40,70,44);}
+ ,box:{was:'Der Wirkungsgrad (η, „Eta“) gibt an, welcher Anteil der eingesetzten Energie in die gewünschte Form umgewandelt wird. Er ist immer kleiner als 100 %.',h2:'So rechnest du',
+ erkennen:['η = Nutzen ÷ Aufwand','× 100 ergibt Prozent','Verluste werden fast immer zu Wärme','Elektromotor > 90 % · Benzinmotor ca. 25–35 %'],
+ bedeutung:'Je höher der Wirkungsgrad, desto weniger Energie wird verschwendet. Deshalb sparen LED-Lampen, Elektromotoren und Wärmepumpen so viel Energie.',
+ tipp:'Ein „Perpetuum mobile“, das ewig ohne Energiezufuhr läuft, ist unmöglich – denn bei jeder Bewegung geht Energie durch Reibung als Wärme verloren.'}});
+
+les({id:'solar',cat:'energie',title:'Solarstrom',sub:'Licht direkt in Strom verwandeln',
+ steps:S([[4800,'Eine Solarzelle wandelt Licht direkt in Strom um – ganz ohne bewegte Teile.'],
+ [5600,'Sie besteht aus zwei unterschiedlich behandelten Schichten Silizium. Trifft Licht darauf, werden Elektronen gelöst und fließen als Strom durch den Draht.'],
+ [5200,'Ein Modul hat heute rund 400 bis 450 Watt Spitzenleistung (Wp) bei voller Sonne. Der Wirkungsgrad liegt bei etwa 20 bis 22 %.'],
+ [5800,'Rechnen: In Bayern liefert 1 kWp im Jahr rund 1.000 kWh. Eine 10-kWp-Anlage: 10 × 1.000 = rund 10.000 kWh pro Jahr.'],
+ [5400,'Am meisten Strom gibt es mittags im Sommer, bei Ausrichtung nach Süden und rund 30° Dachneigung. Im Winter ist es nur ein Bruchteil.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){glow(g,40,30,60,C.gold,1);circ(g,40,30,18,C.gold);for(let k=0;k<5;k++){const f=(t*.0012+k*.2)%1;const x=60+k*55,y=40;line(g,x,y,x+50*f,y+70*f,C.gold,1.6);}
+   box(g,40,110,320,26,hexA(C.blue,.55),C.blue,2);box(g,40,136,320,26,hexA(C.orange,.4),C.orange,2);pill(g,370,123,'SILIZIUM (n)',C.blue,1,'right');pill(g,370,149,'SILIZIUM (p)',C.orange,1,'right');
+   if(s===1){const P=[[60,110],[60,90],[20,90],[20,220],[200,220],[380,220],[380,175],[360,175]];wire(g,P);bulb(g,200,220,.9);flow(g,P,t,C.aqua,{gap:16,speed:.06,r:2.4});for(let i=0;i<6;i++){const f=(t*.002+i/6)%1;circ(g,80+i*48,136-f*26,2.4,C.aqua);}pill(g,200,198,'STROM',C.aqua,1);}
+   else pill(g,200,200,'LICHT → STROM',C.gold,1);}
+  if(s===2){g.save();g.translate(200,130);for(let i=0;i<6;i++)for(let j=0;j<10;j++){box(g,-150+j*30,-90+i*30,28,28,hexA(C.blue,.55),C.blue,2,1);}g.restore();pill(g,200,232,'≈ 400–450 Wp · η ≈ 20–22 %',C.gold,1);}
+  if(s===3){const M=[2.5,4.5,8,11,13,13.5,14,12.5,9,6,3,2];const x0=40,y0=210,w=320,h=140,f=ease(clamp(p*1.4));axes(g,x0,y0,w,h,'MONAT','kWh',[[0.04,'J'],[.5,'JUL'],[.96,'D']],[]);M.forEach((m,i)=>{const bh=m/14*h*f;box(g,x0+i*w/12+3,y0-bh,w/12-6,bh,hexA(C.gold,.7),C.gold,2);});pill(g,200,22,'10 kWp ≈ 10.000 kWh / JAHR',C.up,1);}
+  if(s===4){const x0=40,y0=210,w=320,h=150;axes(g,x0,y0,w,h,'UHRZEIT','LEISTUNG',[[0,'6'],[.5,'13'],[1,'20']],[]);plot(g,u=>Math.pow(Math.sin(u*Math.PI),1.6),x0,y0,w,h,C.gold,2.6,1,1);plot(g,u=>.3*Math.pow(Math.sin(clamp((u-.2)/.6)*Math.PI),1.6),x0,y0,w,h,C.blue,2.2,1,1);pill(g,x0+w/2,y0-h-4,'SOMMER',C.gold,1);pill(g,x0+w/2,y0-h*.3-16,'WINTER',C.blue,1);const u=(t*.0002)%1;circ(g,x0+u*w,y0-Math.pow(Math.sin(u*Math.PI),1.6)*h,5,C.gold,C.bg,2);}}
+ ,box:{was:'Photovoltaik (PV) wandelt Sonnenlicht in Solarzellen direkt in elektrischen Strom um. Ein Wechselrichter macht daraus Wechselstrom fürs Hausnetz.',h2:'So rechnest du',
+ erkennen:['kWp = Spitzenleistung bei voller Sonne','Bayern: ca. 1.000 kWh pro kWp und Jahr','Ertrag = kWp × spezifischer Ertrag','Beste Ausrichtung: Süden, ca. 30°'],
+ bedeutung:'Selbst verbrauchter Solarstrom ist meist viel günstiger als Strom aus dem Netz. Mit Wärmepumpe, E-Auto oder Batteriespeicher lässt sich der Eigenverbrauch erhöhen.',
+ tipp:'Eine Ost-West-Anlage liefert mittags weniger, dafür morgens und abends mehr – das passt oft besser zum Verbrauch im Haushalt.'}});
+
+/* ---------- WÄRME ---------- */
+const PRT=(()=>{const r=rng(31);return Array.from({length:42},(_,i)=>({gx:i%7,gy:Math.floor(i/7),a:r()*TAU,b:r()*TAU,r1:r(),r2:r()}));})();
+function particles(g,x,y,w,h,state,t,col){const n=PRT.length;PRT.forEach((P,i)=>{let px,py;const gx=x+16+P.gx*(w-32)/6,gy=y+h-16-P.gy*(h-32)/5*(state===0?.6:1);
+  if(state===0){px=gx+Math.sin(t*.03+P.a)*2;py=y+h-16-P.gy*24+Math.cos(t*.03+P.b)*2;}
+  else if(state===1){const k=(t*.0006*(1+P.r1)+P.a);px=x+14+((P.gx/6+.05*Math.sin(k*3))*(w-28));py=y+h-14-P.gy*16-Math.abs(Math.sin(k+P.b))*6;}
+  else{const vx=Math.cos(P.a),vy=Math.sin(P.a),sp=.05*(1+P.r1);let X=P.r1*(w-20)+vx*t*sp,Y=P.r2*(h-20)+vy*t*sp;const W=w-20,H=h-20;X=((X%(2*W))+2*W)%(2*W);if(X>W)X=2*W-X;Y=((Y%(2*H))+2*H)%(2*H);if(Y>H)Y=2*H-Y;px=x+10+X;py=y+10+Y;}
+  circ(g,px,py,7,col,C.bg,1);});}
+les({id:'aggregat',thumb:3,cat:'waerme',title:'Fest, flüssig, gasförmig',sub:'Das Teilchenmodell',
+ steps:S([[5000,'Alles besteht aus winzigen Teilchen, die sich ständig bewegen. Je wärmer etwas ist, desto schneller bewegen sie sich.'],
+ [4600,'Fest (Eis): Die Teilchen sitzen fest an ihrem Platz und zittern nur ein wenig hin und her.'],
+ [4800,'Flüssig (Wasser): Ab 0 °C lösen sie sich voneinander und gleiten aneinander vorbei.'],
+ [4800,'Gasförmig (Dampf): Ab 100 °C fliegen sie frei und schnell durch den ganzen Raum.'],
+ [6000,'Beim Schmelzen und beim Sieden steigt die Temperatur nicht weiter, obwohl man heizt – die Energie wird gebraucht, um die Teilchen voneinander zu lösen.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=3){const state=s===0?Math.floor((t*.0003)%3):s-1,col=[C.blue,C.water,C.mute][state];box(g,110,40,180,170,hexA(col,.08),C.line2,10);particles(g,110,40,180,170,state,t,hexA(col,.85));
+   const T=[-10,20,110][state];thermo(g,340,190,140,(T+20)/140,T>90?C.down:T>0?C.orange:C.blue);pill(g,340,26,`${T} °C`,C.text,1);pill(g,200,232,['FEST · EIS','FLÜSSIG · WASSER','GASFÖRMIG · DAMPF'][state],col,1);}
+  else{const x0=50,y0=205,w=320,h=160;axes(g,x0,y0,w,h,'ZUGEFÜHRTE WÄRME','TEMPERATUR',[],[[.12,'0 °C'],[.72,'100 °C']]);
+   const f=u=>u<.1?u/.1*.12:u<.3?.12:u<.55?.12+(u-.3)/.25*.6:u<.85?.72:.72+(u-.85)/.15*.2;plot(g,f,x0,y0,w,h,C.down,2.6,ease(p),1);
+   pill(g,x0+.2*w,y0-.12*h-16,'SCHMELZEN',C.blue,clamp(p*3-.6));pill(g,x0+.7*w,y0-.72*h-16,'SIEDEN',C.mute,clamp(p*2-1));}}
+ ,box:{was:'Stoffe können fest, flüssig oder gasförmig sein – das sind die Aggregatzustände. Welcher Zustand vorliegt, hängt von Temperatur und Druck ab.',h2:'So erkennst du es',
+ erkennen:['<b>Fest:</b> feste Form, Teilchen schwingen am Platz','<b>Flüssig:</b> passt sich dem Gefäß an','<b>Gasförmig:</b> füllt jeden Raum aus','Wasser: schmilzt bei 0 °C, siedet bei 100 °C'],
+ bedeutung:'Die Energie beim Verdampfen ist riesig: Um 1 Liter kochendes Wasser zu verdampfen, braucht man über fünfmal so viel Energie wie um es von 0 auf 100 °C zu erwärmen.',
+ tipp:'Auf der Zugspitze kocht Wasser schon bei rund 90 °C, weil der Luftdruck niedriger ist. Nudeln brauchen dort länger.'}});
+
+les({id:'ausdehnung',cat:'waerme',title:'Wärmeausdehnung',sub:'Warum Brücken Fugen haben',
+ steps:S([[5000,'Die meisten Stoffe dehnen sich beim Erwärmen aus: Die Teilchen schwingen stärker und brauchen mehr Platz.'],
+ [5000,'Brücken haben deshalb Dehnungsfugen. Im Sommer wird die Brücke länger, im Winter kürzer.'],
+ [6400,'Rechnen: Stahl dehnt sich um ca. 0,012 mm pro Meter und Grad. Eine 100-m-Brücke bei 40 °C Unterschied: 100 × 40 × 0,012 = 48 mm.'],
+ [4800,'Ein Flüssigkeitsthermometer nutzt die Ausdehnung: Wird es warm, steigt die Flüssigkeit im dünnen Röhrchen.'],
+ [5800,'Ausnahme Wasser: Es ist bei 4 °C am dichtesten. Eis ist leichter als Wasser – deshalb schwimmt es, und Seen frieren von oben zu.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){const w=(Math.sin(t*.002)+1)/2;box(g,60,110,240+w*40,24,w>.5?hexA(C.down,.4+w*.3):hexA(C.blue,.4),w>.5?C.down:C.blue,4);for(let k=0;k<5;k++){const x=90+k*40;glow(g,x,170,14,C.fire,w);}pill(g,200,60,w>.5?'WARM → LÄNGER':'KALT → KÜRZER',w>.5?C.down:C.blue,1);}
+  if(s===1||s===2){const w=s===1?(Math.sin(t*.0018)+1)/2:ease(p);ground(g,180);box(g,20,140,170+w*10,18,C.metal2,C.metalHi,2);box(g,210-10+w*0,140,170,18,C.metal2,C.metalHi,2);const gap=Math.max(2,20-w*16);
+   box(g,20,140,170+(18-gap),18,C.metal2,C.metalHi,2);box(g,190+18,140,172,18,C.metal2,C.metalHi,2);[30,180,230,370].forEach(x=>box(g,x-6,158,12,22,C.metal3,null,1));tag(g,199,149,200,80,s===1?(w>.5?'SOMMER: FUGE ENG':'WINTER: FUGE WEIT'):'DEHNUNGSFUGE',C.gold,1);
+   if(s===2)lines(g,[['100 m × 40 °C × 0,012 mm',C.text,12.5,1],['= 48 mm',C.up,16,clamp(p*2),800]],40,216,22);}
+  if(s===3){const w=(Math.sin(t*.0015)+1)/2;thermo(g,200,200,160,.2+w*.6,w>.5?C.down:C.blue);for(let k=0;k<=5;k++){line(g,212,200-6-k*30,220,200-6-k*30,C.mute,1);txt(g,226,200-6-k*30,`${k*10}`,C.mute,9,'left',600);}pill(g,300,60,`${Math.round(2+w*48)/1} °C`,C.text,1);}
+  if(s===4){box(g,60,60,280,150,hexA(C.water,.25),C.water,6);g.fillStyle=hexA(C.water,.35);g.fillRect(62,60,276,150);box(g,140,52,120,26,hexA('#e0f2ff',.9),C.blue,4);pill(g,200,40,'EIS SCHWIMMT',C.blue,1);
+   for(let i=0;i<3;i++)pill(g,330,100+i*36,['0 °C','2 °C','4 °C'][i],C.text,1,'right');pill(g,200,232,'4 °C: AM DICHTESTEN (UNTEN)',C.water,1);for(let i=0;i<4;i++){const f=(t*.0006+i*.25)%1;circ(g,90+i*50,200-f*100,4,hexA(C.blue,.6));}}}
+ ,box:{was:'Wärmeausdehnung bedeutet: Wird ein Stoff erwärmt, nimmt seine Länge bzw. sein Volumen zu. Beim Abkühlen zieht er sich wieder zusammen.',h2:'So rechnest du',
+ erkennen:['Längenänderung = Länge × Temperaturänderung × Ausdehnungszahl','Stahl: ca. 0,012 mm pro m und °C','Aluminium: ca. 0,023 mm pro m und °C','Gase dehnen sich viel stärker aus als Feststoffe'],
+ bedeutung:'Überall in der Technik muss die Ausdehnung eingeplant werden: Bahnschienen, Brücken, Rohre, Stromleitungen (hängen im Sommer tiefer) und Motorteile.',
+ tipp:'Aluminium dehnt sich etwa doppelt so stark aus wie Stahl. Deshalb werden genaue Messungen an Bauteilen bei 20 °C Referenztemperatur gemacht – oder man rechnet die Temperatur heraus.'}});
+
+les({id:'waermetransport',cat:'waerme',title:'Wie Wärme wandert',sub:'Leitung, Strömung und Strahlung',
+ steps:S([[4800,'Wärme fließt immer von warm nach kalt – nie umgekehrt. Dafür gibt es drei Wege.'],
+ [5600,'Wärmeleitung: Die Teilchen geben ihre Bewegung an die Nachbarn weiter – wie beim Löffel im heißen Tee. Metalle leiten gut, Luft und Dämmstoffe schlecht.'],
+ [5600,'Konvektion (Strömung): Warme Luft steigt auf, kalte sinkt ab. So verteilt ein Heizkörper die Wärme im ganzen Raum.'],
+ [5200,'Wärmestrahlung: Wärme reist als unsichtbare Infrarotstrahlung – sogar durchs Vakuum. So wärmt uns die Sonne.'],
+ [5400,'Dämmung bremst alle drei: Eingeschlossene, ruhende Luft – etwa in Dämmplatten oder Daunen – leitet schlecht und kann nicht strömen.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){box(g,40,80,120,90,hexA(C.down,.4),C.down,8);box(g,240,80,120,90,hexA(C.blue,.4),C.blue,8);for(let i=0;i<5;i++){const f=(t*.001+i/5)%1;circ(g,165+f*70,100+i*12,3,C.orange);}pill(g,100,125,'WARM',C.down,1);pill(g,300,125,'KALT',C.blue,1);pill(g,200,40,'WARM → KALT',C.text,1);}
+  if(s===1){box(g,60,150,110,70,hexA(C.down,.35),C.down,8);const fw=ease(clamp(p*1.5));for(let i=0;i<30;i++){const u=i/29,T=clamp(fw*1.4-u);g.fillStyle=T>.5?hexA(C.down,.5+T*.5):T>.15?hexA(C.orange,.7):C.metal;g.fillRect(100+u*180,130-u*90,10,8);}pill(g,320,40,'LÖFFEL WIRD HEISS',C.down,clamp(fw*2-.8));pill(g,115,232,'HEISSER TEE',C.down,1);}
+  if(s===2){box(g,40,30,320,190,null,C.line2,8);box(g,60,150,16,60,hexA(C.down,.6),C.down,3);for(let k=0;k<4;k++)line(g,64+k*3,156,64+k*3,204,C.down,1);pill(g,68,232,'HEIZKÖRPER',C.down,1);
+   const P=[[80,190],[80,60],[330,60],[330,190],[100,200]];for(let i=0;i<16;i++){const L=pathLen(P),q=pathAt(P,L,(t*.05+i*L[4]/16)%L[4]);const hot=q[1]<120&&q[0]<200||q[0]<100;circ(g,q[0],q[1],3.5,hot?C.down:C.blue);}pill(g,200,46,'WARM STEIGT AUF',C.down,1);pill(g,300,206,'KALT SINKT AB',C.blue,1);}
+  if(s===3){glow(g,50,70,70,C.gold,1);circ(g,50,70,24,C.gold);for(let i=0;i<6;i++){const f=(t*.0012+i/6)%1;g.save();g.strokeStyle=hexA(C.down,.8);g.lineWidth=1.6;g.beginPath();for(let k=0;k<20;k++){const u=k/20*.25+f*.75;const x=lerp(80,300,u),y=lerp(85,170,u)+Math.sin(u*60)*4;k?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();g.restore();}ground(g,200);person(g,320,200,1.5);pill(g,190,40,'INFRAROT-STRAHLUNG',C.down,1);pill(g,320,90,'WÄRME',C.orange,1);}
+  if(s===4){const L=[[40,'PUTZ',C.metal],[60,'MAUER',C.orange],[100,'DÄMMUNG',C.gold],[30,'PUTZ',C.metal]];let x=120;L.forEach(([w,n,col],i)=>{box(g,x,40,w,170,hexA(col,.4),col,2);if(n==='DÄMMUNG'){for(let k=0;k<30;k++){const r=rng(k+3);circ(g,x+r()*w,40+r()*170,3,hexA(C.bg,.7));}}pill(g,x+w/2,226-(i%2)*16,n,col,1);x+=w;});
+   pill(g,60,60,'INNEN 21 °C',C.down,1);pill(g,370,60,'AUSSEN 0 °C',C.blue,1,'right');const f=(t*.0005)%1;circ(g,lerp(120,240,f),120,4,C.down);}}
+ ,box:{was:'Wärme kann auf drei Arten übertragen werden: durch Leitung (im Material), durch Konvektion (mit strömenden Flüssigkeiten oder Gasen) und durch Strahlung (Infrarot).',h2:'So erkennst du es',
+ erkennen:['<b>Leitung:</b> heißer Topfgriff, kalte Fliesen unter den Füßen','<b>Konvektion:</b> Heizkörper, Föhn, Meeresströmungen','<b>Strahlung:</b> Sonne, Lagerfeuer, Infrarotheizung','<b>Dämmung:</b> ruhende Luft in kleinen Poren'],
+ bedeutung:'Wer die drei Wege kennt, spart Heizkosten: Dämmung gegen Leitung, dichte Fenster gegen Zugluft (Konvektion) und Rollläden in der Nacht gegen Strahlung.',
+ tipp:'Fliesen fühlen sich kälter an als ein Teppich – obwohl beide gleich warm sind. Fliesen leiten die Wärme nur schneller von deinen Füßen weg.'}});
+
+les({id:'waermepumpe',thumb:0,cat:'waerme',title:'Die Wärmepumpe',sub:'Heizen mit Wärme aus der Luft',
+ steps:S([[5200,'Eine Wärmepumpe holt Wärme aus der kalten Außenluft und bringt sie ins Haus – wie ein umgedrehter Kühlschrank.'],
+ [5800,'Ein Kältemittel verdampft schon bei sehr niedrigen Temperaturen. Im Verdampfer nimmt es dabei Wärme aus der Luft auf – sogar bei −10 °C.'],
+ [5400,'Der Verdichter presst das Gas zusammen. Dadurch wird es heiß – wie eine Fahrradpumpe, die beim Pumpen warm wird.'],
+ [6000,'Im Verflüssiger gibt das heiße Gas seine Wärme an das Heizwasser ab und wird wieder flüssig. Ein Ventil entspannt es, und der Kreislauf beginnt von vorn.'],
+ [6200,'Rechnen: Aus 1 kWh Strom macht sie rund 3 bis 4 kWh Wärme. Bei einer Jahresarbeitszahl von 3,5: 10.000 kWh Wärme ÷ 3,5 ≈ 2.860 kWh Strom.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=3){const x0=90,y0=50,x1=310,y1=200,P=[[x0,y1],[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
+   const comp=[[x0,125,'VERDAMPFER',C.blue,1],[200,y0,'VERDICHTER',C.purple,2],[x1,125,'VERFLÜSSIGER',C.down,3],[200,y1,'VENTIL',C.aqua,3]];
+   pipe(g,P,hexA(C.mute,.4),6);const L=pathLen(P);for(let i=0;i<24;i++){const d=(t*.04+i*L[4]/24)%L[4],q=pathAt(P,L,d);const u=d/L[4];const col=u<.25?C.blue:u<.5?C.purple:u<.75?C.down:C.aqua;circ(g,q[0],q[1],3.4,col);}
+   comp.forEach(([x,y,n,col,k])=>{const a=s===0||s===k||(s===3&&k===3)?1:.35;box(g,x-24,y-16,48,32,C.head,col,6,2);g.save();g.globalAlpha=a;pill(g,x,y+(y===y0?-30:y===y1?30:0)+(y!==y0&&y!==y1?(x<200?-34:-34):0),n,col,1,x<200&&y===125?'center':'center');g.restore();});
+   if(s===1){for(let i=0;i<5;i++){const f=(t*.0015+i/5)%1;arrow(g,10+f*30,90+i*16,30+f*30,90+i*16,C.blue,1.6,1-f);}pill(g,30,232,'LUFT −10 °C',C.blue,1,'left');}
+   if(s===2)pill(g,200,125,'GAS WIRD HEISS',C.purple,1);
+   if(s===3){for(let i=0;i<5;i++){const f=(t*.0015+i/5)%1;arrow(g,340+f*20,90+i*16,360+f*24,90+i*16,C.down,1.6,1-f);}pill(g,390,232,'HEIZWASSER 35 °C',C.down,1,'right');}
+   if(s===0)pill(g,200,125,'KREISLAUF',C.text,1);}
+  else{lines(g,[['1 kWh Strom → 3,5 kWh Wärme',C.text,13,1],['10.000 kWh Wärme ÷ 3,5',C.mute,13,clamp(p*3-.3)],['≈ 2.860 kWh Strom',C.up,17,clamp(p*3-1),800]],24,50,40);
+   const f=ease(clamp(p*1.4));box(g,60,190,60*f,22,hexA(C.gold,.7),C.gold,3);box(g,60+60*f,190,150*f,22,hexA(C.blue,.6),C.blue,3);pill(g,90,226,'STROM 1',C.gold,f);pill(g,200,226,'UMWELTWÄRME 2,5',C.blue,f);pill(g,330,201,'= 3,5 WÄRME',C.down,f);}}
+ ,box:{was:'Eine Wärmepumpe „pumpt“ Wärme von einem kalten Ort (Außenluft, Erdreich, Grundwasser) zu einem warmen Ort (Heizung) – mit Hilfe von Strom und einem Kältemittel-Kreislauf.',h2:'So funktioniert’s',
+ erkennen:['<b>Verdampfer:</b> nimmt Umweltwärme auf','<b>Verdichter:</b> macht das Gas heiß (braucht Strom)','<b>Verflüssiger:</b> gibt Wärme ans Heizwasser ab','<b>Expansionsventil:</b> entspannt und kühlt'],
+ bedeutung:'Die Jahresarbeitszahl (JAZ) zeigt die Effizienz übers ganze Jahr. Je niedriger die Vorlauftemperatur (z. B. Fußbodenheizung mit 35 °C), desto sparsamer arbeitet die Wärmepumpe.',
+ tipp:'Dein Kühlschrank ist auch eine Wärmepumpe: Er holt Wärme aus dem Innenraum und gibt sie hinten am Gitter ab – deshalb ist es dort warm.'}});
+
+/* ---------- ELEKTRIZITÄT ---------- */
+les({id:'stromkreis',cat:'strom',title:'Der Stromkreis',sub:'Was ist eigentlich Strom?',
+ steps:S([[4800,'Strom ist fließende elektrische Ladung: Winzige Elektronen wandern durch einen Draht.'],
+ [5200,'Damit Strom fließt, braucht man einen geschlossenen Kreis: eine Quelle (Batterie), Leitungen und einen Verbraucher (Lampe).'],
+ [4800,'Wird der Kreis unterbrochen – zum Beispiel mit einem Schalter –, fließt kein Strom mehr und die Lampe geht aus.'],
+ [5600,'Vergleich mit Wasser: Die Spannung (Volt) ist wie der Druck einer Pumpe, die Stromstärke (Ampere) wie die Wassermenge pro Sekunde.'],
+ [5000,'Der Widerstand (Ohm) ist wie ein enges Rohr: Er bremst den Fluss. In der Lampe wird dabei Licht und Wärme frei.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=2){const P=[[80,180],[80,60],[320,60],[320,180],[80,180]];const open=s===2&&(Math.floor(t*.0006)%2===1);wire(g,[[80,180],[80,60],[320,60],[320,180],[230,180]]);wire(g,[[170,180],[80,180]]);
+   g.save();g.translate(170,180);g.rotate(open?-.5:0);line(g,0,0,60,0,C.text,3);g.restore();circ(g,170,180,4,C.text);circ(g,230,180,4,C.text);
+   g.fillStyle=C.bg;g.fillRect(66,105,28,30);battery(g,80,120,{lab:'BATTERIE'});bulb(g,320,120,open?0:1,16);g.fillStyle=C.bg;
+   if(!open&&s>=0)flow(g,P,t,C.aqua,{gap:20,speed:.05,r:2.6});pill(g,320,96,'LAMPE',C.gold,1);if(s===2)pill(g,200,214,open?'SCHALTER AUS':'SCHALTER AN',open?C.down:C.up,1);if(s===0)pill(g,200,30,'ELEKTRONEN FLIESSEN',C.aqua,1);if(s===1)pill(g,200,30,'GESCHLOSSENER KREIS',C.up,1);}
+  else{const P=[[70,190],[70,60],[330,60],[330,190],[70,190]];pipe(g,P,hexA(C.water,.35),s===4?16:16);if(s===4){box(g,180,52,60,16,C.bg,null,0);pipe(g,[[180,60],[240,60]],hexA(C.water,.35),6);pill(g,210,34,'WIDERSTAND',C.orange,1);}
+   flow(g,P,t,C.water,{gap:14,speed:s===4?.035:.06,r:3});g.save();g.translate(70,125);g.rotate(t*.01);for(let k=0;k<4;k++){g.rotate(Math.PI/2);box(g,-3,-18,6,18,C.metal,null,2);}g.restore();circ(g,70,125,22,null,C.gold,2);pill(g,70,164,'PUMPE = SPANNUNG',C.gold,1,'left');pill(g,330,125,'MENGE = STROM',C.water,1,'right');}}
+ ,box:{was:'Elektrischer Strom ist die gerichtete Bewegung von Ladungen, meist Elektronen. Er fließt nur in einem geschlossenen Stromkreis.',h2:'Die drei Grundgrößen',
+ erkennen:['<b>Spannung U</b> in Volt (V): der „Druck“','<b>Stromstärke I</b> in Ampere (A): die „Menge“','<b>Widerstand R</b> in Ohm (Ω): die „Bremse“','Schalter öffnet oder schließt den Kreis'],
+ bedeutung:'Die Elektronen selbst sind im Draht erstaunlich langsam – nur Millimeter pro Sekunde. Das Signal „Strom an“ breitet sich aber fast mit Lichtgeschwindigkeit aus, deshalb leuchtet die Lampe sofort.',
+ tipp:'Batterie (9 V), Autobatterie (12 V), Steckdose (230 V): Ab etwa 50 V Wechselspannung kann Strom für Menschen gefährlich werden. An der Steckdose nie selbst basteln!'}});
+
+les({id:'ohm',cat:'strom',title:'Das Ohmsche Gesetz',sub:'Rechnen mit U = R × I',
+ steps:S([[4800,'Spannung, Stromstärke und Widerstand hängen fest zusammen: U = R × I (Spannung = Widerstand × Stromstärke).'],
+ [5600,'Das URI-Dreieck hilft beim Umstellen: U oben, R und I unten. Halte zu, was du suchst: I = U ÷ R und R = U ÷ I.'],
+ [5400,'Rechnen: An 12 V hängt eine Lampe mit 6 Ω Widerstand. Stromstärke: I = 12 V ÷ 6 Ω = 2 A.'],
+ [5000,'Die Leistung ist P = U × I. Für die Lampe: 12 V × 2 A = 24 W.'],
+ [5400,'Bei gleichem Widerstand gilt: doppelte Spannung → doppelter Strom. Im Diagramm ergibt das eine gerade Linie.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){const cx=200,cy=130;poly(g,[[cx,cy-90],[cx-100,cy+70],[cx+100,cy+70]],hexA(C.gold,.08),C.gold,2);line(g,cx-62,cy+10,cx+62,cy+10,C.gold,2);line(g,cx,cy+10,cx,cy+70,C.gold,2);
+   const hl=s===1?Math.floor((t*.0005)%3):-1;[['U',cx,cy-25,0,C.gold],['R',cx-42,cy+42,1,C.orange],['I',cx+42,cy+42,2,C.aqua]].forEach(([n,x,y,k,col])=>{if(hl===k)box(g,x-18,y-18,36,36,hexA(C.down,.35),C.down,6);txt(g,x,y,n,col,26,'center',800);});
+   if(s===0)pill(g,200,236,'U = R × I',C.text,1);else pill(g,200,236,['U = R × I','R = U ÷ I','I = U ÷ R'][hl],C.up,1);}
+  if(s===2||s===3){const P=[[80,190],[80,60],[320,60],[320,190],[80,190]];wire(g,P);g.fillStyle=C.bg;g.fillRect(66,105,28,30);battery(g,80,120,{lab:'12 V'});box(g,296,100,48,40,C.head,C.orange,4);txt(g,320,120,'6 Ω',C.orange,13,'center',800);flow(g,P,t,C.aqua,{gap:18,speed:.06,r:2.6});
+   circ(g,200,60,16,C.head,C.aqua,2);txt(g,200,60,'A',C.aqua,13,'center',800);if(s===2)pill(g,200,30,'I = 12 ÷ 6 = 2 A',C.aqua,clamp(p*2));if(s===3){pill(g,200,30,'I = 2 A',C.aqua,1);pill(g,200,220,'P = 12 V × 2 A = 24 W',C.up,clamp(p*2));glow(g,320,120,40,C.gold,.6);}}
+  if(s===4){const x0=60,y0=210,w=280,h=160;axes(g,x0,y0,w,h,'SPANNUNG (V)','STROM (A)',[[0,'0'],[.5,'12'],[1,'24']],[[.5,'2'],[1,'4']]);plot(g,u=>u,x0,y0,w,h,C.aqua,2.6,1,1);const u=.25+.75*(Math.sin(t*.0015)+1)/2*.95;circ(g,x0+u*w,y0-u*h,6,C.aqua,C.bg,2);pill(g,x0+u*w-10,y0-u*h-20,`${deN(u*24,1)} V → ${deN(u*4,1)} A`,C.text,1,'right');pill(g,330,46,'R = 6 Ω',C.orange,1,'right');}}
+ ,box:{was:'Das Ohmsche Gesetz beschreibt, wie Spannung, Stromstärke und Widerstand zusammenhängen. Es gilt für viele Leiter wie Drähte und Heizwiderstände.',h2:'So rechnest du',
+ erkennen:['U = R × I','I = U ÷ R','R = U ÷ I','Leistung: P = U × I (Watt)'],
+ bedeutung:'Mit dem Gesetz berechnet man zum Beispiel, wie viel Strom ein Gerät zieht und wie dick ein Kabel sein muss, damit es nicht zu heiß wird.',
+ tipp:'Eselsbrücke: „URI“ – wie der Kanton in der Schweiz. U steht oben, R und I nebeneinander unten.'}});
+
+les({id:'schaltungen',cat:'strom',title:'Reihe & parallel',sub:'Wie man Verbraucher verbindet',
+ steps:S([[4600,'Mehrere Verbraucher kann man auf zwei Arten verbinden: in Reihe oder parallel.'],
+ [5400,'Reihenschaltung: Alles liegt hintereinander in einem einzigen Kreis. Fällt eine Lampe aus, gehen alle aus – wie bei alten Lichterketten.'],
+ [5200,'In Reihe teilt sich die Spannung auf: Zwei gleiche Lampen an 230 V bekommen jede nur 115 V – sie leuchten schwächer.'],
+ [5600,'Parallelschaltung: Jeder Verbraucher hat seinen eigenen Weg. Alle bekommen die volle Spannung, und fällt einer aus, laufen die anderen weiter.'],
+ [5600,'Im Haus sind alle Steckdosen parallel geschaltet: Jedes Gerät bekommt 230 V. Die Ströme der Geräte addieren sich in der Leitung.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=2){const broken=s===1&&Math.floor(t*.0005)%2===1;const P=[[60,190],[60,60],[340,60],[340,190],[60,190]];wire(g,P);g.fillStyle=C.bg;g.fillRect(46,110,28,30);battery(g,60,125,{lab:s===2?'230 V':''});
+   [150,250].forEach((x,i)=>{g.fillStyle=C.bg;g.fillRect(x-16,46,32,28);bulb(g,x,60,broken?0:(s===2?.55:1),14);if(broken&&i===1){line(g,x-10,50,x+10,70,C.down,3);line(g,x+10,50,x-10,70,C.down,3);}if(s===2)pill(g,x,30,'115 V',C.gold,1);});
+   if(!broken)flow(g,P,t,C.aqua,{gap:22,speed:.05,r:2.4});pill(g,200,226,s===1&&broken?'EINE KAPUTT → ALLE AUS':'REIHENSCHALTUNG',broken?C.down:C.text,1);}
+  else{const broken=s===3&&Math.floor(t*.0005)%2===1;wire(g,[[60,200],[60,40],[340,40],[340,200],[60,200]]);[150,250].forEach(x=>wire(g,[[x,40],[x,200]]));g.fillStyle=C.bg;g.fillRect(46,105,28,30);battery(g,60,120,{lab:'230 V'});
+   [150,250,340].forEach((x,i)=>{g.fillStyle=C.bg;g.fillRect(x-16,106,32,28);const on=!(broken&&i===1);bulb(g,x,120,on?1:0,14);if(!on){line(g,x-10,110,x+10,130,C.down,3);line(g,x+10,110,x-10,130,C.down,3);}if(on)flow(g,[[x,40],[x,200]],t,C.aqua,{gap:22,speed:.05,r:2.4});if(s===4)pill(g,x,150,'230 V',C.gold,1);});
+   flow(g,[[60,200],[60,40],[340,40]],t,C.aqua,{gap:22,speed:.05,r:2.4});pill(g,200,226,s===3&&broken?'EINE KAPUTT → REST LEUCHTET':s===4?'STRÖME ADDIEREN SICH':'PARALLELSCHALTUNG',s===3&&broken?C.up:C.text,1);}}
+ ,box:{was:'In einer Reihenschaltung fließt derselbe Strom nacheinander durch alle Verbraucher. In einer Parallelschaltung liegt an allen Verbrauchern dieselbe Spannung an.',h2:'So erkennst du es',
+ erkennen:['<b>Reihe:</b> ein Weg, Spannungen addieren sich','<b>Reihe:</b> Widerstände addieren sich: R = R1 + R2','<b>Parallel:</b> mehrere Wege, gleiche Spannung','<b>Parallel:</b> Ströme addieren sich: I = I1 + I2'],
+ bedeutung:'Die Parallelschaltung ist im Haushalt Standard – jedes Gerät soll unabhängig funktionieren. Batterien im Gerät werden dagegen oft in Reihe geschaltet, um die Spannung zu erhöhen (2 × 1,5 V = 3 V).',
+ tipp:'Moderne LED-Lichterketten haben oft eine Schutzschaltung: Fällt eine LED aus, leuchten die anderen trotzdem weiter.'}});
+
+les({id:'haushalt',cat:'strom',title:'Strom im Haushalt',sub:'Wechselstrom, Sicherung und FI-Schalter',
+ steps:S([[5200,'Aus der Steckdose kommt Wechselstrom: 230 V, die 50-mal pro Sekunde die Richtung wechseln – das sind 50 Hertz (Hz).'],
+ [5200,'Im Kabel stecken drei Leiter: der Außenleiter (braun, „Phase“), der Neutralleiter (blau) und der Schutzleiter (grün-gelb).'],
+ [5400,'Fließt zu viel Strom, wird die Leitung gefährlich heiß. Der Leitungsschutzschalter („Sicherung“) schaltet dann ab – zum Beispiel ab 16 A.'],
+ [6200,'Rechnen: 16 A × 230 V = 3.680 W. Wasserkocher (2.000 W) und Heizlüfter (2.000 W) an einem Stromkreis = 4.000 W → die Sicherung fliegt!'],
+ [6200,'Der FI-Schalter vergleicht den hin- und zurückfließenden Strom. Fehlen schon 30 mA – zum Beispiel, weil Strom durch einen Menschen fließt –, schaltet er blitzschnell ab.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){const x0=40,y0=125,w=320;line(g,x0,y0,x0+w,y0,C.line2,1);g.save();g.strokeStyle=C.gold;g.lineWidth=2.6;g.beginPath();for(let i=0;i<=w;i++){const y=y0-Math.sin(i/w*TAU*2.5-t*.006)*70;i?g.lineTo(x0+i,y):g.moveTo(x0+i,y);}g.stroke();g.restore();pill(g,60,40,'+325 V',C.gold,1,'left');pill(g,60,210,'−325 V',C.gold,1,'left');pill(g,300,226,'50 × PRO SEKUNDE',C.text,1);pill(g,300,30,'230 V ~ 50 Hz',C.up,1);}
+  if(s===1){[[80,'#a0522d','AUSSENLEITER (L)'],[125,C.blue,'NEUTRALLEITER (N)'],[170,'#3ba55c','SCHUTZLEITER (PE)']].forEach(([y,col,n],i)=>{box(g,40,y-12,180,24,col,null,12);if(i===2)for(let k=0;k<9;k++)box(g,50+k*20,y-12,8,24,'#e7c93c',null,0);box(g,220,y-6,30,12,C.copper,null,2);pill(g,262,y,n,i===0?C.orange:i===1?C.blue:C.up,1,'left');});pill(g,130,226,'BRAUN · BLAU · GRÜN-GELB',C.text,1);}
+  if(s===2||s===3){const W=s===2?lerp(1000,4000,(Math.sin(t*.0012)+1)/2):lerp(2000,4000,ease(clamp(p*1.6-.2)));const I=W/230,trip=I>16;box(g,150,40,100,140,C.head,C.line2,8);box(g,180,70,40,60,C.card2,C.line2,4);box(g,192,trip?100:76,16,26,trip?C.down:C.up,null,3);pill(g,200,152,'16 A',C.text,1);
+   pill(g,200,206,`${deN(W)} W ÷ 230 V = ${deN(I,1)} A`,trip?C.down:C.up,1);if(trip)pill(g,200,26,'SICHERUNG FLIEGT!',C.down,(Math.sin(t*.02)>0)?1:.5);
+   if(s===3){pill(g,60,90,'WASSERKOCHER 2.000 W',C.orange,1,'left');pill(g,60,120,'+ HEIZLÜFTER 2.000 W',C.orange,clamp(p*2-.2),'left');pill(g,340,90,'MAX: 3.680 W',C.gold,1,'right');}}
+  if(s===4){box(g,140,40,120,150,C.head,C.line2,8);txt(g,200,64,'FI 30 mA',C.text,12,'center',800);const fault=Math.floor(t*.0005)%2===1;box(g,186,fault?120:86,28,30,fault?C.down:C.up,null,4);pill(g,200,170,fault?'AUS!':'EIN',fault?C.down:C.up,1);
+   arrow(g,60,90,130,90,C.orange,2.4,1);arrow(g,130,130,60,130,C.blue,2.4,1);pill(g,60,70,'HIN 10 A',C.orange,1,'left');pill(g,60,152,fault?'ZURÜCK 9,97 A':'ZURÜCK 10 A',C.blue,1,'left');if(fault){person(g,330,200,1.4);arrow(g,300,120,330,150,C.down,2,1);pill(g,330,226,'30 mA FEHLEN',C.down,1);}}}
+ ,box:{was:'Im Haushalt nutzen wir Wechselstrom mit 230 V und 50 Hz. Sicherungen schützen die Leitungen vor Überlastung, der FI-Schalter schützt Menschen vor einem Stromschlag.',h2:'So erkennst du es',
+ erkennen:['<b>Braun:</b> Außenleiter (L), führt Spannung','<b>Blau:</b> Neutralleiter (N)','<b>Grün-gelb:</b> Schutzleiter (PE)','Max. Leistung = Sicherung (A) × 230 V'],
+ bedeutung:'Viele Wohnungen haben 16-A-Sicherungen pro Stromkreis. Große Geräte wie Herd oder Wallbox laufen oft über Drehstrom (400 V) mit eigenen Sicherungen.',
+ tipp:'Teste den FI-Schalter etwa zweimal im Jahr mit der Prüftaste „T“. Er muss sofort auslösen. Arbeiten an der Hausinstallation gehören in die Hand von Elektrofachkräften.'}});
+
+/* ---------- MAGNETISMUS ---------- */
+les({id:'magnetfeld',cat:'magnet',title:'Magnete & Magnetfeld',sub:'Nordpol, Südpol und der Kompass',
+ steps:S([[5200,'Jeder Magnet hat einen Nord- und einen Südpol. Ungleiche Pole ziehen sich an, gleiche Pole stoßen sich ab.'],
+ [5000,'Um den Magneten liegt ein unsichtbares Magnetfeld. Eisenspäne machen die Feldlinien sichtbar – sie laufen von Nord nach Süd.'],
+ [5200,'Auch die Erde ist ein riesiger Magnet. Die Kompassnadel richtet sich nach ihrem Feld aus und zeigt nach Norden.'],
+ [5600,'Kurios: Beim geografischen Nordpol liegt magnetisch gesehen ein Südpol – denn er zieht den Nordpol der Kompassnadel an.'],
+ [5000,'Nur wenige Stoffe sind magnetisch: vor allem Eisen, Nickel und Kobalt. Aluminium, Kupfer, Holz und Kunststoff nicht.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){const ph=Math.floor((t*.0004)%2),d=ph===0?lerp(60,18,ease(((t*.0004)%1))):lerp(18,60,ease(((t*.0004)%1)));magnet(g,140-d,80,90,28);magnet(g,260+d,80,90,28);pill(g,200,40,'N + S: ANZIEHUNG',C.up,1);
+   const d2=lerp(20,60,ease((t*.0004)%1));magnet(g,140-d2,180,90,28);magnet(g,260+d2,180,90,28,Math.PI);pill(g,200,226,'S + S: ABSTOSSUNG',C.down,1);}
+  if(s===1){dipole(g,200,125,hexA(C.mute,.8),ease(clamp(p*1.5)),{ks:[34,50,70,95,130,180,250]});magnet(g,200,125,120,30);for(let i=0;i<5;i++){const f=(t*.0006+i/5)%1;}pill(g,200,22,'FELDLINIEN',C.text,1);}
+  if(s===2||s===3){const cx=200,cy=125,R=70;dipole(g,cx,cy,hexA(C.blue,.5),1,{ks:[80,110,150,200,270],rmin:R+2,vert:1});g.save();g.translate(cx,cy);g.rotate(-Math.PI/2);g.restore();circ(g,cx,cy,R,C.earth,C.line2,1.4);
+   g.save();g.translate(cx,cy);g.rotate(-Math.PI/2);magnet(g,0,0,70,18,0);g.restore();
+   pill(g,cx,cy-R-14,'GEOGRAFISCHER NORDPOL',C.text,1);needle(g,330,125,26,-Math.PI/2+Math.sin(t*.003)*.08);circ(g,330,125,30,null,C.line2,1.4);pill(g,330,170,'KOMPASS',C.down,1);
+   if(s===3)tag(g,cx,cy-20,80,100,'MAGNETISCHER SÜDPOL',C.up,1);}
+  if(s===4){const items=[['EISEN',1,C.metal],['NICKEL',1,C.metal2],['ALU',0,C.metalHi],['KUPFER',0,C.copper],['HOLZ',0,'#a0703c']];magnet(g,200,50,120,28,0);items.forEach(([n,m,col],i)=>{const x=50+i*75,y=m?lerp(190,90,ease(clamp(p*1.6))):190;box(g,x-18,y-12,36,24,col,C.line2,4);pill(g,x,224,n,m?C.up:C.mute,1);});}}
+ ,box:{was:'Ein Magnet zieht Eisen an und erzeugt um sich ein Magnetfeld. Seine Wirkung ist an den beiden Polen am stärksten.',h2:'So erkennst du es',
+ erkennen:['Nordpol meist rot, Südpol meist grün','Gleiche Pole stoßen sich ab','Ungleiche Pole ziehen sich an','Feldlinien: außen von Nord nach Süd'],
+ bedeutung:'Das Erdmagnetfeld schützt uns vor geladenen Teilchen der Sonne. Wo diese Teilchen an den Polen in die Atmosphäre eindringen, entstehen Polarlichter.',
+ tipp:'Zerbrichst du einen Stabmagneten, bekommst du zwei kleine Magnete mit jeweils eigenem Nord- und Südpol. Einen einzelnen Pol gibt es nicht.'}});
+
+les({id:'elektromagnet',cat:'magnet',title:'Der Elektromagnet',sub:'Ein Magnet zum Ein- und Ausschalten',
+ steps:S([[5400,'Fließt Strom durch einen Draht, entsteht um ihn herum ein Magnetfeld. Das entdeckte Hans Christian Ørsted im Jahr 1820.'],
+ [5000,'Wickelt man den Draht zu einer Spule, addieren sich die Felder: Es entsteht ein viel stärkerer Elektromagnet.'],
+ [4800,'Steckt man einen Eisenkern in die Spule, wird der Magnet noch einmal um ein Vielfaches stärker.'],
+ [5400,'Der große Vorteil: Er lässt sich ein- und ausschalten! Schrottkräne heben so Autos hoch und lassen sie auf Knopfdruck wieder fallen.'],
+ [5200,'Elektromagnete stecken in Lautsprechern, Relais, Türöffnern, Klingeln, Magnetventilen und im MRT im Krankenhaus.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){const on=Math.floor(t*.0005)%2===0;line(g,200,20,200,230,C.copper,5);if(on)flow(g,[[200,230],[200,20]],t,C.aqua,{gap:16,speed:.06,r:2.4});
+   for(let k=0;k<8;k++){const a=k*TAU/8,x=200+Math.cos(a)*70,y=125+Math.sin(a)*50;needle(g,x,y,12,on?a+Math.PI/2:-Math.PI/2);}if(on){g.save();g.strokeStyle=hexA(C.blue,.5);[30,55,80].forEach(r=>{g.beginPath();g.ellipse(200,125,r,r*.7,0,0,TAU);g.stroke();});g.restore();}pill(g,330,30,on?'STROM AN':'STROM AUS',on?C.up:C.mute,1);}
+  if(s===1||s===2){const cx=200,cy=125;if(s===2)box(g,cx-100,cy-14,200,28,C.metal2,C.metalHi,3);dipole(g,cx,cy,hexA(C.blue,.55),1,{ks:s===2?[40,60,85,115,155,210]:[60,90,130,180],rmin:24});
+   for(let k=0;k<12;k++){const x=cx-88+k*16;g.save();g.strokeStyle=C.copper;g.lineWidth=4;g.beginPath();g.ellipse(x,cy,5,26,0,0,TAU);g.stroke();g.restore();}
+   pill(g,cx,26,s===2?'MIT EISENKERN: VIEL STÄRKER':'SPULE',C.text,1);pill(g,40,cy,'N',C.down,1);pill(g,360,cy,'S',C.up,1);}
+  if(s===3){const on=p<.65;ground(g,226);line(g,200,0,200,60,C.metal,3);box(g,160,60,80,22,on?C.down:C.metal2,C.metalHi,6);if(on)glow(g,200,72,50,C.down,.5);const cy=on?lerp(200,108,ease(clamp(p*3))):lerp(108,214,ease(clamp((p-.65)*4)));car(g,200,cy,1.5,C.orange);pill(g,320,40,on?'MAGNET EIN':'MAGNET AUS',on?C.down:C.mute,1);}
+  if(s===4){const D=[['LAUTSPRECHER',80,80],['KLINGEL',200,80],['RELAIS',320,80],['TÜRÖFFNER',80,180],['MAGNETVENTIL',200,180],['MRT',320,180]];D.forEach(([n,x,y],i)=>{const a=clamp(p*6-i);box(g,x-50,y-30,100,60,hexA(C.purple,.12*a),hexA(C.purple,a),8);pill(g,x,y,n,C.purple,a);});}}
+ ,box:{was:'Ein Elektromagnet ist eine Drahtspule, durch die Strom fließt. Er wirkt wie ein Stabmagnet, lässt sich aber ein- und ausschalten und in der Stärke regeln.',h2:'So wird er stärker',
+ erkennen:['Mehr Windungen','Mehr Stromstärke','Eisenkern in der Spule','Strom umpolen → Pole tauschen'],
+ bedeutung:'Ohne Elektromagnete gäbe es keine Elektromotoren, keine Generatoren, keine Lautsprecher und keine Festplatten. Sie sind eine Grundlage der ganzen Elektrotechnik.',
+ tipp:'Im MRT erzeugen supraleitende Spulen ein Magnetfeld, das rund 30.000- bis 60.000-mal stärker ist als das Erdmagnetfeld.'}});
+
+les({id:'motor',cat:'magnet',title:'Der Elektromotor',sub:'Wie aus Strom Drehung wird',
+ steps:S([[4800,'Ein Elektromotor wandelt elektrische Energie in Bewegung um – mit Hilfe von Magneten.'],
+ [5200,'Eine Spule, der Rotor, sitzt drehbar zwischen zwei festen Magneten. Fließt Strom, wird die Spule selbst zum Magneten.'],
+ [5000,'Gleiche Pole stoßen sich ab, ungleiche ziehen sich an – die Spule beginnt sich zu drehen.'],
+ [5400,'Kurz bevor sie stehen bleiben würde, polt der Stromwender (Kommutator) den Strom um. So dreht sie sich immer weiter.'],
+ [5600,'Elektromotoren sind überall: im E-Auto, in der Waschmaschine, im Akkuschrauber und in der Wärmepumpe – und sie erreichen über 90 % Wirkungsgrad.']]),
+ draw(g,st){const{s,p,t}=st;const cx=200,cy=120;
+  if(s<=3){box(g,30,cy-50,70,100,hexA(C.down,.85),C.down,6);txt(g,65,cy,'N','#ffffff',22,'center',800);box(g,300,cy-50,70,100,hexA(C.up,.85),C.up,6);txt(g,335,cy,'S','#ffffff',22,'center',800);
+   const ang=s===0?t*.003:s===1?0:t*.004;const flip=Math.cos(ang)<0;g.save();g.translate(cx,cy);g.rotate(ang);box(g,-80,-14,160,28,C.copper,C.metalHi,6);if(s>=1){txt(g,-62,0,flip?'S':'N','#ffffff',13,'center',800);txt(g,62,0,flip?'N':'S','#ffffff',13,'center',800);}g.restore();circ(g,cx,cy,8,C.metalHi);
+   if(s>=2){arrow(g,cx,cy-70,cx+50,cy-56,C.gold,2.4,1);pill(g,cx,30,'DREHUNG',C.gold,1);}
+   if(s===3){g.save();g.translate(cx,206);g.rotate(ang);box(g,-18,-6,16,12,C.copper,null,2);box(g,2,-6,16,12,C.copper,null,2);g.restore();pill(g,cx,236,'KOMMUTATOR POLT UM',C.aqua,1);}
+   if(s===1)pill(g,cx,206,'ROTOR = SPULE',C.copper,1);}
+  else{const D=[['E-AUTO',80],['WASCHMASCHINE',200],['AKKUSCHRAUBER',320]];D.forEach(([n,x],i)=>{g.save();g.translate(x,110);g.rotate(t*.006*(i+1));for(let k=0;k<3;k++){g.rotate(TAU/3);box(g,-4,-32,8,30,C.copper,null,3);}g.restore();circ(g,x,110,36,null,C.line2,2);pill(g,x,170,n,C.text,1);});pill(g,200,226,'> 90 % WIRKUNGSGRAD',C.up,1);}}
+ ,box:{was:'Ein Elektromotor nutzt die Kräfte zwischen Magneten: Eine stromdurchflossene Spule wird im Feld fester Magnete angezogen und abgestoßen und dreht sich dadurch.',h2:'So funktioniert’s',
+ erkennen:['<b>Stator:</b> feststehende Magnete','<b>Rotor:</b> drehende Spule','<b>Kommutator:</b> polt den Strom immer wieder um','Mehr Strom = mehr Kraft (Drehmoment)'],
+ bedeutung:'Moderne Motoren (z. B. im E-Auto) brauchen keinen mechanischen Kommutator mehr: Elektronik schaltet den Strom in den Spulen blitzschnell um. Das macht sie fast verschleißfrei.',
+ tipp:'Ein Elektromotor hat sein volles Drehmoment schon ab dem Stand – deshalb beschleunigen E-Autos so kräftig aus dem Stand.'}});
+
+les({id:'generator',cat:'magnet',title:'Generator & Induktion',sub:'Wie aus Bewegung Strom wird',
+ steps:S([[4800,'Ein Generator macht das Gegenteil eines Motors: Er wandelt Bewegung in elektrischen Strom um.'],
+ [5400,'Bewegt man einen Magneten in einer Spule, entsteht eine Spannung. Das ist die Induktion – entdeckt von Michael Faraday 1831.'],
+ [5000,'Je schneller die Bewegung und je mehr Windungen die Spule hat, desto höher ist die Spannung.'],
+ [5400,'Dreht sich ein Magnet ständig, ändert sich die Richtung immer wieder: Es entsteht Wechselstrom.'],
+ [6000,'So erzeugen Kraftwerke, Windräder und Fahrraddynamos Strom. Auch E-Autos gewinnen damit beim Bremsen Energie zurück (Rekuperation).']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=2){const sp=s===2?.006:.003,x=130+Math.sin(t*sp)*70,v=Math.cos(t*sp);for(let k=0;k<(s===2?14:8);k++){const xx=200+k*(s===2?9:14);g.save();g.strokeStyle=C.copper;g.lineWidth=4;g.beginPath();g.ellipse(xx,125,6,32,0,0,TAU);g.stroke();g.restore();}
+   magnet(g,x,125,90,24);wire(g,[[200,157],[200,210],[340,210],[340,190]]);wire(g,[[200+((s===2?14:8)-1)*(s===2?9:14),157],[300,180]]);circ(g,320,175,28,C.head,C.line2,2);const amp=v*(s===2?1:.5);needle(g,320,180,22,-Math.PI/2+amp*.9);txt(g,320,160,'V',C.text,10,'center',800);
+   pill(g,200,30,s===2?'SCHNELLER + MEHR WINDUNGEN':'MAGNET BEWEGT → SPANNUNG',s===2?C.gold:C.text,1);if(s===0)pill(g,200,236,'BEWEGUNG → STROM',C.up,1);}
+  if(s===3){const cx=110,cy=125,a=t*.004;circ(g,cx,cy,62,null,C.copper,6);g.save();g.translate(cx,cy);g.rotate(a);magnet(g,0,0,90,22);g.restore();
+   const x0=200,w=180;line(g,x0,cy,x0+w,cy,C.line2,1);g.save();g.strokeStyle=C.gold;g.lineWidth=2.4;g.beginPath();for(let i=0;i<=w;i++){const y=cy-Math.sin(a-(w-i)*.04)*60;i?g.lineTo(x0+i,y):g.moveTo(x0+i,y);}g.stroke();g.restore();circ(g,x0+w,cy-Math.sin(a)*60,4,C.gold);pill(g,290,30,'WECHSELSTROM',C.gold,1);}
+  if(s===4){const tw=(x,y,sc)=>{line(g,x,y,x,y+120*sc,C.metal,5*sc);g.save();g.translate(x,y);g.rotate(t*.0025);for(let k=0;k<3;k++){g.rotate(TAU/3);poly(g,[[0,-3*sc],[70*sc,-1*sc],[70*sc,2*sc],[0,4*sc]],C.body,C.bodyLine,1.2);}g.restore();circ(g,x,y,5*sc,C.metalHi);};ground(g,206);tw(120,70,1);tw(280,100,.7);pill(g,200,226,'WINDRAD = GROSSER GENERATOR',C.up,1);}}
+ ,box:{was:'Induktion bedeutet: Ändert sich das Magnetfeld in einer Spule, entsteht dort eine Spannung. Ein Generator nutzt das, indem er Magnete und Spulen gegeneinander dreht.',h2:'So wird mehr Spannung erzeugt',
+ erkennen:['Schnellere Bewegung','Mehr Windungen in der Spule','Stärkerer Magnet','Drehung → Wechselspannung'],
+ bedeutung:'Fast unser ganzer Strom kommt aus Generatoren – ob im Kohle-, Gas-, Wasser- oder Windkraftwerk. Nur Solarzellen und Batterien liefern Strom ohne Drehung.',
+ tipp:'Auch die Ladeschale deiner Zahnbürste oder kabelloses Laden am Handy nutzt Induktion: Eine Spule im Ladegerät erzeugt ein wechselndes Magnetfeld, eine Spule im Gerät macht daraus Strom.'}});
+
+/* ---------- SCHALL, LICHT & ATOME ---------- */
+les({id:'schall',thumb:0,cat:'wellen',title:'Schall',sub:'Rechnen: Wie weit ist das Gewitter?',
+ steps:S([[5200,'Schall ist eine Schwingung der Luft: Ein Lautsprecher drückt die Luft zusammen und lässt sie wieder auseinander.'],
+ [5000,'Diese Verdichtungen wandern als Welle durch die Luft – mit rund 343 Metern pro Sekunde (bei 20 °C).'],
+ [5800,'Hohe Töne schwingen schnell (hohe Frequenz), tiefe Töne langsam. Wir Menschen hören etwa 20 bis 20.000 Schwingungen pro Sekunde (Hertz).'],
+ [6000,'Gewitter-Rechnung: Der Blitz ist fast sofort zu sehen, der Donner braucht rund 3 Sekunden pro Kilometer. 9 Sekunden gezählt = 3 km entfernt.'],
+ [5000,'Im Weltraum gibt es keine Luft – deshalb kann sich dort kein Schall ausbreiten. Explosionen im All sind völlig lautlos.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s<=1){const sp=s===1?1:.6;box(g,20,90,30,70,C.head,C.line2,4);poly(g,[[50,105],[70,80],[70,170],[50,145]],C.metal2,C.metalHi,1.2);const r=rng(4);for(let i=0;i<220;i++){const x0=80+r()*310,y=50+r()*150;const dx=Math.sin((x0-80)*.08-t*.008*sp)*6;const dens=Math.cos((x0+dx-80)*.08-t*.008*sp);circ(g,x0+dx,y,1.8,hexA(C.aqua,.35+.4*Math.max(0,dens)));}
+   pill(g,200,30,s===1?'343 m/s':'LUFT WIRD VERDICHTET',C.aqua,1);if(s===1){const f=(t*.0006)%1;arrow(g,80,220,80+f*300,220,C.gold,2,1);}}
+  if(s===2){[[70,.06,C.blue,'TIEF (z. B. 100 Hz)'],[170,.25,C.down,'HOCH (z. B. 2.000 Hz)']].forEach(([y,f,col,n])=>{g.save();g.strokeStyle=col;g.lineWidth=2.4;g.beginPath();for(let i=0;i<=340;i++){const yy=y-Math.sin(i*f-t*.01)*24;i?g.lineTo(30+i,yy):g.moveTo(30+i,yy);}g.stroke();g.restore();pill(g,200,y+40,n,col,1);});}
+  if(s===3){const c=(t*.0004)%1,secs=Math.floor(c*12);if(c<.04){g.fillStyle=hexA('#ffffff',.25);g.fillRect(0,0,400,250);}g.save();g.strokeStyle=C.gold;g.lineWidth=3;g.beginPath();g.moveTo(80,20);g.lineTo(65,70);g.lineTo(85,70);g.lineTo(60,140);g.stroke();g.restore();ground(g,200);person(g,330,200,1.4);
+   if(secs>=9)pill(g,330,110,'💥 DONNER!',C.gold,1);else pill(g,330,110,`${secs} …`,C.text,1);lines(g,[['9 s ÷ 3 = 3 km',C.up,15,clamp(p*2-.3),800]],130,40,20);pill(g,200,226,'3 SEKUNDEN ≈ 1 KILOMETER',C.text,1);}
+  if(s===4){for(let i=0;i<40;i++){const r=rng(i+9);circ(g,r()*400,r()*250,r()*1.2+.3,C.mute);}const f=(t*.0006)%1;glow(g,200,125,20+f*120,C.orange,1-f);circ(g,200,125,10,C.gold);pill(g,200,226,'IM ALL: KEIN SCHALL',C.text,1);pill(g,200,30,'KEINE LUFT = STILLE',C.mute,1);}}
+ ,box:{was:'Schall ist eine mechanische Welle: Teilchen eines Stoffes (Luft, Wasser, Metall) stoßen sich gegenseitig an und geben die Schwingung weiter.',h2:'So rechnest du',
+ erkennen:['Schall in Luft: ca. 343 m/s (1 km in ca. 3 s)','Frequenz in Hertz (Hz): Schwingungen pro Sekunde','Hörbereich: ca. 20 Hz bis 20.000 Hz','Entfernung Gewitter (km) = Sekunden ÷ 3'],
+ bedeutung:'In Wasser ist Schall rund viermal, in Stahl über 15-mal so schnell wie in Luft. Wale können sich über Hunderte Kilometer unterhalten.',
+ tipp:'Mit dem Alter hört man hohe Töne schlechter. Viele Erwachsene hören über 15.000 Hz nichts mehr – Jugendliche oft schon.'}});
+
+les({id:'licht',cat:'wellen',title:'Licht: Spiegel & Linsen',sub:'Reflexion, Brechung und Regenbogen',
+ steps:S([[4800,'Licht breitet sich geradlinig aus – mit rund 300.000 Kilometern pro Sekunde.'],
+ [5000,'Reflexion: An einem Spiegel wird Licht zurückgeworfen. Dabei gilt: Einfallswinkel = Ausfallswinkel.'],
+ [5600,'Brechung: Wechselt Licht von Luft in Wasser oder Glas, ändert es die Richtung. Deshalb sieht ein Löffel im Wasserglas geknickt aus.'],
+ [5400,'Eine Sammellinse bricht das Licht so, dass sich die Strahlen in einem Brennpunkt treffen – so funktionieren Lupe, Brille und Kamera.'],
+ [5600,'Weißes Licht besteht aus allen Farben. Regentropfen brechen jede Farbe unterschiedlich stark – so entsteht der Regenbogen.']]),
+ draw(g,st){const{s,p,t}=st;
+  if(s===0){glow(g,50,125,30,C.gold,1);circ(g,50,125,10,C.gold);for(let k=-3;k<=3;k++){const a=k*.12;line(g,62,125,62+Math.cos(a)*320,125+Math.sin(a)*320,hexA(C.gold,.45),1.4);}const f=(t*.001)%1;for(let k=-3;k<=3;k++){const a=k*.12;circ(g,62+Math.cos(a)*320*f,125+Math.sin(a)*320*f,2.5,C.gold);}pill(g,250,30,'GERADLINIG · 300.000 km/s',C.gold,1);}
+  if(s===1){box(g,60,190,280,8,C.metalHi,null,2);const a=rad(35+Math.sin(t*.0015)*15),cx=200,cy=190;const L=150;line(g,cx-Math.sin(a)*L,cy-Math.cos(a)*L,cx,cy,C.gold,2.6);arrow(g,cx,cy,cx+Math.sin(a)*L,cy-Math.cos(a)*L,C.gold,2.6,1);line(g,cx,cy,cx,40,C.mute,1,[4,4]);
+   pill(g,cx-60,90,`${Math.round(a*180/Math.PI)}°`,C.orange,1);pill(g,cx+60,90,`${Math.round(a*180/Math.PI)}°`,C.orange,1);pill(g,200,226,'EINFALLSWINKEL = AUSFALLSWINKEL',C.text,1);}
+  if(s===2){box(g,0,125,400,125,hexA(C.water,.25),null,0);line(g,0,125,400,125,C.water,1.6);const a=rad(45),b=Math.asin(Math.sin(a)/1.33);line(g,60,125-140*Math.cos(a)*.8,200,125,C.gold,2.6);arrow(g,200,125,200+Math.tan(b)*110,235,C.gold,2.6,1);line(g,200,20,200,240,C.mute,1,[4,4]);line(g,200,125,330,255,hexA(C.gold,.3),1.4,[3,4]);
+   g.save();g.translate(320,130);g.rotate(.6);box(g,-4,-80,8,80,C.metalHi,null,3);g.restore();g.save();g.translate(320,130);g.rotate(.95);box(g,-4,0,8,70,hexA(C.metalHi,.7),null,3);g.restore();pill(g,80,30,'LUFT',C.text,1);pill(g,80,220,'WASSER',C.water,1);pill(g,320,30,'LÖFFEL „GEKNICKT“',C.gold,1);}
+  if(s===3){g.save();g.beginPath();g.ellipse(160,125,10,70,0,0,TAU);g.fillStyle=hexA(C.aqua,.3);g.fill();g.strokeStyle=C.aqua;g.lineWidth=1.6;g.stroke();g.restore();[-50,-25,0,25,50].forEach(y=>{line(g,20,125+y,160,125+y,C.gold,1.6);line(g,160,125+y,300,125,C.gold,1.6);line(g,300,125,370,125-y*.5,hexA(C.gold,.4),1.2);});circ(g,300,125,5,C.down);pill(g,160,30,'SAMMELLINSE',C.aqua,1);pill(g,300,170,'BRENNPUNKT',C.down,1);}
+  if(s===4){const cx=200,cy=230;const cols=[C.down,C.orange,C.gold,C.up,C.blue,C.purple];cols.forEach((col,i)=>{g.save();g.strokeStyle=col;g.lineWidth=7;g.globalAlpha=ease(clamp(p*1.5));g.beginPath();g.arc(cx,cy,170-i*7,Math.PI,TAU);g.stroke();g.restore();});for(let i=0;i<30;i++){const r=rng(i+50);const y=((r()*250+t*.08)%250);line(g,r()*400,y,r()*400-2,y+8,hexA(C.blue,.4),1);}pill(g,200,226,'REGENBOGEN',C.text,1);}}
+ ,box:{was:'Licht ist eine elektromagnetische Welle. An Oberflächen wird es zurückgeworfen (Reflexion), beim Übergang in einen anderen Stoff ändert es seine Richtung (Brechung).',h2:'So erkennst du es',
+ erkennen:['<b>Reflexion:</b> Spiegel, Wasseroberfläche, Katzenauge','<b>Brechung:</b> „geknickter“ Löffel, flimmernde Luft','<b>Sammellinse:</b> Lupe, Kamera, Auge','<b>Farbzerlegung:</b> Regenbogen, Prisma'],
+ bedeutung:'Auch dein Auge ist ein Linsensystem: Hornhaut und Augenlinse bündeln das Licht auf der Netzhaut. Eine Brille korrigiert, wenn der Brennpunkt davor oder dahinter liegt.',
+ tipp:'Einen Regenbogen siehst du nur, wenn die Sonne hinter dir steht und vor dir Regen fällt – am häufigsten morgens oder am späten Nachmittag.'}});
+
+les({id:'spektrum',cat:'wellen',title:'Elektromagnetisches Spektrum',sub:'Von Radiowellen bis Röntgen',
+ steps:S([[4800,'Licht ist nur ein kleiner Teil einer großen Familie: der elektromagnetischen Wellen.'],
+ [5800,'Lange Wellen: Radio und Fernsehen (Meter bis Kilometer lang), dann Mikrowellen – für Handy, WLAN und den Mikrowellenherd.'],
+ [5400,'Infrarot spüren wir als Wärme. Dann folgt das sichtbare Licht von Rot bis Violett – mit nur etwa 380 bis 750 Nanometern Wellenlänge.'],
+ [5400,'Ultraviolett (UV) verursacht Sonnenbrand. Noch kürzer und energiereicher sind Röntgen- und Gammastrahlen.'],
+ [6000,'Je kürzer die Welle, desto mehr Energie. Röntgenstrahlen durchdringen sogar Metall – so prüft die Industrie Bauteile im CT auf innere Fehler.']]),
+ draw(g,st){const{s,p,t}=st;const x0=20,w=360,y=125;
+  const B=[['RADIO',0,.18,C.mute,1],['MIKROWELLE',.18,.36,C.aqua,1],['INFRAROT',.36,.5,C.down,2],['LICHT',.5,.58,'rainbow',2],['UV',.58,.68,C.purple,3],['RÖNTGEN',.68,.84,C.blue,3],['GAMMA',.84,1,C.gold,3]];
+  g.save();g.strokeStyle=C.text;g.lineWidth=2;g.beginPath();for(let i=0;i<=w;i++){const u=i/w,k=.06*Math.pow(11,u);const yy=60-Math.sin(i*k-t*.01)*16;i?g.lineTo(x0+i,yy):g.moveTo(x0+i,yy);}g.stroke();g.restore();pill(g,x0,26,'LANGE WELLE',C.mute,1,'left');pill(g,x0+w,26,'KURZE WELLE · MEHR ENERGIE',C.gold,1,'right');
+  B.forEach(([n,a,b,col,k],i)=>{const on=s===0||s===k||s===4;const X=x0+a*w,W=(b-a)*w;if(col==='rainbow'){for(let j=0;j<W;j++){g.fillStyle=`hsla(${lerp(0,280,j/W)},90%,55%,${on?1:.3})`;g.fillRect(X+j,y-18,1.2,36);}}else box(g,X,y-18,W,36,hexA(col,on?.6:.15),col,0,1);pill(g,X+W/2,i%2?y+34:y-34,n,col==='rainbow'?C.gold:col,on?1:.3);});
+  if(s===1)lines(g,[['📻 Radio · 📱 Handy · WLAN · Mikrowelle',C.text,12]],20,200,20);if(s===2)lines(g,[['🔥 Wärme · 👁 sichtbares Licht 380–750 nm',C.text,12]],20,200,20);if(s===3)lines(g,[['☀ Sonnenbrand · 🦴 Röntgenbild · ☢ Gamma',C.text,12]],20,200,20);
+  if(s===4){const xr=x0+.76*w;arrow(g,xr,150,xr,190,C.blue,2.4,1);box(g,xr-60,195,120,40,C.head,C.line2,6);circ(g,xr-20,215,5,C.bg,C.down,1.4);txt(g,xr+20,215,'CT',C.text,12,'center',800);pill(g,110,215,'BAUTEILPRÜFUNG',C.blue,1);}}
+ ,box:{was:'Elektromagnetische Wellen sind schwingende elektrische und magnetische Felder. Sie brauchen keinen Stoff zum Ausbreiten und sind alle so schnell wie das Licht.',h2:'So erkennst du sie',
+ erkennen:['<b>Radio, Mikrowellen:</b> lang, energiearm','<b>Infrarot:</b> Wärmestrahlung','<b>Sichtbares Licht:</b> ca. 380–750 nm','<b>UV, Röntgen, Gamma:</b> kurz, energiereich, können Zellen schädigen'],
+ bedeutung:'Je energiereicher die Strahlung, desto vorsichtiger muss man sein: Röntgen- und Gammastrahlen können Erbgut schädigen. Deshalb sind Röntgenanlagen und CTs gut abgeschirmt.',
+ tipp:'Die Mikrowelle im Herd hat eine Wellenlänge von rund 12 cm. Das Gitter in der Tür hat kleinere Löcher – deshalb kommen die Wellen nicht heraus, das Licht aber schon.'}});
+
+les({id:'atom',cat:'wellen',title:'Das Atom',sub:'Woraus alles besteht',
+ steps:S([[5000,'Alles um uns herum besteht aus Atomen. Sie sind winzig: Etwa 10 Millionen Atome nebeneinander ergeben gerade 1 Millimeter.'],
+ [4800,'In der Mitte sitzt der Atomkern aus Protonen (positiv geladen) und Neutronen (ohne Ladung).'],
+ [4800,'Um den Kern bewegen sich die Elektronen (negativ geladen) – wie eine Wolke.'],
+ [6000,'Das Atom ist fast leer: Wäre der Kern so groß wie ein Fußball auf dem Anstoßpunkt, wären die äußeren Elektronen rund 10 km weit weg.'],
+ [5600,'Die Zahl der Protonen bestimmt das Element: 1 = Wasserstoff, 6 = Kohlenstoff, 8 = Sauerstoff, 13 = Aluminium, 26 = Eisen.']]),
+ draw(g,st){const{s,p,t}=st;const cx=200,cy=125;
+  if(s===0){const n=Math.floor(clamp(p*1.3)*40);for(let i=0;i<n;i++)circ(g,30+i*8.6,125,4,C.aqua,C.bg,1);arrow(g,30,160,370,160,C.mute,1.4,1,true);pill(g,200,180,'… × 10 MIO. = 1 mm',C.text,1);pill(g,200,40,'ATOME',C.aqua,1);}
+  if(s===1||s===2){const r=rng(2);for(let i=0;i<13;i++){const a=r()*TAU,d=Math.sqrt(r())*16;circ(g,cx+Math.cos(a)*d,cy+Math.sin(a)*d,6,i%2?C.down:C.metal,C.bg,1);}tag(g,cx+8,cy-6,320,40,'PROTONEN (+)',C.down,1);tag(g,cx-8,cy+8,80,210,'NEUTRONEN',C.metal,1);
+   if(s===2){[[60,30],[95,35],[120,20]].forEach(([R,ry],k)=>{g.save();g.strokeStyle=hexA(C.aqua,.35);g.beginPath();g.ellipse(cx,cy,R,R*.6,k,0,TAU);g.stroke();g.restore();const a=t*.003*(1+k*.4)+k;const x=cx+Math.cos(a)*R,y=cy+Math.sin(a)*R*.6;const c=Math.cos(k),sn=Math.sin(k);circ(g,cx+(x-cx)*c-(y-cy)*sn,cy+(x-cx)*sn+(y-cy)*c,5,C.aqua);});pill(g,330,210,'ELEKTRONEN (−)',C.aqua,1);}}
+  if(s===3){ground(g,180,hexA(C.up,.25));circ(g,200,180,22,null,hexA(C.text,.4),2);circ(g,200,180,5,C.text);txt(g,200,180,'⚽',C.text,12,'center',400,SANS);g.save();g.strokeStyle=hexA(C.aqua,.5);g.setLineDash([4,4]);g.beginPath();g.ellipse(200,180,190,120,0,Math.PI,TAU);g.stroke();g.restore();pill(g,200,40,'ELEKTRONEN ≈ 10 km ENTFERNT',C.aqua,1);pill(g,200,226,'KERN = FUSSBALL',C.text,1);}
+  if(s===4){const E=[['H',1,C.aqua],['C',6,C.mute],['O',8,C.down],['Al',13,C.metalHi],['Fe',26,C.orange]];E.forEach(([n,z,col],i)=>{const x=50+i*75,a=clamp(p*5-i);box(g,x-28,80,56,70,hexA(col,.15*a),hexA(col,a),8,1.6);txt(g,x,108,n,col,22,'center',800);txt(g,x,136,String(z),C.text,12,'center',700);});pill(g,200,190,'ORDNUNGSZAHL = ANZAHL PROTONEN',C.gold,1);}}
+ ,box:{was:'Atome sind die Bausteine aller Stoffe. Sie bestehen aus einem winzigen Kern (Protonen und Neutronen) und einer Hülle aus Elektronen.',h2:'So ist es aufgebaut',
+ erkennen:['<b>Protonen:</b> positiv, im Kern','<b>Neutronen:</b> neutral, im Kern','<b>Elektronen:</b> negativ, in der Hülle','Fast die ganze Masse steckt im Kern'],
+ bedeutung:'Die Elektronen der äußeren Hülle bestimmen, wie ein Atom mit anderen reagiert – also die ganze Chemie. Im Kern stecken riesige Energien, die bei Kernspaltung und Kernfusion frei werden.',
+ tipp:'Bei der Röntgenprüfung schwächen Atome mit vielen Elektronen die Strahlung stärker: Eisen (26) schirmt viel besser ab als Aluminium (13) – deshalb brauchen Stahlteile im CT mehr Spannung.'}});
+
+/* ============ Bereiche ============ */
+const CATINFO_F={
+ bewegung:{d:'Geschwindigkeit, Newton, Hebel und Bremsweg.',acc:'var(--blue)',hex:'#4c9aff'},
+ energie:{d:'Achterbahn, Stromkosten, Wirkungsgrad und Solarstrom.',acc:'var(--gold)',hex:'#f5c542'},
+ waerme:{d:'Teilchenmodell, Ausdehnung, Wärmetransport und Wärmepumpe.',acc:'var(--down)',hex:'#f0605d'},
+ strom:{d:'Stromkreis, Ohmsches Gesetz, Schaltungen und Haushaltsstrom.',acc:'var(--aqua)',hex:'#22d3ee'},
+ magnet:{d:'Magnetfeld, Elektromagnet, Motor und Generator.',acc:'var(--purple)',hex:'#b388ff'},
+ wellen:{d:'Schall, Licht, elektromagnetisches Spektrum und Atome.',acc:'var(--up)',hex:'#1fcf8f'}};
+const SVGI_F={
+ bewegung:'<path d="M6 40 V30 L14 28 L22 18 H42 L50 28 L58 30 V40 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="18" cy="42" r="6" fill="currentColor"/><circle cx="46" cy="42" r="6" fill="currentColor"/><path d="M2 54 H24 M30 54 H44" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".6"/>',
+ energie:'<path d="M36 4 L14 36 H30 L26 60 L50 26 H34 Z" fill="currentColor" opacity=".9"/>',
+ waerme:'<path d="M32 6 C40 18 48 24 48 38 A16 16 0 0 1 16 38 C16 28 22 24 24 16 C28 24 30 26 32 6 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M32 30 C36 36 38 38 38 44 A6 6 0 0 1 26 44 C26 40 30 36 32 30 Z" fill="currentColor"/>',
+ strom:'<rect x="10" y="16" width="44" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><path d="M24 10 V16 M40 10 V16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M34 22 L26 34 H34 L30 44" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>',
+ magnet:'<path d="M14 8 V34 A18 18 0 0 0 50 34 V8 H38 V34 A6 6 0 0 1 26 34 V8 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><rect x="14" y="8" width="12" height="9" fill="currentColor"/><rect x="38" y="8" width="12" height="9" fill="currentColor"/>',
+ wellen:'<path d="M4 32 Q12 14 20 32 T36 32 T52 32 T60 32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="52" r="5" fill="currentColor"/><ellipse cx="32" cy="52" rx="12" ry="5" fill="none" stroke="currentColor" stroke-width="2"/>'};
+
+/* ============ Quiz-Daten ============ */
+const TQ_F=[
+ {q:'Wie viel m/s sind 72 km/h?',a:['20 m/s','72 m/s','7,2 m/s','259 m/s'],e:'km/h ÷ 3,6 = m/s: 72 ÷ 3,6 = 20.',l:'tempo'},
+ {q:'Ein Radfahrer fährt 30 km in 2 Stunden. Wie schnell ist er im Schnitt?',a:['15 km/h','60 km/h','32 km/h','28 km/h'],e:'v = Strecke ÷ Zeit = 30 ÷ 2 = 15 km/h.',l:'tempo'},
+ {q:'Wie viele Meter fährt ein Auto mit 100 km/h in 3 Sekunden ungefähr?',a:['Etwa 83 m','Etwa 30 m','Etwa 300 m','Etwa 10 m'],e:'27,8 m/s × 3 s ≈ 83 m.',l:'tempo'},
+ {q:'Was beschreibt das 1. Newtonsche Gesetz?',a:['Die Trägheit','Actio = Reactio','F = m × a','Die Schwerkraft'],e:'Ohne Kraft bleibt ein Körper in Ruhe oder bewegt sich gleichförmig weiter.',l:'newton'},
+ {q:'Welche Kraft braucht man, um 1.000 kg mit 2 m/s² zu beschleunigen?',a:['2.000 N','500 N','1.002 N','20.000 N'],e:'F = m × a = 1.000 × 2 = 2.000 Newton.',l:'newton'},
+ {q:'Warum fliegst du ohne Gurt bei einer Vollbremsung nach vorne?',a:['Wegen der Trägheit','Weil das Auto dich schiebt','Wegen des Luftdrucks','Wegen der Reibung'],e:'Dein Körper will mit dem alten Tempo weiterfahren.',l:'newton'},
+ {q:'Last 80 kg, Lastarm 0,5 m, Kraftarm 2 m. Welche Kraft brauchst du?',a:['20 kg','40 kg','160 kg','320 kg'],e:'80 × 0,5 ÷ 2 = 20 kg.',l:'hebel'},
+ {q:'Womit löst du eine festsitzende Schraube am leichtesten?',a:['Mit einem langen Schraubenschlüssel','Mit einem kurzen Schraubenschlüssel','Mit beiden gleich gut','Mit einem Hammer'],e:'Längerer Kraftarm = weniger Kraft nötig.',l:'hebel'},
+ {q:'Wie lang ist der Bremsweg bei 80 km/h (Faustformel)?',a:['64 m','24 m','80 m','16 m'],e:'(80 ÷ 10)² = 8 × 8 = 64 m.',l:'bremsweg'},
+ {q:'Wie lang ist der Reaktionsweg bei 50 km/h (Faustformel)?',a:['15 m','25 m','5 m','50 m'],e:'(50 ÷ 10) × 3 = 15 m.',l:'bremsweg'},
+ {q:'Das Tempo verdoppelt sich. Was passiert mit dem Bremsweg?',a:['Er vervierfacht sich','Er verdoppelt sich','Er bleibt gleich','Er halbiert sich'],e:'Das Tempo steht im Quadrat: 2² = 4.',l:'bremsweg'},
+ {q:'Anhalteweg bei 100 km/h (Faustformeln)?',a:['130 m','100 m','30 m','200 m'],e:'30 m Reaktionsweg + 100 m Bremsweg.',l:'bremsweg'},
+ {q:'Wo ist ein Achterbahnwagen am schnellsten?',a:['Ganz unten','Ganz oben','In der Mitte','Überall gleich'],e:'Dort ist die meiste Lageenergie in Bewegungsenergie umgewandelt.',l:'achterbahn'},
+ {q:'Wie berechnet man die Lageenergie?',a:['E = m × g × h','E = ½ × m × v²','E = U × I','E = m × a'],e:'Masse × Erdbeschleunigung × Höhe.',l:'achterbahn'},
+ {q:'Ein Gerät mit 2.000 W läuft 30 Minuten. Wie viel Energie braucht es?',a:['1 kWh','2 kWh','60 kWh','0,5 kWh'],e:'2 kW × 0,5 h = 1 kWh.',l:'leistung'},
+ {q:'Eine 10-W-LED brennt 100 Stunden. Kosten bei 0,30 €/kWh?',a:['0,30 €','3 €','30 €','0,03 €'],e:'0,01 kW × 100 h = 1 kWh × 0,30 € = 0,30 €.',l:'leistung'},
+ {q:'Wie viel Watt sind 3,5 kW?',a:['3.500 W','350 W','35 W','35.000 W'],e:'1 kW = 1.000 W.',l:'leistung'},
+ {q:'Welchen Wirkungsgrad hat ein Elektromotor ungefähr?',a:['Über 90 %','Etwa 30 %','Etwa 5 %','Genau 100 %'],e:'Deshalb sind E-Autos so effizient.',l:'wirkungsgrad'},
+ {q:'Ein Motor bekommt 200 J und liefert 50 J Bewegung. Wirkungsgrad?',a:['25 %','50 %','4 %','150 %'],e:'50 ÷ 200 = 0,25 = 25 %.',l:'wirkungsgrad'},
+ {q:'Wozu wird die meiste Energie einer alten Glühbirne?',a:['Wärme','Licht','Schall','Bewegung'],e:'Rund 95 % werden zu Wärme.',l:'wirkungsgrad'},
+ {q:'Wie viel Strom liefert eine 8-kWp-Anlage in Bayern ungefähr pro Jahr?',a:['8.000 kWh','800 kWh','80.000 kWh','8 kWh'],e:'Rund 1.000 kWh pro kWp: 8 × 1.000 = 8.000 kWh.',l:'solar'},
+ {q:'Aus welchem Material bestehen die meisten Solarzellen?',a:['Silizium','Kupfer','Aluminium','Kunststoff'],e:'Zwei unterschiedlich behandelte Silizium-Schichten.',l:'solar'},
+ {q:'Bei welcher Temperatur schmilzt Eis (normaler Luftdruck)?',a:['0 °C','4 °C','−10 °C','100 °C'],e:'Bei 100 °C siedet Wasser.',l:'aggregat'},
+ {q:'Was passiert beim Sieden mit der Temperatur, obwohl man weiter heizt?',a:['Sie bleibt gleich','Sie steigt schneller','Sie sinkt','Sie springt auf 200 °C'],e:'Die Energie wird zum Lösen der Teilchen gebraucht.',l:'aggregat'},
+ {q:'Wie bewegen sich die Teilchen in einem Gas?',a:['Frei und schnell durch den Raum','Fest an ihrem Platz','Gar nicht','Nur im Kreis'],e:'Gase füllen jeden Raum aus.',l:'aggregat'},
+ {q:'Eine 50-m-Stahlbrücke, 40 °C Unterschied, 0,012 mm/(m·°C). Längenänderung?',a:['24 mm','48 mm','2,4 mm','240 mm'],e:'50 × 40 × 0,012 = 24 mm.',l:'ausdehnung'},
+ {q:'Warum schwimmt Eis auf Wasser?',a:['Eis hat eine geringere Dichte als Wasser','Eis ist hohl','Eis ist magnetisch','Wasser drückt es hoch, weil es warm ist'],e:'Wasser ist bei 4 °C am dichtesten, Eis ist leichter.',l:'ausdehnung'},
+ {q:'Welches Metall dehnt sich bei Wärme stärker aus?',a:['Aluminium','Stahl','Beide gleich','Keines'],e:'Aluminium ca. 0,023, Stahl ca. 0,012 mm pro m und °C.',l:'ausdehnung'},
+ {q:'Wie verteilt ein Heizkörper die Wärme im Raum hauptsächlich?',a:['Durch Konvektion (Luftströmung)','Nur durch Wärmeleitung','Durch Schall','Durch Magnetismus'],e:'Warme Luft steigt auf, kalte sinkt ab.',l:'waermetransport'},
+ {q:'Wie gelangt die Wärme der Sonne zur Erde?',a:['Durch Strahlung','Durch Wärmeleitung','Durch Konvektion','Durch Wind'],e:'Infrarotstrahlung braucht keinen Stoff – sie kommt durchs Vakuum.',l:'waermetransport'},
+ {q:'Warum dämmt Styropor oder Wolle so gut?',a:['Eingeschlossene, ruhende Luft leitet schlecht','Weil es Wärme vernichtet','Weil es schwer ist','Weil es Strom erzeugt'],e:'Kleine Luftkammern verhindern Leitung und Strömung.',l:'waermetransport'},
+ {q:'Eine Wärmepumpe hat die Jahresarbeitszahl 4. Wie viel Strom braucht sie für 12.000 kWh Wärme?',a:['3.000 kWh','4.000 kWh','48.000 kWh','12.000 kWh'],e:'12.000 ÷ 4 = 3.000 kWh.',l:'waermepumpe'},
+ {q:'Welches Bauteil der Wärmepumpe braucht den Strom?',a:['Der Verdichter','Der Verdampfer','Das Expansionsventil','Der Heizkörper'],e:'Er presst das Gas zusammen und macht es heiß.',l:'waermepumpe'},
+ {q:'Welches Haushaltsgerät ist auch eine Wärmepumpe?',a:['Der Kühlschrank','Der Toaster','Der Wasserkocher','Der Fön'],e:'Er pumpt Wärme aus dem Innenraum nach außen.',l:'waermepumpe'},
+ {q:'In welcher Einheit misst man die Spannung?',a:['Volt','Ampere','Ohm','Watt'],e:'Ampere = Stromstärke, Ohm = Widerstand, Watt = Leistung.',l:'stromkreis'},
+ {q:'Was braucht man, damit Strom fließt?',a:['Einen geschlossenen Stromkreis','Nur eine Batterie','Nur einen Draht','Einen Magneten'],e:'Quelle, Leitung und Verbraucher müssen einen Kreis bilden.',l:'stromkreis'},
+ {q:'230 V an einem Widerstand von 46 Ω. Wie groß ist der Strom?',a:['5 A','10 A','0,2 A','276 A'],e:'I = U ÷ R = 230 ÷ 46 = 5 A.',l:'ohm'},
+ {q:'Durch einen 10-Ω-Widerstand fließen 3 A. Welche Spannung liegt an?',a:['30 V','13 V','3,3 V','0,3 V'],e:'U = R × I = 10 × 3 = 30 V.',l:'ohm'},
+ {q:'Ein Gerät zieht an 230 V einen Strom von 10 A. Welche Leistung hat es?',a:['2.300 W','230 W','23 W','23.000 W'],e:'P = U × I = 230 × 10 = 2.300 W.',l:'ohm'},
+ {q:'Wie sind die Steckdosen im Haus geschaltet?',a:['Parallel','In Reihe','Gar nicht verbunden','Abwechselnd'],e:'So bekommt jedes Gerät die vollen 230 V.',l:'schaltungen'},
+ {q:'Zwei gleiche Lampen in Reihe an 12 V. Welche Spannung liegt an jeder?',a:['6 V','12 V','24 V','3 V'],e:'In Reihe teilt sich die Spannung auf.',l:'schaltungen'},
+ {q:'Was passiert in einer Reihenschaltung, wenn eine Lampe kaputtgeht?',a:['Alle gehen aus','Die anderen leuchten heller','Nichts','Die Sicherung fliegt'],e:'Der einzige Stromweg ist unterbrochen.',l:'schaltungen'},
+ {q:'Welche Farbe hat der Schutzleiter?',a:['Grün-gelb','Braun','Blau','Schwarz'],e:'Braun = Außenleiter, Blau = Neutralleiter.',l:'haushalt'},
+ {q:'Wie viel Leistung verträgt ein 16-A-Stromkreis an 230 V maximal?',a:['3.680 W','1.600 W','2.300 W','16.000 W'],e:'16 A × 230 V = 3.680 W.',l:'haushalt'},
+ {q:'Ab welchem Fehlerstrom löst ein üblicher FI-Schalter aus?',a:['30 mA','16 A','230 mA','3 A'],e:'Das sind nur 0,03 Ampere – so schützt er Menschen.',l:'haushalt'},
+ {q:'Wie oft wechselt der Wechselstrom in Deutschland pro Sekunde seine Schwingung?',a:['50-mal (50 Hz)','230-mal','60-mal','1-mal'],e:'Die Netzfrequenz in Europa ist 50 Hz.',l:'haushalt'},
+ {q:'Was passiert, wenn zwei Nordpole sich nähern?',a:['Sie stoßen sich ab','Sie ziehen sich an','Nichts','Sie werden heiß'],e:'Gleiche Pole stoßen sich ab.',l:'magnetfeld'},
+ {q:'Welches dieser Metalle wird von einem Magneten angezogen?',a:['Eisen','Aluminium','Kupfer','Gold'],e:'Magnetisch sind vor allem Eisen, Nickel und Kobalt.',l:'magnetfeld'},
+ {q:'Wie macht man einen Elektromagneten stärker?',a:['Mehr Windungen und ein Eisenkern','Weniger Strom','Die Spule erwärmen','Kupfer durch Holz ersetzen'],e:'Auch mehr Stromstärke hilft.',l:'elektromagnet'},
+ {q:'Wer entdeckte 1820, dass Strom ein Magnetfeld erzeugt?',a:['Hans Christian Ørsted','Isaac Newton','Albert Einstein','Georg Ohm'],e:'Eine Kompassnadel neben einem Draht schlug aus.',l:'elektromagnet'},
+ {q:'Welches Bauteil polt beim einfachen Elektromotor den Strom um?',a:['Der Kommutator (Stromwender)','Der Magnet','Die Batterie','Die Sicherung'],e:'So dreht sich der Rotor immer weiter.',l:'motor'},
+ {q:'Was wandelt ein Generator um?',a:['Bewegung in Strom','Strom in Bewegung','Licht in Wärme','Wärme in Schall'],e:'Ein Motor macht genau das Gegenteil.',l:'generator'},
+ {q:'Wie heißt das Prinzip, bei dem ein bewegter Magnet in einer Spule Spannung erzeugt?',a:['Induktion','Reflexion','Konvektion','Fusion'],e:'Entdeckt von Michael Faraday 1831.',l:'generator'},
+ {q:'Wie schnell ist Schall in Luft ungefähr?',a:['343 m/s','300.000 km/s','34 m/s','3.430 m/s'],e:'Bei 20 °C.',l:'schall'},
+ {q:'Du zählst zwischen Blitz und Donner 12 Sekunden. Wie weit ist das Gewitter entfernt?',a:['Etwa 4 km','Etwa 12 km','Etwa 36 km','Etwa 1 km'],e:'12 ÷ 3 = 4 km.',l:'schall'},
+ {q:'Warum hört man im Weltall keine Explosion?',a:['Es gibt keine Luft, die den Schall weiterleitet','Es ist zu kalt','Es ist zu dunkel','Die Explosionen sind zu klein'],e:'Schall braucht einen Stoff zum Ausbreiten.',l:'schall'},
+ {q:'Licht trifft im Winkel von 30° auf einen Spiegel. Unter welchem Winkel wird es reflektiert?',a:['30°','60°','90°','15°'],e:'Einfallswinkel = Ausfallswinkel.',l:'licht'},
+ {q:'Warum sieht ein Löffel im Wasserglas geknickt aus?',a:['Wegen der Lichtbrechung','Wegen der Reflexion','Weil das Wasser ihn verbiegt','Wegen des Schalls'],e:'Licht ändert beim Übergang Wasser–Luft seine Richtung.',l:'licht'},
+ {q:'Welche Strahlung hat mehr Energie?',a:['Röntgenstrahlung','Radiowellen','Mikrowellen','Infrarot'],e:'Je kürzer die Welle, desto mehr Energie.',l:'spektrum'},
+ {q:'Welche Strahlung spüren wir als Wärme?',a:['Infrarot','Ultraviolett','Gamma','Radiowellen'],e:'Infrarot ist Wärmestrahlung.',l:'spektrum'},
+ {q:'Wie viele Protonen hat ein Aluminium-Atom?',a:['13','26','8','1'],e:'Die Ordnungszahl von Aluminium ist 13.',l:'atom'},
+ {q:'Welche Ladung haben Elektronen?',a:['Negativ','Positiv','Keine','Mal so, mal so'],e:'Protonen sind positiv, Neutronen neutral.',l:'atom'}
+];
+const PQ_F=[
+ {l:'bremsweg',s:4,p:.9,q:'Was zeigt dieser Vergleich?',a:['Doppeltes Tempo = vierfacher Bremsweg','Doppeltes Tempo = halber Bremsweg','Reaktionsweg ist immer gleich','Bremsweg hängt nicht vom Tempo ab'],e:'50 km/h: 25 m · 100 km/h: 100 m.'},
+ {l:'hebel',s:2,p:.9,q:'Welches Gesetz wird hier gezeigt?',a:['Das Hebelgesetz','Das Ohmsche Gesetz','Actio = Reactio','Die Energieerhaltung'],e:'Kraft × Kraftarm = Last × Lastarm.'},
+ {l:'achterbahn',s:2,p:.5,q:'Welche Energieformen zeigen die Balken?',a:['Lage- und Bewegungsenergie','Strom und Wärme','Licht und Schall','Wind und Wasser'],e:'Beim Hinabrollen wird Lageenergie zu Bewegungsenergie.'},
+ {l:'aggregat',s:1,p:.5,q:'Welcher Aggregatzustand ist hier zu sehen?',a:['Fest','Flüssig','Gasförmig','Plasma'],e:'Die Teilchen sitzen fest an ihrem Platz und zittern nur.'},
+ {l:'aggregat',s:3,p:.5,q:'Welcher Aggregatzustand ist hier zu sehen?',a:['Gasförmig','Fest','Flüssig','Gefroren'],e:'Die Teilchen fliegen frei durch den ganzen Raum.'},
+ {l:'waermepumpe',s:0,p:.5,q:'Was zeigt dieser Kreislauf?',a:['Eine Wärmepumpe','Einen Stromkreis','Einen Wasserkreislauf in der Natur','Einen Verbrennungsmotor'],e:'Verdampfer, Verdichter, Verflüssiger und Ventil.'},
+ {l:'schaltungen',s:3,p:.1,q:'Welche Schaltung ist das?',a:['Parallelschaltung','Reihenschaltung','Kurzschluss','Gar keine'],e:'Jede Lampe hat ihren eigenen Stromweg.'},
+ {l:'magnetfeld',s:1,p:.9,q:'Was zeigen die Linien um den Magneten?',a:['Die Feldlinien des Magnetfelds','Schallwellen','Lichtstrahlen','Stromleitungen'],e:'Eisenspäne machen sie sichtbar.'},
+ {l:'motor',s:2,p:.5,q:'Was ist hier zu sehen?',a:['Ein Elektromotor','Ein Kompass','Ein Thermometer','Eine Solarzelle'],e:'Eine Spule dreht sich zwischen zwei Magneten.'},
+ {l:'licht',s:3,p:.5,q:'Was passiert hier mit dem Licht?',a:['Eine Sammellinse bündelt es im Brennpunkt','Es wird an einem Spiegel reflektiert','Es wird in Farben zerlegt','Es wird verschluckt'],e:'So funktionieren Lupe, Brille und Kamera.'},
+ {l:'haushalt',s:1,p:.5,q:'Wofür steht die grün-gelbe Ader?',a:['Schutzleiter','Außenleiter (Phase)','Neutralleiter','Telefonleitung'],e:'Er leitet Fehlerströme sicher ab.'},
+ {l:'atom',s:2,p:.5,q:'Was ist hier dargestellt?',a:['Ein Atom mit Kern und Elektronen','Ein Sonnensystem','Ein Magnet','Eine Zelle'],e:'Im Kern Protonen und Neutronen, außen Elektronen.'}
+];
+
+/* ============ Player ============ */
+const P={L:null,t:0,playing:false,speed:1,cv:null,ctx:null,W:0,H:0,dirty:true,last:0,stepIdx:-1,tl:null};
+function buildTL(L){let t=0;const steps=L.steps.map(s=>{const o={t,d:s.d,text:s.text};t+=s.d;return o;});return{steps,total:t};}
+function stAt(tl,t){let s=0;tl.steps.forEach((x,i)=>{if(t>=x.t)s=i;});const S=tl.steps[s];const T=Math.min(t-S.t,S.d);return{s,p:clamp(T/S.d),T,t,d:S.d};}
+function render(ctx,W,H,L,st){ctx.setTransform(1,0,0,1,0,0);const dpr=ctx._dpr||1;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+ const sc=Math.min(W/VW,H/VH);ctx.translate((W-VW*sc)/2,(H-VH*sc)/2);ctx.scale(sc,sc);ctx.lineCap='butt';ctx.lineJoin='miter';
+ try{L.draw(ctx,st);}catch(e){console.error(L.id,e);}
+}
+function staticFrame(cv,L,s,p,w,h,nolabel){const dpr=window.devicePixelRatio||1;cv.width=w*dpr;cv.height=h*dpr;cv.style.width=w+'px';cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx._dpr=dpr;
+ const tl=buildTL(L);s=Math.min(s,tl.steps.length-1);const S=tl.steps[s];const t=S.t+S.d*p;G.nolabel=!!nolabel;render(ctx,w,h,L,stAt(tl,t));G.nolabel=false;}
+
+/* ============ Fortschritt ============ */
+const KEY='physik';let seen={},best=0;try{seen=JSON.parse(localStorage.getItem(KEY+'-seen')||'{}');best=+(localStorage.getItem(KEY+'-best')||0)}catch(e){}
+function markSeen(id){if(seen[id])return;seen[id]=1;try{localStorage.setItem(KEY+'-seen',JSON.stringify(seen))}catch(e){}renderList();updProg();}
+function updProg(){const n=LESSONS.filter(l=>seen[l.id]).length;document.getElementById('progtxt').textContent=`${n} / ${LESSONS.length}`;document.getElementById('progbar').style.width=(n/LESSONS.length*100)+'%';}
+
+const CATINFO=CATINFO_F,SVGI=SVGI_F;
+const catIcon=(ck,s=58)=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" style="color:${CATINFO[ck].acc}">${SVGI[ck]}</svg>`;
+
+/* ============ Liste (Seitenleiste) ============ */
+const listEl=document.getElementById('list'),searchEl=document.getElementById('search'),view=document.getElementById('view');
+let current=null;
+function renderList(){
+ const q=searchEl.value.trim().toLowerCase();let h='';
+ for(const ck in CATS){const ls=LESSONS.filter(l=>l.cat===ck&&(!q||(l.title+' '+l.sub+' '+CATS[ck]).toLowerCase().includes(q)));if(!ls.length)continue;
+  h+=`<div class="cat" style="color:${CATINFO[ck].acc}">${CATS[ck]}</div>`;
+  h+=ls.map(l=>`<button class="item ${current===l?'on':''} ${seen[l.id]?'seen':''}" data-id="${l.id}"><div class="ic" style="color:${CATINFO[ck].acc}">${catIcon(ck,22)}</div><div><b>${l.title}</b><span>${l.sub}</span></div><div class="ok">✓</div></button>`).join('');}
+ if(!h)h='<p style="color:var(--mute);padding:10px">Nichts gefunden.</p>';
+ h+=`<div class="cat">Quiz</div><button class="item" data-id="quiz"><div class="ic">🎯</div><div><b>Quiz starten</b><span>${best?`Bestwert ${best}/10`:'10 zufällige Fragen'}</span></div></button>`;
+ listEl.innerHTML=h;listEl.querySelectorAll('.item').forEach(b=>b.onclick=()=>{location.hash=b.dataset.id;});
+}
+searchEl.addEventListener('input',renderList);
+
+/* ============ Lektion ============ */
+function openLesson(id){
+ const L=LESSONS.find(l=>l.id===id);if(!L){showHome();return;}
+ current=L;const ls=LESSONS.filter(l=>l.cat===L.cat),idx=LESSONS.indexOf(L),ci=ls.indexOf(L),prev=LESSONS[idx-1],next=LESSONS[idx+1],b=L.box,acc=CATINFO[L.cat].acc;
+ view.innerHTML=`
+ <button class="back" id="back">‹ ${CATS[L.cat]}</button>
+ <div class="kicker" style="color:${acc}">${CATS[L.cat]} · Lektion ${ci+1} von ${ls.length}</div>
+ <h1>${L.title}</h1>
+ <p class="lead">${L.sub}</p>
+ <div class="player">
+  <div class="cwrap" id="cwrap"><canvas id="cv"></canvas><div class="overlay" id="ovl"><div id="ovltxt">▶ ABSPIELEN</div></div></div>
+  <div class="caption"><div class="no" id="stepno"></div><p id="captxt"></p></div>
+  <div class="ctrl"><button class="cb" id="play" title="Abspielen/Pause" aria-label="Abspielen oder Pause">❚❚</button><input type="range" id="seek" min="0" step="10" value="0" aria-label="Spulen"><button class="cb" id="speed" title="Geschwindigkeit">1×</button><button class="cb" id="restart" title="Von vorne" aria-label="Von vorne">⟲</button></div>
+  <div class="chips" id="chips"></div>
+ </div>
+ <div class="info">
+  <div class="box b"><h3>Was ist das?</h3><p>${b.was}</p></div>
+  <div class="box g"><h3>${b.h2||'So erkennst du es'}</h3><ul>${b.erkennen.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  <div class="box y"><h3>Was bedeutet es?</h3><p>${b.bedeutung}</p></div>
+  <div class="box r"><h3>Tipp</h3><p>${b.tipp}</p></div>
+ </div>
+ <div class="pn"><button id="prev" ${prev?'':'disabled'}><small>‹ ZURÜCK</small>${prev?prev.title:'–'}</button><button id="next" ${next?'':'disabled'}><small>WEITER ›</small>${next?next.title:'–'}</button></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='kat-'+L.cat;};
+ if(prev)document.getElementById('prev').onclick=()=>location.hash=prev.id;
+ if(next)document.getElementById('next').onclick=()=>location.hash=next.id;
+ P.L=L;P.tl=buildTL(L);P.t=0;P.playing=true;P.stepIdx=-1;P.cv=document.getElementById('cv');P.ctx=P.cv.getContext('2d');
+ const seek=document.getElementById('seek');seek.max=P.tl.total;
+ seek.oninput=()=>{P.t=+seek.value;P.dirty=true;};
+ document.getElementById('play').onclick=togglePlay;document.getElementById('cwrap').onclick=togglePlay;
+ document.getElementById('restart').onclick=()=>{P.t=0;P.playing=true;P.dirty=true;updBtn();};
+ const sp=document.getElementById('speed');sp.textContent=(P.speed===.5?'½':P.speed)+'×';
+ sp.onclick=e=>{P.speed=P.speed===1?2:P.speed===2?.5:1;e.currentTarget.textContent=(P.speed===.5?'½':P.speed)+'×';};
+ document.getElementById('chips').innerHTML=P.tl.steps.map((s,i)=>`<button class="chip" data-i="${i}">${i+1}</button>`).join('');
+ document.getElementById('chips').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;P.t=P.tl.steps[+c.dataset.i].t+1;P.playing=true;P.dirty=true;updBtn();};
+ resize();updBtn();renderList();window.scrollTo(0,0);
+}
+function togglePlay(){if(!P.L)return;if(P.t>=P.tl.total){P.t=0;P.playing=true;}else P.playing=!P.playing;P.dirty=true;updBtn();}
+function updBtn(){const b=document.getElementById('play');if(!b)return;b.textContent=P.playing?'❚❚':(P.t>=P.tl.total?'⟲':'▶');
+ const o=document.getElementById('ovl');const end=P.t>=P.tl.total;o.classList.toggle('show',!P.playing);document.getElementById('ovltxt').textContent=end?'⟲ NOCHMAL ANSEHEN':'▶ WEITER';}
+function resize(){if(!P.cv)return;const w=P.cv.parentElement.clientWidth;const h=Math.round(clamp(w*.625,210,520));
+ const dpr=window.devicePixelRatio||1;P.cv.width=w*dpr;P.cv.height=h*dpr;P.cv.style.height=h+'px';P.ctx._dpr=dpr;P.W=w;P.H=h;P.dirty=true;}
+window.addEventListener('resize',()=>{resize();const qc=document.getElementById('qcv');if(qc&&Q&&Q.list[Q.i])drawQuizPic();});
+
+/* ============ Startseite & Bereich ============ */
+function showHome(){
+ current=null;P.L=null;P.cv=null;
+ const tiles=Object.keys(CATS).map(ck=>{const ls=LESSONS.filter(l=>l.cat===ck),n=ls.length,sn=ls.filter(l=>seen[l.id]).length,ci=CATINFO[ck];
+  return `<button class="big" data-h="kat-${ck}" style="--acc:${ci.acc};--glow:${hexA(ci.hex,.16)}"><div class="bi">${catIcon(ck)}</div><h2>${CATS[ck]}</h2><p>${ci.d}</p><div class="ft"><span>${n} LEKTIONEN</span><div class="pb"><i style="width:${sn/n*100}%"></i></div><span>${sn}/${n}</span><span class="go">›</span></div></button>`;}).join('');
+ const quiz=`<button class="big" data-h="quiz" style="--acc:var(--gold);--glow:rgba(245,197,66,.14)"><div class="bi" style="font-size:46px;line-height:1">🎯</div><h2>Quiz</h2><p>Teste dein Wissen: 10 zufällige Fragen mit Bildern und Rechenaufgaben.</p><div class="ft"><span>${best?`BESTWERT ${best}/10`:'NOCH NICHT GESPIELT'}</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
+ view.innerHTML=`<div class="home"><div class="kicker">Willkommen</div><h1>Physik im Alltag</h1>
+ <p class="lead">Jede Lektion ist ein kleines Video: Bewegung, Energie, Wärme, Strom, Magnetismus, Schall und Licht bauen sich Schritt für Schritt auf und werden erklärt – mit Rechenbeispielen aus dem Alltag.</p>
+ <div class="bigtiles">${tiles}${quiz}</div></div>`;
+ view.querySelectorAll('.big').forEach(t=>t.onclick=()=>location.hash=t.dataset.h);
+ renderList();window.scrollTo(0,0);
+}
+function showCat(ck){
+ if(!CATS[ck]){showHome();return;}current=null;P.L=null;P.cv=null;
+ const ls=LESSONS.filter(l=>l.cat===ck),ci=CATINFO[ck];
+ view.innerHTML=`<div class="home" style="--acc:${ci.acc}"><button class="back" id="back">‹ Startseite</button>
+ <div class="kicker">${ls.length} Lektionen · ${ls.filter(l=>seen[l.id]).length} gesehen</div><h1 style="color:${ci.acc}">${CATS[ck]}</h1><p class="lead">${ci.d}</p>
+ <div class="lcards">${ls.map((l,i)=>`<button class="lc" data-id="${l.id}"><canvas class="th" data-id="${l.id}"></canvas><div><small>LEKTION ${i+1}</small><b>${l.title}</b><span>${l.sub}</span></div>${seen[l.id]?'<div class="ok">✓</div>':''}</button>`).join('')}</div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ view.querySelectorAll('.lc').forEach(b=>b.onclick=()=>location.hash=b.dataset.id);
+ drawThumbs();renderList();window.scrollTo(0,0);
+}
+function drawThumbs(){view.querySelectorAll('canvas.th').forEach(cv=>{const L=LESSONS.find(l=>l.id===cv.dataset.id);staticFrame(cv,L,L.thumb!=null?L.thumb:L.steps.length-1,.7,88,55,true);});}
+
+/* ============ Quiz ============ */
+const TQ=TQ_F,PQ=PQ_F;
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+let Q=null;
+function startQuiz(){
+ current=null;P.L=null;P.cv=null;
+ const seenPic=new Set();const pics=shuffle(PQ.slice()).filter(x=>{const k=x.l+x.q;if(seenPic.has(x.l))return false;seenPic.add(x.l);return true;}).slice(0,4).map(x=>({pic:x,q:x.q,opts:shuffle(x.a.slice()),ans:x.a[0],e:x.e,l:x.l}));
+ const txt=shuffle(TQ.slice()).slice(0,10-pics.length).map(x=>({q:x.q,opts:shuffle(x.a.slice()),ans:x.a[0],e:x.e,l:x.l}));
+ Q={list:shuffle([...pics,...txt]),i:0,score:0,wrong:[]};renderList();renderQ();
+}
+function drawQuizPic(){const it=Q.list[Q.i],cv=document.getElementById('qcv');if(!cv||!it.pic)return;const L=LESSONS.find(l=>l.id===it.pic.l);const w=cv.parentElement.clientWidth,h=Math.round(clamp(w*.625,200,420));staticFrame(cv,L,it.pic.s,it.pic.p,w,h,true);}
+function renderQ(){
+ const it=Q.list[Q.i],n=Q.list.length;
+ view.innerHTML=`<button class="back" id="back">‹ Startseite</button>
+ <div class="kicker">Quiz · Frage ${Q.i+1} von ${n} · ${Q.score} richtig</div><h1>Teste dein Wissen</h1>
+ <div class="qcard"><div class="qbar"><i style="width:${Q.i/n*100}%"></i></div>
+ <p class="qq">${it.q}</p>${it.pic?'<div class="qcv"><canvas id="qcv"></canvas></div>':''}
+ <div class="opts">${it.opts.map((o,k)=>`<button class="opt" data-k="${k}">${String.fromCharCode(65+k)}) ${o}</button>`).join('')}</div>
+ <div id="fb"></div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ if(it.pic)drawQuizPic();
+ view.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));window.scrollTo(0,0);
+}
+function answer(k){
+ const it=Q.list[Q.i],ok=it.opts[k]===it.ans;if(ok)Q.score++;else Q.wrong.push(it.l);
+ view.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(it.opts[j]===it.ans)b.classList.add('ok');else if(j===k)b.classList.add('bad');});
+ const last=Q.i===Q.list.length-1,L=LESSONS.find(x=>x.id===it.l);
+ document.getElementById('fb').innerHTML=`<div class="fb"><b style="color:${ok?'var(--up)':'var(--down)'}">${ok?'✓ RICHTIG!':'✗ LEIDER FALSCH'}</b>${ok?'':` – richtig ist: <b>${it.ans}</b>`}<br>${it.e}</div>
+ <div class="qnav"><button id="tol">📖 Lektion: ${L?L.title:''}</button><button class="main" id="nx">${last?'Ergebnis ansehen':'Weiter ›'}</button></div>`;
+ document.getElementById('tol').onclick=()=>location.hash=it.l;
+ document.getElementById('nx').onclick=()=>{if(last)renderResult();else{Q.i++;renderQ();}};
+ document.getElementById('fb').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function renderResult(){
+ const n=Q.list.length,sc=Q.score;if(sc>best){best=sc;try{localStorage.setItem(KEY+'-best',best)}catch(e){}}renderList();
+ const msg=sc===n?'Perfekt! Du bist ein echter Physik-Profi. 🏆':sc>=8?'Sehr stark! Fast alles richtig. 💪':sc>=5?'Gut! Ein paar Lektionen kannst du noch wiederholen.':'Nicht schlimm – schau dir die Lektionen unten nochmal an und versuch es erneut.';
+ const rep=[...new Set(Q.wrong)].map(id=>LESSONS.find(l=>l.id===id)).filter(Boolean);
+ view.innerHTML=`<button class="back" id="back">‹ Startseite</button><div class="kicker">Quiz · Ergebnis</div><h1>Geschafft!</h1>
+ <div class="qcard"><div class="score" style="color:${sc>=8?'var(--up)':sc>=5?'var(--gold)':'var(--down)'}">${sc} / ${n}</div><p style="font-size:16px;margin:0 0 6px">${msg}</p>
+ <p style="color:var(--mute);font-family:var(--mono);font-size:12px;margin:0">BESTWERT: ${best} / ${n}</p>
+ ${rep.length?`<p style="margin:16px 0 6px;font-weight:700">Diese Lektionen solltest du wiederholen:</p><div class="opts">${rep.map(l=>`<button class="opt" data-id="${l.id}">📖 ${l.title}</button>`).join('')}</div>`:''}
+ <div class="qnav"><button id="home">Zur Übersicht</button><button class="main" id="again">🎯 Neues Quiz</button></div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ view.querySelectorAll('.opt[data-id]').forEach(b=>b.onclick=()=>location.hash=b.dataset.id);
+ document.getElementById('home').onclick=()=>{location.hash='';};
+ document.getElementById('again').onclick=()=>{startQuiz();};
+}
+
+/* ---- Schleife ---- */
+function frame(ts){
+ const dt=P.last?Math.min(60,ts-P.last):0;P.last=ts;
+ if(P.L&&P.cv){
+  if(P.playing){P.t+=dt*P.speed;if(P.t>=P.tl.total){P.t=P.tl.total;P.playing=false;updBtn();markSeen(P.L.id);}P.dirty=true;}
+  if(P.dirty){const st=stAt(P.tl,P.t);render(P.ctx,P.W,P.H,P.L,st);
+   const sk=document.getElementById('seek');if(sk)sk.value=P.t;
+   if(st.s!==P.stepIdx){P.stepIdx=st.s;const si=st.s,cp=document.getElementById('captxt');cp.style.opacity=0;setTimeout(()=>{cp.textContent=P.tl.steps[si].text;cp.style.opacity=1;},120);
+    document.getElementById('stepno').textContent=`SCHRITT ${si+1} / ${P.tl.steps.length}`;
+    document.querySelectorAll('.chip').forEach((c,i)=>{c.classList.toggle('on',i===si);c.classList.toggle('done',i<si);});}
+   P.dirty=false;}
+ }
+ requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{P.dirty=true;if(location.hash.startsWith('#kat-'))drawThumbs();});
+
+/* ============ Hell/Dunkel ============ */
+const mqLight=window.matchMedia?matchMedia('(prefers-color-scheme: light)'):null;
+function themeMode(){try{return localStorage.getItem('kompass-theme')||'dark'}catch(e){return 'dark'}}
+function applyTheme(m){const t=m==='auto'?(mqLight&&mqLight.matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',t);setCanvasTheme(t);
+ document.querySelectorAll('.theme button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===m)));
+ const mc=document.querySelector('meta[name=theme-color]');if(mc)mc.setAttribute('content',t==='light'?'#f3f5f9':'#05080d');
+ P.dirty=true;if(document.querySelector('canvas.th'))drawThumbs();if(document.getElementById('qcv'))drawQuizPic();}
+document.querySelectorAll('.theme button').forEach(b=>b.addEventListener('click',()=>{try{localStorage.setItem('kompass-theme',b.dataset.m)}catch(e){}applyTheme(b.dataset.m);}));
+if(mqLight&&mqLight.addEventListener)mqLight.addEventListener('change',()=>{if(themeMode()==='auto')applyTheme('auto');});
+applyTheme(themeMode());
+
+function route(){const id=location.hash.slice(1);if(id==='quiz')startQuiz();else if(id.startsWith('kat-'))showCat(id.slice(4));else if(id)openLesson(id);else showHome();}
+window.addEventListener('hashchange',route);
+updProg();route();
+
+</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}</script>
+</body>
+</html>
